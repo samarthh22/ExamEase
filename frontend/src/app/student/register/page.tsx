@@ -1,0 +1,263 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import AppLayout from '../../../components/AppLayout';
+import { fetchApi } from '../../../lib/api';
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  CheckCircle2,
+  AlertCircle,
+  XCircle,
+  Award,
+  BookOpen,
+  ArrowRight,
+  ShieldCheck,
+} from 'lucide-react';
+
+interface EligibleExam {
+  examId: string;
+  courseCode: string;
+  courseTitle: string;
+  credits: number;
+  facultyName: string;
+  examType: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  venue: string;
+  maxMarks: number;
+  status: string;
+  isRegistered: boolean;
+  isEligible: boolean;
+  reasonIneligible: string;
+  registrationId: string | null;
+  registrationTimestamp: string | null;
+}
+
+export default function StudentRegisterPage() {
+  const [exams, setExams] = useState<EligibleExam[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [registeringId, setRegisteringId] = useState<string | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const loadEligibleExams = async () => {
+    try {
+      const data = await fetchApi<{ eligibleExams: EligibleExam[] }>('/registrations/eligible-exams');
+      setExams(data.eligibleExams || []);
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err.message || 'Failed to load eligible examinations.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadEligibleExams();
+  }, []);
+
+  const handleRegister = async (examId: string) => {
+    setRegisteringId(examId);
+    setFeedback(null);
+    try {
+      const res = await fetchApi<{ message: string }>('/registrations', {
+        method: 'POST',
+        body: { examId },
+      });
+      setFeedback({ type: 'success', message: res.message });
+      await loadEligibleExams();
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err.message || 'Registration failed.' });
+    } finally {
+      setRegisteringId(null);
+    }
+  };
+
+  const handleCancelRegistration = async (registrationId: string) => {
+    if (!confirm('Are you sure you want to cancel this examination registration?')) return;
+    setCancellingId(registrationId);
+    setFeedback(null);
+    try {
+      const res = await fetchApi<{ message: string }>(`/registrations/${registrationId}`, {
+        method: 'DELETE',
+      });
+      setFeedback({ type: 'success', message: res.message });
+      await loadEligibleExams();
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err.message || 'Failed to cancel registration.' });
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+  return (
+    <AppLayout title="Examination Registration (Flow A — UC-007)" allowedRoles={['STUDENT']}>
+      {/* Flow Briefing Card */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-8 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 uppercase tracking-wide">
+                Use Case UC-007
+              </span>
+              <h2 className="text-lg font-bold text-slate-800">Register for Course Examinations</h2>
+            </div>
+            <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
+              This screen allows students to register only for examinations of courses in which they are actively enrolled.
+              The backend enforces 4 server-side checks: (1) Active student identity, (2) Active course enrolment verification,
+              (3) Schedule status not cancelled, and (4) Strict duplicate registration prevention.
+            </p>
+          </div>
+        </div>
+
+        {/* Live Feedback Banner */}
+        {feedback && (
+          <div
+            className={`mt-4 p-4 rounded-xl border flex items-start gap-3 text-sm transition-all ${
+              feedback.type === 'success'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                : 'bg-rose-50 border-rose-200 text-rose-800'
+            }`}
+          >
+            {feedback.type === 'success' ? (
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
+            ) : (
+              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
+            )}
+            <div>
+              <p className="font-semibold">{feedback.type === 'success' ? 'Operation Succeeded' : 'Operation Blocked'}</p>
+              <p className="text-xs mt-0.5">{feedback.message}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Eligible Exams List */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-slate-800 text-base">Examinations for Your Enrolled Courses</h3>
+          <span className="text-xs font-semibold text-slate-500">{exams.length} examinations available</span>
+        </div>
+
+        {loading ? (
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-400 text-sm">
+            Loading examination catalogue...
+          </div>
+        ) : exams.length === 0 ? (
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+            <BookOpen className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+            <p className="text-slate-700 font-semibold text-sm">No examinations available for registration</p>
+            <p className="text-slate-500 text-xs mt-1">You are either not enrolled in courses with scheduled exams, or no exams are published yet.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {exams.map(exam => {
+              const isRegistered = exam.isRegistered;
+              const isEligible = exam.isEligible;
+
+              return (
+                <div
+                  key={exam.examId}
+                  className={`bg-white rounded-2xl border p-6 transition-all ${
+                    isRegistered
+                      ? 'border-emerald-300 ring-2 ring-emerald-500/10 shadow-sm'
+                      : isEligible
+                      ? 'border-slate-200 hover:border-blue-300 hover:shadow-md'
+                      : 'border-slate-200 opacity-75 bg-slate-50/50'
+                  }`}
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    {/* Course & Schedule Details */}
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-base font-bold text-slate-900">{exam.courseCode}</span>
+                        <span className="text-slate-300">•</span>
+                        <span className="text-base font-semibold text-slate-800">{exam.courseTitle}</span>
+                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                          {exam.credits} Credits
+                        </span>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 uppercase">
+                          {exam.examType} Exam
+                        </span>
+                      </div>
+
+                      <div className="text-xs text-slate-500">
+                        Instructor: <span className="font-medium text-slate-700">{exam.facultyName}</span> • Maximum Marks:{' '}
+                        <span className="font-semibold text-slate-700">{exam.maxMarks}</span>
+                      </div>
+
+                      {/* Timings & Venue */}
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 pt-1">
+                        <span className="flex items-center gap-1.5 font-medium">
+                          <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                          {exam.date}
+                        </span>
+                        <span className="flex items-center gap-1.5 font-medium">
+                          <Clock className="w-3.5 h-3.5 text-blue-600" />
+                          {exam.startTime} – {exam.endTime}
+                        </span>
+                        <span className="flex items-center gap-1.5 font-medium">
+                          <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                          {exam.venue}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Status & Action */}
+                    <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-3 shrink-0">
+                      {isRegistered ? (
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                            <span>Confirmed Registered</span>
+                          </div>
+                          {exam.registrationId && (
+                            <button
+                              onClick={() => handleCancelRegistration(exam.registrationId!)}
+                              disabled={cancellingId === exam.registrationId}
+                              className="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-1 rounded hover:bg-rose-50 transition"
+                            >
+                              {cancellingId === exam.registrationId ? 'Cancelling...' : 'Cancel'}
+                            </button>
+                          )}
+                        </div>
+                      ) : isEligible ? (
+                        <button
+                          onClick={() => handleRegister(exam.examId)}
+                          disabled={registeringId === exam.examId}
+                          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition flex items-center gap-2 disabled:opacity-50"
+                        >
+                          {registeringId === exam.examId ? (
+                            <span>Submitting Request...</span>
+                          ) : (
+                            <>
+                              <span>Register for Exam</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl">
+                          <XCircle className="w-4 h-4 text-slate-400" />
+                          <span>{exam.reasonIneligible}</span>
+                        </div>
+                      )}
+
+                      {exam.registrationTimestamp && (
+                        <span className="text-[10px] text-slate-400">
+                          Registered on {new Date(exam.registrationTimestamp).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </AppLayout>
+  );
+}

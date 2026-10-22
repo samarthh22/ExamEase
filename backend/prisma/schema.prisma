@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String          @id @default(uuid())
+  email        String          @unique
+  passwordHash String
+  fullName     String
+  role         String          // STUDENT, FACULTY, EXAM_ADMIN, HOD, SYSTEM_ADMIN
+  active       Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  studentProfile Student?
+  facultyProfile FacultyMember?
+}
+
+model Student {
+  id           String         @id @default(uuid())
+  userId       String         @unique
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rollNumber   String         @unique
+  department   String
+  batchYear    Int
+
+  enrollments   Enrollment[]
+  registrations Registration[]
+  marks         Mark[]
+  results       Result[]
+}
+
+model FacultyMember {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department  String
+  designation String
+
+  courses Course[]
+}
+
+model Course {
+  id                String         @id @default(uuid())
+  courseCode        String         @unique
+  title             String
+  credits           Int
+  department        String
+  assignedFacultyId String?
+  assignedFaculty   FacultyMember? @relation(fields: [assignedFacultyId], references: [id], onDelete: SetNull)
+  active            Boolean        @default(true)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  enrollments   Enrollment[]
+  examSchedules ExamSchedule[]
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  studentId  String
+  courseId   String
+  enrolledAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+}
+
+model ExamSchedule {
+  id               String   @id @default(uuid())
+  courseId         String
+  examType         String   // MIDTERM, FINAL, SUPPLEMENTARY
+  date             String   // YYYY-MM-DD
+  startTime        String   // HH:mm (24h)
+  endTime          String   // HH:mm (24h)
+  venue            String
+  maxMarks         Float    @default(100.0)
+  status           String   @default("DRAFT") // DRAFT, PUBLISHED, CANCELLED
+  resultsPublished Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  course            Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  registrations     Registration[]
+  marks             Mark[]
+  gradingBoundaries GradingBoundary[]
+  results           Result[]
+}
+
+model Registration {
+  id                    String       @id @default(uuid())
+  studentId             String
+  examId                String
+  registrationTimestamp DateTime     @default(now())
+  status                String       @default("REGISTERED") // REGISTERED, CANCELLED
+
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  examSchedule ExamSchedule @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, examId])
+}
+
+model Mark {
+  id            String       @id @default(uuid())
+  studentId     String
+  examId        String
+  marksObtained Float
+  remarks       String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  examSchedule ExamSchedule @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, examId])
+}
+
+model GradingBoundary {
+  id         String       @id @default(uuid())
+  examId     String
+  gradeLabel String       // e.g. "A+", "A", "B", "C", "D", "F"
+  lowerBound Float
+  upperBound Float
+
+  examSchedule ExamSchedule @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@index([examId])
+}
+
+model Result {
+  id            String       @id @default(uuid())
+  studentId     String
+  examId        String
+  marksObtained Float
+  computedGrade String
+  status        String       @default("UNPUBLISHED") // UNPUBLISHED, PUBLISHED, NEEDS_RECALCULATION
+  generatedAt   DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  examSchedule ExamSchedule @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, examId])
+}

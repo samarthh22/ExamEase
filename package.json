@@ -1,0 +1,22 @@
+{
+  "name": "examease",
+  "version": "1.0.0",
+  "description": "ExamEase - Examination Management System",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspace=backend && npm install --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "seed": "npm run seed --workspace=backend",
+    "test": "npm run test --workspace=backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
