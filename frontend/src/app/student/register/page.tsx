@@ -39,16 +39,21 @@ interface EligibleExam {
 export default function StudentRegisterPage() {
   const [exams, setExams] = useState<EligibleExam[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [registeringId, setRegisteringId] = useState<string | null>(null);
-  const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const loadEligibleExams = async () => {
+    setLoading(true);
+    setLoadError(false);
     try {
       const data = await fetchApi<{ eligibleExams: EligibleExam[] }>('/registrations/eligible-exams');
       setExams(data.eligibleExams || []);
     } catch (err: any) {
-      setFeedback({ type: 'error', message: err.message || 'Failed to load eligible examinations.' });
+      setLoadError(true);
+      setFeedback({ type: 'error', message: err.message === 'Failed to fetch'
+        ? 'Unable to connect to the exam server. Please retry in a moment.'
+        : err.message || 'Failed to load eligible examinations.' });
     } finally {
       setLoading(false);
     }
@@ -59,6 +64,11 @@ export default function StudentRegisterPage() {
   }, []);
 
   const handleRegister = async (examId: string) => {
+    if (registeringId) return;
+    const exam = exams.find(item => item.examId === examId);
+    if (!exam || !window.confirm(
+      `Are you sure you want to register for this exam? This action cannot be undone.\n\n${exam.courseCode} — ${exam.courseTitle}\n${exam.examType} exam · ${exam.date} · ${exam.startTime}–${exam.endTime}`
+    )) return;
     setRegisteringId(examId);
     setFeedback(null);
     try {
@@ -72,23 +82,6 @@ export default function StudentRegisterPage() {
       setFeedback({ type: 'error', message: err.message || 'Registration failed.' });
     } finally {
       setRegisteringId(null);
-    }
-  };
-
-  const handleCancelRegistration = async (registrationId: string) => {
-    if (!confirm('Are you sure you want to cancel this examination registration?')) return;
-    setCancellingId(registrationId);
-    setFeedback(null);
-    try {
-      const res = await fetchApi<{ message: string }>(`/registrations/${registrationId}`, {
-        method: 'DELETE',
-      });
-      setFeedback({ type: 'success', message: res.message });
-      await loadEligibleExams();
-    } catch (err: any) {
-      setFeedback({ type: 'error', message: err.message || 'Failed to cancel registration.' });
-    } finally {
-      setCancellingId(null);
     }
   };
 
@@ -138,12 +131,19 @@ export default function StudentRegisterPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-slate-800 text-base">Examinations for Your Enrolled Courses</h3>
-          <span className="text-xs font-semibold text-slate-500">{exams.length} examinations available</span>
+          <span className="text-xs font-semibold text-slate-500">{loading ? 'Loading examinations…' : loadError ? 'Examinations unavailable' : `${exams.length} examinations available`}</span>
         </div>
 
         {loading ? (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-400 text-sm">
             Loading examination catalogue...
+          </div>
+        ) : loadError ? (
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center" role="alert">
+            <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-3" aria-hidden="true" />
+            <p className="text-slate-700 font-semibold text-sm">Unable to load examinations</p>
+            <p className="text-slate-500 text-xs mt-1">Your examination list could not be retrieved. Please try again.</p>
+            <button type="button" onClick={() => { setFeedback(null); void loadEligibleExams(); }} className="mt-4 min-h-[44px] px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Retry</button>
           </div>
         ) : exams.length === 0 ? (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
@@ -213,20 +213,11 @@ export default function StudentRegisterPage() {
                             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             <span>Confirmed Registered</span>
                           </div>
-                          {exam.registrationId && (
-                            <button
-                              onClick={() => handleCancelRegistration(exam.registrationId!)}
-                              disabled={cancellingId === exam.registrationId}
-                              className="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-1 rounded hover:bg-rose-50 transition"
-                            >
-                              {cancellingId === exam.registrationId ? 'Cancelling...' : 'Cancel'}
-                            </button>
-                          )}
                         </div>
                       ) : isEligible ? (
                         <button
                           onClick={() => handleRegister(exam.examId)}
-                          disabled={registeringId === exam.examId}
+                          disabled={registeringId !== null}
                           className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition flex items-center gap-2 disabled:opacity-50"
                         >
                           {registeringId === exam.examId ? (

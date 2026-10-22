@@ -3,204 +3,99 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../lib/auth-context';
-import { GraduationCap, ShieldCheck, UserCheck, BookOpen, KeyRound, AlertCircle, Sparkles } from 'lucide-react';
+import { GraduationCap, ShieldCheck, BookOpen, CalendarDays, Building2, ArrowRight, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
+import './login.css';
+
+const demoAccounts = [
+  { role: 'Student', name: 'Rahul Verma', email: 'rahul.verma@student.examease.edu', password: 'Student@123', description: 'Register for exams and view published results.', icon: GraduationCap, tone: 'student' },
+  { role: 'Faculty member', name: 'Dr. Rajesh Sharma', email: 'prof.sharma@examease.edu', password: 'Faculty@123', description: 'Enter marks, set grade boundaries and publish results.', icon: BookOpen, tone: 'faculty' },
+  { role: 'Examination administrator', name: 'Chief Exam Controller', email: 'examadmin@examease.edu', password: 'Admin@123', description: 'Schedule exams, allocate venues and manage courses.', icon: CalendarDays, tone: 'exam' },
+  { role: 'Department coordinator', name: 'Prof. Vikram Malhotra · HOD', email: 'hod.cs@examease.edu', password: 'Hod@123', description: 'Explore department reports with read-only access.', icon: Building2, tone: 'hod' },
+  { role: 'System administrator', name: 'System Administrator', email: 'sysadmin@examease.edu', password: 'Admin@123', description: 'Manage user accounts, access and role assignments.', icon: ShieldCheck, tone: 'system' },
+];
 
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [activeAccount, setActiveAccount] = useState<string | null>(null);
 
-  const demoAccounts = [
-    {
-      roleName: 'Student (Rahul Verma)',
-      email: 'rahul.verma@student.examease.edu',
-      password: 'Student@123',
-      description: 'Flow A: Register for exams, check enrolled courses & published results',
-      color: 'border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-800',
-      badge: 'Student',
-    },
-    {
-      roleName: 'Faculty Member (Dr. Rajesh Sharma)',
-      email: 'prof.sharma@examease.edu',
-      password: 'Faculty@123',
-      description: 'Flow B & C: Enter student marks, live stats, set grade boundaries & generate grades',
-      color: 'border-blue-200 bg-blue-50/50 hover:bg-blue-50 text-blue-800',
-      badge: 'Faculty',
-    },
-    {
-      roleName: 'Examination Administrator',
-      email: 'examadmin@examease.edu',
-      password: 'Admin@123',
-      description: 'Exam scheduling, venue conflict checker, manage courses and student enrolments',
-      color: 'border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 text-indigo-800',
-      badge: 'Exam Admin',
-    },
-    {
-      roleName: 'Department Coordinator / HOD',
-      email: 'hod.cs@examease.edu',
-      password: 'Hod@123',
-      description: 'Read-only departmental oversight, pass/fail analytics, course performance',
-      color: 'border-purple-200 bg-purple-50/50 hover:bg-purple-50 text-purple-800',
-      badge: 'HOD (Read-Only)',
-    },
-    {
-      roleName: 'System Administrator',
-      email: 'sysadmin@examease.edu',
-      password: 'Admin@123',
-      description: 'Account administration, role assignment, technical user management',
-      color: 'border-rose-200 bg-rose-50/50 hover:bg-rose-50 text-rose-800',
-      badge: 'System Admin',
-    },
-  ];
-
-  const handleLogin = async (e?: React.FormEvent, customEmail?: string, customPass?: string) => {
-    if (e) e.preventDefault();
-    const loginEmail = customEmail || email;
-    const loginPass = customPass || password;
-
-    if (!loginEmail || !loginPass) {
-      setError('Please provide email and password.');
+  const handleLogin = async (e?: React.FormEvent, account?: typeof demoAccounts[number]) => {
+    e?.preventDefault();
+    if (submitting) return;
+    const loginEmail = account?.email || email.trim();
+    const loginPassword = account?.password || password;
+    if (!loginEmail || !loginPassword) {
+      setError('Enter your email address and password to continue.');
       return;
     }
-
     setError(null);
     setSubmitting(true);
-
+    setActiveAccount(account?.email || null);
+    if (account) { setEmail(account.email); setPassword(account.password); }
     try {
-      await login(loginEmail, loginPass);
+      await login(loginEmail, loginPassword);
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unable to sign in. Please try again.');
     } finally {
       setSubmitting(false);
+      setActiveAccount(null);
     }
-  };
-
-  const handleQuickLogin = (accEmail: string, accPass: string) => {
-    setEmail(accEmail);
-    setPassword(accPass);
-    handleLogin(undefined, accEmail, accPass);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40 flex items-center justify-center p-4">
-      <div className="max-w-4xl w-full grid md:grid-cols-12 gap-8 bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden">
-        {/* Left Column: Form & Title */}
-        <div className="md:col-span-6 p-8 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-500/25">
-                E
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">ExamEase</h1>
-                <p className="text-xs text-slate-500 font-medium">Examination Management System</p>
-              </div>
+    <main className="login-page">
+      <div className="login-shell">
+        <section className="login-form-panel" aria-labelledby="sign-in-heading">
+          <div className="login-form-content">
+            <a className="login-brand" href="/login" aria-label="ExamEase home">
+              <span className="login-brand-mark"><GraduationCap size={27} strokeWidth={1.8} aria-hidden="true" /></span>
+              <span><span className="login-brand-name">ExamEase<span className="login-brand-dot">.</span></span><span className="login-brand-description">Examination Management System</span></span>
+            </a>
+            <div className="login-intro">
+              <h1 id="sign-in-heading">Welcome back.</h1>
+              <p>Everything for your next examination,<br className="login-desktop-break" /> in one place. Sign in to continue.</p>
             </div>
-
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-slate-800">Sign in to your account</h2>
-              <p className="text-sm text-slate-500 mt-1">
-                Enter your institutional credentials or select a demo role.
-              </p>
-            </div>
-
-            {error && (
-              <div className="mb-5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-rose-700 text-xs">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{error}</span>
+            {error && <div className="login-error" id="login-error" role="alert"><AlertCircle size={18} aria-hidden="true" /><span>{error}</span></div>}
+            <form onSubmit={handleLogin} className="login-form" aria-describedby={error ? 'login-error' : undefined} aria-busy={submitting}>
+              <div className="login-field">
+                <label htmlFor="login-email">Institutional email</label>
+                <input id="login-email" name="email" type="email" autoComplete="username" placeholder="you@examease.edu" value={email} onChange={e => setEmail(e.target.value)} required disabled={submitting} />
               </div>
-            )}
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="name@examease.edu"
-                  required
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
-                />
+              <div className="login-field">
+                <label htmlFor="login-password">Password</label>
+                <div className="login-password-wrap">
+                  <input id="login-password" name="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} required disabled={submitting} />
+                  <button type="button" className="login-password-toggle" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword}>{showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}</button>
+                </div>
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-500/20 transition duration-150 disabled:opacity-50"
-              >
-                {submitting ? 'Authenticating...' : 'Sign In'}
-              </button>
+              <button className="login-submit" type="submit" disabled={submitting}>{submitting && !activeAccount ? <><Loader2 size={18} className="login-spinner" aria-hidden="true" /> Signing in…</> : <>Sign in <ArrowRight size={18} aria-hidden="true" /></>}</button>
             </form>
           </div>
-
-          <div className="mt-8 pt-4 border-t border-slate-100 text-center text-xs text-slate-400">
-            SWE Lab Viva Prototype Demo • Fully Seeded Relational Database
+        </section>
+        <section className="login-demo-panel" aria-labelledby="demo-heading">
+          <div className="login-demo-heading"><h2 id="demo-heading">Take a look around.</h2><span className="login-demo-badge">Demo access</span></div>
+          <p className="login-demo-description">Choose a role to explore ExamEase.<br />One click signs you in with a demo account.</p>
+          <div className="login-role-list">
+            {demoAccounts.map(account => {
+              const Icon = account.icon;
+              const isActive = activeAccount === account.email;
+              return <button key={account.email} type="button" className="login-role" onClick={() => handleLogin(undefined, account)} disabled={submitting} aria-label={`Sign in as ${account.role}, ${account.name}`} aria-busy={isActive}>
+                <span className={`login-role-icon login-role-icon-${account.tone}`}><Icon size={22} strokeWidth={1.7} aria-hidden="true" /></span>
+                <span className="login-role-copy"><span className="login-role-title">{account.role}</span><span className="login-role-name">{account.name}</span><span className="login-role-description">{account.description}</span></span>
+                <span className="login-role-arrow">{isActive ? <Loader2 size={18} className="login-spinner" aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}</span>
+              </button>;
+            })}
           </div>
-        </div>
-
-        {/* Right Column: 1-Click Viva Demo Role Switcher */}
-        <div className="md:col-span-6 bg-slate-50/70 p-8 border-l border-slate-200/80 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-amber-500" />
-              <h3 className="font-bold text-slate-800 text-base">One-Click Viva Demo Accounts</h3>
-            </div>
-            <p className="text-xs text-slate-500 mb-4">
-              Click any role card below to instantly sign in and test that persona&apos;s permissions and UI flows:
-            </p>
-
-            <div className="space-y-2.5">
-              {demoAccounts.map(acc => (
-                <button
-                  key={acc.email}
-                  onClick={() => handleQuickLogin(acc.email, acc.password)}
-                  disabled={submitting}
-                  className={`w-full text-left p-3 rounded-xl border transition-all duration-150 ${acc.color} shadow-sm group hover:scale-[1.01]`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-xs">{acc.roleName}</span>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/80 border border-current shadow-2xs">
-                      {acc.badge}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-600 leading-tight mb-1">{acc.description}</p>
-                  <div className="text-[10px] font-mono text-slate-500 flex items-center gap-2">
-                    <span>{acc.email}</span>
-                    <span>•</span>
-                    <span>{acc.password}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-4 p-3 bg-white rounded-xl border border-slate-200 text-[11px] text-slate-600">
-            <span className="font-semibold text-slate-800">Server-Enforced Rules:</span> Conflict validation, student enrollment verification, mark range validation [0, maxMarks], and strict publication toggles.
-          </div>
-        </div>
+          <details className="login-credentials"><summary>View demo credentials</summary><dl>{demoAccounts.map(account => <div key={account.email}><dt>{account.role}</dt><dd>{account.email}<br /><span>Password: {account.password}</span></dd></div>)}</dl></details>
+          <p className="login-demo-note"><ShieldCheck size={16} aria-hidden="true" /><span>Each role has its own workspace and permissions.</span></p>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

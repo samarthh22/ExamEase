@@ -182,6 +182,20 @@ async function runTests() {
     });
     assert.strictEqual(dupRes.status, 409);
     assert.match(dupRes.data.error, /Duplicate registration/);
+
+    const registrationId = regRes.data.registration.id;
+    for (const token of [studentToken, facultyToken, hodToken]) {
+      const cancellationRes = await request(`/registrations/${registrationId}`, {
+        method: 'DELETE', token,
+      });
+      assert.strictEqual(cancellationRes.status, 403, 'Only administrators may cancel registrations');
+    }
+    const registrationsAfterCancellation = await request('/registrations/my-registrations', {
+      token: studentToken,
+    });
+    assert.ok(registrationsAfterCancellation.data.registrations.some(
+      (registration: any) => registration.id === registrationId && registration.status === 'REGISTERED'
+    ), 'Rejected cancellation must leave the registration intact');
     console.log('✓ Flow A (UC-007) registration tests passed');
 
     // 7. Flow B (UC-008): Marks Entry & Validation

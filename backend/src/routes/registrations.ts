@@ -256,6 +256,7 @@ router.post(
 router.delete(
   '/:id',
   authenticateToken,
+  requireRoles(['EXAM_ADMIN', 'SYSTEM_ADMIN']),
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const id = String(req.params.id);
     const { user } = req;
@@ -273,11 +274,6 @@ router.delete(
 
       if (!reg) {
         res.status(404).json({ error: 'Registration not found.' });
-        return;
-      }
-
-      if (user.role === 'STUDENT' && reg.studentId !== user.studentId) {
-        res.status(403).json({ error: 'Unauthorized to cancel this registration.' });
         return;
       }
 
