@@ -42,3 +42,101 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #a3a3a3;
 }
+
+/* Systemic Vercel Dark Theme overrides across all application views */
+.dark body {
+  background-color: #000000;
+  color: #ededed;
+}
+
+.dark .bg-slate-50,
+.dark .bg-gray-50 {
+  background-color: #000000 !important;
+}
+
+.dark .bg-white {
+  background-color: #0a0a0a !important;
+  color: #ededed;
+}
+
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .divide-slate-100,
+.dark .divide-slate-200 {
+  border-color: #1f1f1f !important;
+}
+
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-gray-900,
+.dark .text-gray-800 {
+  color: #ededed !important;
+}
+
+.dark .text-slate-700,
+.dark .text-slate-600,
+.dark .text-gray-700,
+.dark .text-gray-600 {
+  color: #a1a1a1 !important;
+}
+
+.dark .text-slate-500,
+.dark .text-slate-400,
+.dark .text-gray-500,
+.dark .text-gray-400 {
+  color: #737373 !important;
+}
+
+.dark .bg-slate-100,
+.dark .bg-gray-100 {
+  background-color: #141414 !important;
+  color: #ededed !important;
+}
+
+.dark .bg-slate-200,
+.dark .bg-gray-200 {
+  background-color: #262626 !important;
+}
+
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover {
+  background-color: #141414 !important;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #0d0d0d !important;
+  border-color: #262626 !important;
+  color: #ffffff !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #525252 !important;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: #525252 !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark table thead th {
+  background-color: #0f0f0f !important;
+  color: #888888 !important;
+  border-color: #1f1f1f !important;
+}
+
+.dark table tbody tr {
+  border-color: #1a1a1a !important;
+}
+
+.dark table tbody tr:hover {
+  background-color: #121212 !important;
+}

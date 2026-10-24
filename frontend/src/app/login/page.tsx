@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../lib/auth-context';
+import ThemeToggle from '../../components/ThemeToggle';
 import { GraduationCap, ShieldCheck, BookOpen, CalendarDays, Building2, ArrowRight, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import './login.css';
 
@@ -50,12 +51,24 @@ export default function LoginPage() {
 
   return (
     <main className="login-page">
+      {/* Top Floating Theme Switcher */}
+      <div className="absolute top-6 right-6 z-20">
+        <ThemeToggle size="sm" />
+      </div>
+
       <div className="login-shell">
         <section className="login-form-panel" aria-labelledby="sign-in-heading">
           <div className="login-form-content">
-            <a className="login-brand" href="/login" aria-label="ExamEase home">
-              <span className="login-brand-mark"><GraduationCap size={27} strokeWidth={1.8} aria-hidden="true" /></span>
-              <span><span className="login-brand-name">ExamEase<span className="login-brand-dot">.</span></span><span className="login-brand-description">Examination Management System</span></span>
+            <a className="login-brand" href="/" aria-label="ExamEase home">
+              <span className="login-brand-mark">
+                <svg width="20" height="17" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />
+                </svg>
+              </span>
+              <span>
+                <span className="login-brand-name">ExamEase<span className="login-brand-dot">.</span></span>
+                <span className="login-brand-description">Examination Management System</span>
+              </span>
             </a>
             <div className="login-intro">
               <h1 id="sign-in-heading">Welcome back.</h1>
@@ -86,7 +99,7 @@ export default function LoginPage() {
               const Icon = account.icon;
               const isActive = activeAccount === account.email;
               return <button key={account.email} type="button" className="login-role" onClick={() => handleLogin(undefined, account)} disabled={submitting} aria-label={`Sign in as ${account.role}, ${account.name}`} aria-busy={isActive}>
-                <span className={`login-role-icon login-role-icon-${account.tone}`}><Icon size={22} strokeWidth={1.7} aria-hidden="true" /></span>
+                <span className={`login-role-icon login-role-icon-${account.tone}`}><Icon size={20} strokeWidth={1.7} aria-hidden="true" /></span>
                 <span className="login-role-copy"><span className="login-role-title">{account.role}</span><span className="login-role-name">{account.name}</span><span className="login-role-description">{account.description}</span></span>
                 <span className="login-role-arrow">{isActive ? <Loader2 size={18} className="login-spinner" aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}</span>
               </button>;

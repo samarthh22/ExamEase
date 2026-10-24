@@ -51,13 +51,13 @@ export default function DashboardPage() {
   return (
     <AppLayout title="Institutional Dashboard">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl p-6 text-white mb-8 shadow-lg shadow-blue-900/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-neutral-900 dark:bg-[#0a0a0a] border border-neutral-800 rounded-2xl p-6 text-white mb-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/30 text-blue-100 border border-blue-400/30 mb-2">
+          <span className="inline-block text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-neutral-800 text-neutral-300 border border-neutral-700 mb-2">
             {user.role} PORTAL
           </span>
           <h2 className="text-2xl font-bold tracking-tight">Welcome back, {user.fullName}!</h2>
-          <p className="text-blue-100/90 text-sm mt-1">
+          <p className="text-neutral-400 text-sm mt-1">
             {user.role === 'STUDENT' && `Roll No: ${user.rollNumber || 'CS2023001'} • Department: ${user.department || 'Computer Science'}`}
             {user.role === 'FACULTY' && `Designation: ${user.designation || 'Associate Professor'} • ${user.department || 'Computer Science'}`}
             {user.role === 'EXAM_ADMIN' && 'Examination Control Office • Manage schedules, conflicts, enrolments, and records'}
@@ -71,7 +71,7 @@ export default function DashboardPage() {
           {user.role === 'STUDENT' && (
             <Link
               href="/student/register"
-              className="px-4 py-2 bg-white text-blue-700 font-semibold text-xs rounded-xl shadow-sm hover:bg-blue-50 transition flex items-center gap-1.5"
+              className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-full shadow-xs hover:bg-neutral-200 transition flex items-center gap-1.5"
             >
               <span>Register for Exams (Flow A)</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -82,14 +82,14 @@ export default function DashboardPage() {
             <>
               <Link
                 href="/faculty/marks"
-                className="px-4 py-2 bg-white text-blue-700 font-semibold text-xs rounded-xl shadow-sm hover:bg-blue-50 transition flex items-center gap-1.5"
+                className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-full shadow-xs hover:bg-neutral-200 transition flex items-center gap-1.5"
               >
                 <span>Enter Marks (Flow B)</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <Link
                 href="/faculty/grading"
-                className="px-4 py-2 bg-blue-500/30 hover:bg-blue-500/40 text-white font-semibold text-xs rounded-xl border border-blue-300/30 transition flex items-center gap-1.5"
+                className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold text-xs rounded-full border border-neutral-700 transition flex items-center gap-1.5"
               >
                 <span>Grading Boundaries (Flow C)</span>
               </Link>
@@ -99,7 +99,7 @@ export default function DashboardPage() {
           {user.role === 'EXAM_ADMIN' && (
             <Link
               href="/admin/exams"
-              className="px-4 py-2 bg-white text-blue-700 font-semibold text-xs rounded-xl shadow-sm hover:bg-blue-50 transition flex items-center gap-1.5"
+              className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-full shadow-xs hover:bg-neutral-200 transition flex items-center gap-1.5"
             >
               <span>Manage Schedules & Conflicts</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -109,7 +109,7 @@ export default function DashboardPage() {
           {user.role === 'HOD' && (
             <Link
               href="/hod/reports"
-              className="px-4 py-2 bg-white text-purple-800 font-semibold text-xs rounded-xl shadow-sm hover:bg-purple-50 transition flex items-center gap-1.5"
+              className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-full shadow-xs hover:bg-neutral-200 transition flex items-center gap-1.5"
             >
               <span>View Department Performance</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -119,7 +119,7 @@ export default function DashboardPage() {
           {user.role === 'SYSTEM_ADMIN' && (
             <Link
               href="/admin/users"
-              className="px-4 py-2 bg-white text-rose-700 font-semibold text-xs rounded-xl shadow-sm hover:bg-rose-50 transition flex items-center gap-1.5"
+              className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-full shadow-xs hover:bg-neutral-200 transition flex items-center gap-1.5"
             >
               <span>User & Role Management</span>
               <ArrowRight className="w-3.5 h-3.5" />
