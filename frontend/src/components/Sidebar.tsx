@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '../lib/auth-context';
-import ThemeToggle from './ThemeToggle';
 import {
   BookOpen,
   Calendar,
@@ -35,7 +34,7 @@ export default function Sidebar() {
     },
     // STUDENT Links
     {
-      title: 'Exam Registration (Flow A)',
+      title: 'Exam Registration',
       href: '/student/register',
       icon: ClipboardList,
       roles: ['STUDENT'],
@@ -48,13 +47,13 @@ export default function Sidebar() {
     },
     // FACULTY Links
     {
-      title: 'Marks Entry (Flow B)',
+      title: 'Marks Entry',
       href: '/faculty/marks',
       icon: Sliders,
       roles: ['FACULTY'],
     },
     {
-      title: 'Grading & Boundaries (Flow C)',
+      title: 'Grading & Boundaries',
       href: '/faculty/grading',
       icon: GraduationCap,
       roles: ['FACULTY'],
@@ -179,16 +178,8 @@ export default function Sidebar() {
         })}
       </div>
 
-      {/* Footer: Theme Switcher & Logout */}
-      <div className="p-4 border-t border-neutral-200 dark:border-neutral-900 space-y-3">
-        {/* Theme toggle directly near signout button */}
-        <div className="flex items-center justify-between px-1">
-          <span className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-            Theme
-          </span>
-          <ThemeToggle size="sm" />
-        </div>
-
+      {/* Footer: Logout */}
+      <div className="p-4 border-t border-neutral-200 dark:border-neutral-900">
         <button
           onClick={logout}
           className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-rose-200/60 dark:border-rose-900/40"

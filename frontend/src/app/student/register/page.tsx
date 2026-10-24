@@ -86,14 +86,14 @@ export default function StudentRegisterPage() {
   };
 
   return (
-    <AppLayout title="Examination Registration (Flow A — UC-007)" allowedRoles={['STUDENT']}>
-      {/* Flow Briefing Card */}
+    <AppLayout title="Examination Registration" allowedRoles={['STUDENT']}>
+      {/* Registration Overview Card */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-8 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 uppercase tracking-wide">
-                Use Case UC-007
+                Course Registration
               </span>
               <h2 className="text-lg font-bold text-slate-800">Register for Course Examinations</h2>
             </div>

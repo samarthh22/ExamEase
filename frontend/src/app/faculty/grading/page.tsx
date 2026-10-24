@@ -223,14 +223,14 @@ export default function FacultyGradingPage() {
   };
 
   return (
-    <AppLayout title="Grading Boundaries & Grade Generation (Flow C — UC-010)" allowedRoles={['FACULTY', 'EXAM_ADMIN']}>
+    <AppLayout title="Grading Boundaries & Grade Generation" allowedRoles={['FACULTY', 'EXAM_ADMIN']}>
       {/* Header Info */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200 uppercase tracking-wide">
-                Use Case UC-010
+                Grade Calibration
               </span>
               <h2 className="text-lg font-bold text-slate-800">Define Grading Boundaries & Generate Grades</h2>
             </div>

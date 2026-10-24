@@ -157,7 +157,7 @@ export default function FacultyMarksPage() {
       setHasStaleResults(true);
       setFeedback({
         type: 'success',
-        message: `${res.message} Class statistics recalculated. If results were previously generated, remember to regenerate them under Flow C.`,
+        message: `${res.message} Class statistics recalculated. If results were previously generated, remember to recalculate them under Grading & Boundaries.`,
       });
     } catch (err: any) {
       setFeedback({ type: 'error', message: err.message || 'Failed to save marks.' });
@@ -167,14 +167,14 @@ export default function FacultyMarksPage() {
   };
 
   return (
-    <AppLayout title="Marks Entry & Validation (Flow B — UC-008)" allowedRoles={['FACULTY', 'EXAM_ADMIN']}>
+    <AppLayout title="Marks Entry & Validation" allowedRoles={['FACULTY', 'EXAM_ADMIN']}>
       {/* Header & Flow Info */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200 uppercase tracking-wide">
-                Use Case UC-008
+                Score Validation
               </span>
               <h2 className="text-lg font-bold text-slate-800">Faculty Marks Entry & Validation</h2>
             </div>
@@ -240,14 +240,14 @@ export default function FacultyMarksPage() {
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
               <span>
-                <strong>Grades Stale / Recalculation Required:</strong> Marks have been modified. Dependent generated results must be recalculated in Flow C before publication.
+                <strong>Grades Stale / Recalculation Required:</strong> Marks have been modified. Dependent generated results must be recalculated in Grading & Boundaries before publication.
               </span>
             </div>
             <a
               href="/faculty/grading"
               className="shrink-0 text-xs font-bold text-amber-900 underline hover:no-underline"
             >
-              Go to Flow C →
+              Go to Grading & Boundaries →
             </a>
           </div>
         )}

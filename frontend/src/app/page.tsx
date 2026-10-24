@@ -90,7 +90,7 @@ export default function HomePage() {
                   href="/login"
                   className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white text-[13px] font-normal px-2.5 py-1.5 transition-colors hidden sm:inline-block"
                 >
-                  Get a Demo
+                  Portals
                 </Link>
                 <Link
                   href="/login"
@@ -135,7 +135,7 @@ export default function HomePage() {
                   href="/login"
                   className="bg-transparent text-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-neutral-100 dark:hover:bg-neutral-900/50 text-[14px] font-medium px-5 py-2.5 rounded-full transition-colors inline-flex items-center gap-2"
                 >
-                  <span>View demo roles</span>
+                  <span>Explore portals</span>
                 </Link>
               </div>
             </div>
@@ -330,7 +330,7 @@ export default function HomePage() {
                   <div className="w-10 h-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
                     <GraduationCap className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <span className="text-[11px] font-mono text-neutral-500">FLOW A</span>
+                  <span className="text-[11px] font-mono text-neutral-500">REGISTRATION</span>
                 </div>
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Students & Candidates</h3>
                 <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-2 leading-relaxed">
@@ -365,7 +365,7 @@ export default function HomePage() {
                   <div className="w-10 h-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
                     <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <span className="text-[11px] font-mono text-neutral-500">FLOW B & C</span>
+                  <span className="text-[11px] font-mono text-neutral-500">EVALUATION</span>
                 </div>
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Faculty & Evaluators</h3>
                 <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-2 leading-relaxed">
@@ -521,7 +521,7 @@ export default function HomePage() {
                   href="/login"
                   className="text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors inline-flex items-center gap-1.5"
                 >
-                  <span>Explore demo accounts</span>
+                  <span>Explore institutional portals</span>
                   <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -552,7 +552,7 @@ export default function HomePage() {
               href="/login"
               className="bg-transparent text-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900/60 text-sm font-medium px-6 py-2.5 rounded-full transition-colors"
             >
-              <span>View interactive demo</span>
+              <span>Institutional guidelines</span>
             </Link>
           </div>
         </div>
@@ -621,7 +621,7 @@ export default function HomePage() {
               <ul className="space-y-2.5">
                 <li><a href="https://github.com/samarthh22/ExamEase" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">GitHub Repository</a></li>
                 <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Documentation</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Lab Evaluation</span></li>
+                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Security Standards</span></li>
                 <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Support</span></li>
               </ul>
             </div>

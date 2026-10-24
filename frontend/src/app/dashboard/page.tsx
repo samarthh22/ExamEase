@@ -73,7 +73,7 @@ export default function DashboardPage() {
               href="/student/register"
               className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-full shadow-xs hover:bg-neutral-200 transition flex items-center gap-1.5"
             >
-              <span>Register for Exams (Flow A)</span>
+              <span>Register for Exams</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}
@@ -84,14 +84,14 @@ export default function DashboardPage() {
                 href="/faculty/marks"
                 className="px-4 py-2 bg-white text-black font-semibold text-xs rounded-full shadow-xs hover:bg-neutral-200 transition flex items-center gap-1.5"
               >
-                <span>Enter Marks (Flow B)</span>
+                <span>Enter Marks</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <Link
                 href="/faculty/grading"
                 className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold text-xs rounded-full border border-neutral-700 transition flex items-center gap-1.5"
               >
-                <span>Grading Boundaries (Flow C)</span>
+                <span>Grading Boundaries</span>
               </Link>
             </>
           )}
@@ -309,17 +309,17 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Right 1 Col: Quick Reference & Lab Viva Checklist */}
+        {/* Right 1 Col: Quick Reference & Workflow Summary */}
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-            <h3 className="font-bold text-slate-800 text-sm mb-3">Principal Viva Demo Flows</h3>
+            <h3 className="font-bold text-slate-800 text-sm mb-3">Academic Workflows</h3>
             <div className="space-y-3">
               <Link
                 href="/student/register"
                 className="block p-3 rounded-xl border border-emerald-100 bg-emerald-50/50 hover:bg-emerald-50 transition"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-xs text-emerald-900">Flow A: UC-007</span>
+                  <span className="font-bold text-xs text-emerald-900">Exam Registration</span>
                   <span className="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded font-bold">
                     Student
                   </span>
@@ -334,7 +334,7 @@ export default function DashboardPage() {
                 className="block p-3 rounded-xl border border-blue-100 bg-blue-50/50 hover:bg-blue-50 transition"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-xs text-blue-900">Flow B: UC-008</span>
+                  <span className="font-bold text-xs text-blue-900">Faculty Evaluation</span>
                   <span className="text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded font-bold">
                     Faculty
                   </span>
@@ -349,7 +349,7 @@ export default function DashboardPage() {
                 className="block p-3 rounded-xl border border-indigo-100 bg-indigo-50/50 hover:bg-indigo-50 transition"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-xs text-indigo-900">Flow C: UC-010</span>
+                  <span className="font-bold text-xs text-indigo-900">Grading & Publication</span>
                   <span className="text-[10px] bg-indigo-200 text-indigo-800 px-1.5 py-0.5 rounded font-bold">
                     Faculty
                   </span>
