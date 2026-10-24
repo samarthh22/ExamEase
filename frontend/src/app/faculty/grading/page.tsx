@@ -347,7 +347,7 @@ export default function FacultyGradingPage() {
 
           {/* Convention Explanation Callout */}
           <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-100 text-[11px] text-blue-800 mb-4">
-            <strong>Endpoint Convention:</strong> Intervals are continuous. For boundary [L, U), a mark M belongs to the grade if <code className="bg-white px-1 py-0.5 rounded border border-blue-200 font-mono">L &le; M &lt; U</code>, except the top boundary which includes <code className="bg-white px-1 py-0.5 rounded border border-blue-200 font-mono">M == maxMarks</code>.
+            <strong>BR-005 &amp; SRS Section 14:</strong> Intervals are continuous across [0, Max Marks] without gaps or overlaps. Evaluated on exact stored marks without automatic rounding. For boundary [L, U), a mark M belongs to the grade if <code className="bg-white px-1 py-0.5 rounded border border-blue-200 font-mono">L &le; M &lt; U</code>, except the top boundary which includes <code className="bg-white px-1 py-0.5 rounded border border-blue-200 font-mono">M == maxMarks</code>.
           </div>
 
           <div className="space-y-3">

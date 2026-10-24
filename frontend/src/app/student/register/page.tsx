@@ -98,9 +98,9 @@ export default function StudentRegisterPage() {
               <h2 className="text-lg font-bold text-slate-800">Register for Course Examinations</h2>
             </div>
             <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
-              This screen allows students to register only for examinations of courses in which they are actively enrolled.
-              The backend enforces 4 server-side checks: (1) Active student identity, (2) Active course enrolment verification,
-              (3) Schedule status not cancelled, and (4) Strict duplicate registration prevention.
+              Register for course examinations in accordance with institutional guidelines.
+              The backend enforces 4 server-side guards: (1) Active student identity, (2) Active course enrolment verification (BR-004),
+              (3) Schedule status not cancelled, and (4) Strict duplicate registration rejection (FR-016).
             </p>
           </div>
         </div>

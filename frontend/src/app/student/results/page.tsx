@@ -53,9 +53,9 @@ export default function StudentResultsPage() {
           <div>
             <h2 className="text-base font-bold text-slate-800">Verified Academic Record</h2>
             <p className="text-xs text-slate-600 mt-1 max-w-3xl leading-relaxed">
-              In accordance with institution examination security policies, only grades that have been formally calculated,
-              audited, and explicitly published by authorized examination authorities are displayed. Pending or unverified grades
-              remain confidential until released.
+              In accordance with LNMIIT examination policies (BR-006 &amp; FR-026), only grades that have been formally calculated
+              and explicitly published by authorized faculty or examination administrators are displayed. Pending or unverified grades
+              remain strictly confidential until published.
             </p>
           </div>
         </div>

@@ -129,7 +129,7 @@ export default function Sidebar() {
               ExamEase
             </h1>
             <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1">
-              Examination Platform
+              LNMIIT Jaipur · T021
             </p>
           </div>
         </Link>

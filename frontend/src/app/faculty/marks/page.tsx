@@ -179,8 +179,8 @@ export default function FacultyMarksPage() {
               <h2 className="text-lg font-bold text-slate-800">Faculty Marks Entry & Validation</h2>
             </div>
             <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
-              Enter and update candidate marks for your assigned courses. The server verifies instructor authorization,
-              strictly validates each score within [0, Max Marks], immediately recalculates statistical benchmarks,
+              Enter and update candidate marks for your assigned courses (BR-003). The system verifies instructor authorization,
+              strictly validates each score within [0, Max Marks] (BR-009 &amp; FR-020), immediately recalculates class statistics (FR-022),
               and marks downstream grades as requiring recalculation.
             </p>
           </div>

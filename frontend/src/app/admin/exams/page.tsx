@@ -128,7 +128,7 @@ export default function AdminExamsPage() {
         <h2 className="text-lg font-bold text-slate-800 mb-1">Examination Operations & Timetable Management</h2>
         <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
           Create, update, and manage institutional examination schedules.
-          The platform enforces <strong>automated venue-conflict verification</strong>: two exams cannot be scheduled at the same venue
+          The platform enforces <strong>automated venue-conflict verification (BR-008 &amp; FR-012)</strong>: two exams cannot be scheduled at the same venue
           during overlapping time intervals on the same day.
         </p>
 

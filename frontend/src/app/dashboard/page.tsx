@@ -362,12 +362,13 @@ export default function DashboardPage() {
           </div>
 
           <div className="bg-slate-50 rounded-2xl border border-slate-200 p-5 text-xs text-slate-600">
-            <h4 className="font-bold text-slate-800 mb-2">Institutional Rules Active</h4>
+            <h4 className="font-bold text-slate-800 mb-2">LNMIIT Academic Rules Active (BR-001 – BR-010)</h4>
             <ul className="space-y-1.5 list-disc list-inside text-slate-600">
-              <li>Server-side role guards on every API endpoint.</li>
-              <li>Strict venue-conflict prevention across overlapping times.</li>
-              <li>Unpublished grades strictly concealed from students.</li>
-              <li>HOD mode is strictly read-only oversight.</li>
+              <li><strong>BR-003:</strong> Faculty marks entry strictly restricted to assigned courses.</li>
+              <li><strong>BR-004:</strong> Candidate registration restricted to enrolled courses (single registration per exam).</li>
+              <li><strong>BR-005 &amp; BR-006:</strong> Continuous non-overlapping grading boundaries; grades confidential until publication.</li>
+              <li><strong>BR-008:</strong> Automated venue conflict prevention across overlapping schedules.</li>
+              <li><strong>FR-030:</strong> Department Coordinator / HOD surface is strictly read-only oversight.</li>
             </ul>
           </div>
         </div>

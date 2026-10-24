@@ -33,12 +33,12 @@ export default function HodReportsPage() {
             <span className="text-xs font-bold text-purple-200 bg-purple-800/80 px-2.5 py-0.5 rounded-full border border-purple-700 uppercase tracking-wide">
               Read-Only Oversight Surface
             </span>
-            <span className="text-xs text-purple-200">Department of Computer Science & Engineering</span>
+            <span className="text-xs text-purple-200">LNMIIT Jaipur · Department of Computer Science & Engineering</span>
           </div>
           <h2 className="text-xl font-bold tracking-tight">Curriculum Examination Outcomes & Pass/Fail Analysis</h2>
           <p className="text-xs text-purple-200/90 mt-1 max-w-2xl leading-relaxed">
             Coordinators and Department Heads can audit cohort statistics, pass rates, score dispersion,
-            and grade distributions without having rights to modify candidate marks or alter grading thresholds.
+            and grade distributions with strictly read-only access (FR-030), without authorization to modify candidate marks or alter grading thresholds.
           </p>
         </div>
 

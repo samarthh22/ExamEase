@@ -24,7 +24,7 @@ export default function Navbar({ title }: { title: string }) {
         )}
 
         <div className="text-xs text-neutral-500 dark:text-neutral-400 font-mono hidden sm:block">
-          AY 2026–2027
+          LNMIIT Jaipur · AY 2026–2027
         </div>
 
         {/* Theme toggle always accessible in navbar */}

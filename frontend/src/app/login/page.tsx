@@ -67,7 +67,7 @@ export default function LoginPage() {
               </span>
               <span>
                 <span className="login-brand-name">ExamEase<span className="login-brand-dot">.</span></span>
-                <span className="login-brand-description">Examination Management System</span>
+                <span className="login-brand-description">LNMIIT Jaipur · Examination Management System</span>
               </span>
             </a>
             <div className="login-intro">

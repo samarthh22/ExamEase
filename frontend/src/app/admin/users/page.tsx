@@ -189,18 +189,24 @@ export default function AdminUsersPage() {
               </div>
             )}
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                Department
-              </label>
-              <input
-                type="text"
-                value={department}
-                onChange={e => setDepartment(e.target.value)}
-                required
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold"
-              />
-            </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                  Department / Office
+                </label>
+                <select
+                  value={department}
+                  onChange={e => setDepartment(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold"
+                >
+                  <option value="Computer Science & Engineering">Computer Science &amp; Engineering</option>
+                  <option value="Electronics & Communication Engineering">Electronics &amp; Communication Engineering</option>
+                  <option value="Communication & Computer Engineering">Communication &amp; Computer Engineering</option>
+                  <option value="Mechanical-Mechatronics Engineering">Mechanical-Mechatronics Engineering</option>
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Physics">Physics</option>
+                  <option value="Academic Examination Office">Academic Examination Office</option>
+                </select>
+              </div>
 
             <button
               type="submit"

@@ -173,20 +173,20 @@ export default function HomePage() {
 
             {/* Right Column: Minimalist Statement */}
             <div className="lg:col-span-3 flex flex-col justify-center lg:items-start text-neutral-600 dark:text-neutral-400 text-[15px] sm:text-[16px] leading-[1.8] font-normal">
-              <p className="text-neutral-900 dark:text-neutral-200 font-medium">For academic controllers</p>
-              <p>To schedule conflict-free exams</p>
-              <p>Calibrated with automated grading</p>
+              <p className="text-neutral-900 dark:text-neutral-200 font-medium">The LNMIIT Jaipur · Team T021</p>
+              <p>Conflict-free examination scheduling</p>
+              <p>Continuous grading boundary calibration</p>
             </div>
           </div>
 
           {/* Monochrome Institutions Strip (Reference Image 1 Bottom) */}
           <div className="mt-20 pt-10 border-t border-neutral-200 dark:border-neutral-900 flex flex-wrap items-center justify-between gap-8 text-[12px] font-mono tracking-wider text-neutral-500 uppercase">
-            <span>HARVARD CS</span>
-            <span>MIT EECS</span>
-            <span>STANFORD ENG</span>
-            <span>OXFORD ACADEMY</span>
-            <span>BERKELEY DATA</span>
-            <span>CAMBRIDGE LAB</span>
+            <span>LNMIIT COMPUTER SCIENCE</span>
+            <span>ELECTRONICS & COMM</span>
+            <span>COMM & COMPUTER ENG</span>
+            <span>MECHATRONICS & ME</span>
+            <span>MATHEMATICS</span>
+            <span>PHYSICS</span>
           </div>
         </div>
       </section>
@@ -599,10 +599,10 @@ export default function HomePage() {
             <div>
               <h4 className="text-neutral-900 dark:text-white font-medium text-xs mb-4">Institution</h4>
               <ul className="space-y-2.5">
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">About ExamEase</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Examination Policy</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Academic Year 2026</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Audit Records</span></li>
+                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">The LNMIIT Jaipur</span></li>
+                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Software Engineering (T021)</span></li>
+                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Academic Year 2026–2027</span></li>
+                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">SRS Specification v1.0</span></li>
               </ul>
             </div>
 
@@ -652,7 +652,7 @@ export default function HomePage() {
             {/* Right: Theme Switcher Pill */}
             <div className="flex items-center gap-4">
               <p className="text-neutral-500 text-[11px]">
-                © 2026 ExamEase. Built for Academic Institutions.
+                &copy; 2026 ExamEase &middot; The LNM Institute of Information Technology, Jaipur (Team T021)
               </p>
               <ThemeToggle size="sm" />
             </div>

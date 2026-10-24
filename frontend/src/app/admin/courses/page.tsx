@@ -165,6 +165,24 @@ export default function AdminCoursesPage() {
                 />
               </div>
 
+              <div>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                  Department
+                </label>
+                <select
+                  value={department}
+                  onChange={e => setDepartment(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold"
+                >
+                  <option value="Computer Science & Engineering">Computer Science &amp; Engineering</option>
+                  <option value="Electronics & Communication Engineering">Electronics &amp; Communication Engineering</option>
+                  <option value="Communication & Computer Engineering">Communication &amp; Computer Engineering</option>
+                  <option value="Mechanical-Mechatronics Engineering">Mechanical-Mechatronics Engineering</option>
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Physics">Physics</option>
+                </select>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
