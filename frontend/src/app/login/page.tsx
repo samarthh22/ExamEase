@@ -60,11 +60,6 @@ export default function LoginPage() {
         <section className="login-form-panel" aria-labelledby="sign-in-heading">
           <div className="login-form-content">
             <a className="login-brand" href="/" aria-label="ExamEase home">
-              <span className="login-brand-mark">
-                <svg width="20" height="17" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />
-                </svg>
-              </span>
               <span>
                 <span className="login-brand-name">ExamEase<span className="login-brand-dot">.</span></span>
                 <span className="login-brand-description">LNMIIT Jaipur · Examination Management System</span>

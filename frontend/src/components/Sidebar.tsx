@@ -119,10 +119,8 @@ export default function Sidebar() {
       {/* Brand Header */}
       <div className="p-5 border-b border-neutral-200 dark:border-neutral-900 flex items-center gap-3">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-bold shadow-xs">
-            <svg width="17" height="15" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />
-            </svg>
+          <div className="w-8 h-8 rounded-lg bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-bold text-sm shadow-xs">
+            E
           </div>
           <div>
             <h1 className="font-semibold text-neutral-900 dark:text-white leading-none text-[15px] tracking-tight">

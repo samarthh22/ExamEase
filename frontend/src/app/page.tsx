@@ -8,7 +8,6 @@ import {
   ArrowRight,
   CheckCircle2,
   Lock,
-  ChevronDown,
   GraduationCap,
   BookOpen,
   CalendarDays,
@@ -27,95 +26,44 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#000000] text-neutral-900 dark:text-[#ededed] font-sans selection:bg-neutral-200 dark:selection:bg-neutral-800 selection:text-neutral-900 dark:selection:text-white flex flex-col antialiased transition-colors duration-200">
-      {/* Vercel-style Top Navbar */}
+      {/* Top Navbar */}
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#000000]/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Left Brand with Triangle Logo */}
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <svg
-                width="22"
-                height="19"
-                viewBox="0 0 76 65"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-black dark:text-white group-hover:opacity-85 transition-opacity"
-              >
-                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />
-              </svg>
-              <span className="font-semibold text-[15px] tracking-tight text-black dark:text-white">
-                ExamEase
-              </span>
-            </Link>
+          {/* Brand */}
+          <Link href="/" className="font-semibold text-[15px] tracking-tight text-black dark:text-white hover:opacity-80 transition-opacity">
+            ExamEase
+          </Link>
 
-            {/* Desktop Nav Items */}
-            <nav className="hidden md:flex items-center gap-6 text-[13px] font-normal text-neutral-600 dark:text-neutral-400">
-              <div className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors cursor-pointer group">
-                <a href="#workspaces">Workspaces</a>
-                <ChevronDown className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 group-hover:text-black dark:group-hover:text-white transition-colors" />
-              </div>
-              <div className="flex items-center gap-1 hover:text-black dark:hover:text-white transition-colors cursor-pointer group">
-                <a href="#workflows">Workflows</a>
-                <ChevronDown className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 group-hover:text-black dark:group-hover:text-white transition-colors" />
-              </div>
-              <a href="#architecture" className="hover:text-black dark:hover:text-white transition-colors">
-                Architecture
-              </a>
-              <a href="#security" className="hover:text-black dark:hover:text-white transition-colors">
-                Security
-              </a>
-            </nav>
-          </div>
-
-          {/* Right Action Buttons */}
+          {/* Right: Theme Toggle + Login */}
           <div className="flex items-center gap-3">
-            <ThemeToggle className="hidden sm:inline-flex" />
+            <ThemeToggle size="sm" />
 
             {!isLoading && user ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/dashboard"
-                  className="bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-[13px] font-medium px-4 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm"
-                >
-                  <span>Dashboard</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-                <span className="hidden sm:inline-block text-[11px] text-neutral-500 dark:text-neutral-400 border border-neutral-300 dark:border-neutral-800 px-2 py-0.5 rounded-full">
-                  {user.role}
-                </span>
-              </div>
+              <Link
+                href="/dashboard"
+                className="bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-[13px] font-medium px-4 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm"
+              >
+                <span>Dashboard</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             ) : (
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Link
-                  href="/login"
-                  className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white text-[13px] font-normal px-2.5 py-1.5 transition-colors hidden sm:inline-block"
-                >
-                  Portals
-                </Link>
-                <Link
-                  href="/login"
-                  className="text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white text-[13px] font-normal px-3 py-1.5 rounded-full border border-neutral-300 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900/60 transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/login"
-                  className="bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-[13px] font-medium px-4 py-1.5 rounded-full transition-colors shadow-sm"
-                >
-                  Sign Up
-                </Link>
-              </div>
+              <Link
+                href="/login"
+                className="bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-[13px] font-medium px-4 py-1.5 rounded-full transition-colors shadow-sm"
+              >
+                Login
+              </Link>
             )}
           </div>
         </div>
       </header>
 
-      {/* Hero Section (Replicating Vercel Reference Image 1) */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden pt-20 pb-24 sm:pt-28 sm:pb-32 border-b border-neutral-200 dark:border-neutral-900 bg-white dark:bg-[#000000] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[460px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[400px]">
             {/* Left Column: Bold Headline & Pill CTAs */}
-            <div className="lg:col-span-5 flex flex-col justify-center text-left">
+            <div className="flex flex-col justify-center text-left">
               <h1 className="text-5xl sm:text-6xl xl:text-7xl font-bold tracking-[-0.04em] text-neutral-950 dark:text-white leading-[1.04]">
                 Academic
                 <br />
@@ -125,7 +73,7 @@ export default function HomePage() {
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
                   href="/login"
-                  className="bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-[14px] font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-md dark:shadow-[0_0_25px_rgba(255,255,255,0.2)] hover:dark:shadow-[0_0_35px_rgba(255,255,255,0.35)] inline-flex items-center gap-2"
+                  className="bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-[14px] font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-md inline-flex items-center gap-2"
                 >
                   <span>Access portal</span>
                   <ArrowRight className="w-4 h-4" />
@@ -140,42 +88,12 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Center Column: The Glowing Triangle Monolith */}
-            <div className="lg:col-span-4 flex items-center justify-center relative my-8 lg:my-0">
-              {/* Radial backlight blur behind triangle */}
-              <div
-                className="absolute w-72 h-72 sm:w-80 sm:h-80 rounded-full pointer-events-none -z-0 opacity-40 dark:opacity-100 transition-opacity"
-                style={{
-                  background:
-                    'radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 255, 255, 0.02) 65%, transparent 75%)',
-                  filter: 'blur(35px)',
-                }}
-              />
-
-              {/* The crisp black triangle with glowing rim */}
-              <div className="relative z-10 drop-shadow-[0_15px_30px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_0_50px_rgba(255,255,255,0.25)] hover:scale-105 transition-transform duration-500 ease-out">
-                <svg
-                  width="220"
-                  height="190"
-                  viewBox="0 0 220 190"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-44 h-38 sm:w-56 sm:h-48"
-                >
-                  <polygon
-                    points="110,12 208,180 12,180"
-                    className="fill-black stroke-neutral-700 dark:stroke-white stroke-[1.2] opacity-90"
-                  />
-                  <polygon points="110,15 205,178 15,178" fill="#000000" />
-                </svg>
-              </div>
-            </div>
-
             {/* Right Column: Minimalist Statement */}
-            <div className="lg:col-span-3 flex flex-col justify-center lg:items-start text-neutral-600 dark:text-neutral-400 text-[15px] sm:text-[16px] leading-[1.8] font-normal">
+            <div className="flex flex-col justify-center lg:items-start text-neutral-600 dark:text-neutral-400 text-[15px] sm:text-[16px] leading-[1.8] font-normal">
               <p className="text-neutral-900 dark:text-neutral-200 font-medium">The LNMIIT Jaipur · Team T021</p>
               <p>Conflict-free examination scheduling</p>
               <p>Continuous grading boundary calibration</p>
+              <p>Role-based access across five user classes</p>
             </div>
           </div>
 
@@ -627,20 +545,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Bottom Bar matching Image 3: Left triangle + ALL SYSTEMS NORMAL + Right theme switcher */}
+          {/* Bottom Bar */}
           <div className="pt-8 border-t border-neutral-200 dark:border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              {/* White/Black Triangle */}
-              <svg
-                width="16"
-                height="14"
-                viewBox="0 0 76 65"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-black dark:text-white"
-              >
-                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />
-              </svg>
+              <span className="font-semibold text-[13px] text-black dark:text-white tracking-tight">ExamEase</span>
 
               {/* Status Indicator */}
               <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-500 dark:text-neutral-400 tracking-wider">
