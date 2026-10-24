@@ -476,77 +476,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Vercel-style Footer (Exact Replication of Reference Image 3) */}
-      <footer className="bg-white dark:bg-[#000000] text-neutral-600 dark:text-neutral-400 text-xs py-16 transition-colors">
+      {/* Footer */}
+      <footer className="bg-white dark:bg-[#000000] text-neutral-600 dark:text-neutral-400 text-xs py-8 border-t border-neutral-200 dark:border-neutral-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Multi-Column Links */}
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-16">
-            <div>
-              <h4 className="text-neutral-900 dark:text-white font-medium text-xs mb-4">Portals</h4>
-              <ul className="space-y-2.5">
-                <li><Link href="/login" className="hover:text-black dark:hover:text-white transition-colors">Student Portal</Link></li>
-                <li><Link href="/login" className="hover:text-black dark:hover:text-white transition-colors">Faculty Portal</Link></li>
-                <li><Link href="/login" className="hover:text-black dark:hover:text-white transition-colors">Exam Controller</Link></li>
-                <li><Link href="/login" className="hover:text-black dark:hover:text-white transition-colors">HOD Analytics</Link></li>
-                <li><Link href="/login" className="hover:text-black dark:hover:text-white transition-colors">System Admin</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-neutral-900 dark:text-white font-medium text-xs mb-4">Workflows</h4>
-              <ul className="space-y-2.5">
-                <li><a href="#workflows" className="hover:text-black dark:hover:text-white transition-colors">Venue Collisions</a></li>
-                <li><a href="#workflows" className="hover:text-black dark:hover:text-white transition-colors">Hall Tickets</a></li>
-                <li><a href="#workflows" className="hover:text-black dark:hover:text-white transition-colors">Marks Clamping</a></li>
-                <li><a href="#workflows" className="hover:text-black dark:hover:text-white transition-colors">Grading Engine</a></li>
-                <li><a href="#workflows" className="hover:text-black dark:hover:text-white transition-colors">Result Release</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-neutral-900 dark:text-white font-medium text-xs mb-4">Architecture</h4>
-              <ul className="space-y-2.5">
-                <li><span className="text-neutral-400 dark:text-neutral-500">Next.js 14</span></li>
-                <li><span className="text-neutral-400 dark:text-neutral-500">Express API</span></li>
-                <li><span className="text-neutral-400 dark:text-neutral-500">Prisma ORM v6</span></li>
-                <li><span className="text-neutral-400 dark:text-neutral-500">SQLite Dev DB</span></li>
-                <li><span className="text-neutral-400 dark:text-neutral-500">Signed JWT RBAC</span></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-neutral-900 dark:text-white font-medium text-xs mb-4">Institution</h4>
-              <ul className="space-y-2.5">
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">The LNMIIT Jaipur</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Software Engineering (T021)</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Academic Year 2026–2027</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">SRS Specification v1.0</span></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-neutral-900 dark:text-white font-medium text-xs mb-4">Legal & Trust</h4>
-              <ul className="space-y-2.5">
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Privacy Policy</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Terms of Service</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Student Data Safety</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Zero Cloud Lock-in</span></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-neutral-900 dark:text-white font-medium text-xs mb-4">Connect</h4>
-              <ul className="space-y-2.5">
-                <li><a href="https://github.com/samarthh22/ExamEase" target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">GitHub Repository</a></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Documentation</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Security Standards</span></li>
-                <li><span className="hover:text-black dark:hover:text-white transition-colors cursor-pointer">Support</span></li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="pt-8 border-t border-neutral-200 dark:border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <span className="font-semibold text-[13px] text-black dark:text-white tracking-tight">ExamEase</span>
 
