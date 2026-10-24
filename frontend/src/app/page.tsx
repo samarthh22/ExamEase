@@ -1,150 +1,75 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../lib/auth-context';
 import {
+  ArrowRight,
+  CheckCircle2,
+  Lock,
+  ChevronDown,
+  Layers,
   GraduationCap,
-  ShieldCheck,
   BookOpen,
   CalendarDays,
   Building2,
-  ArrowRight,
-  CheckCircle2,
-  BarChart3,
-  Users,
-  Lock,
+  ShieldCheck,
+  Search,
   Sparkles,
   Sliders,
-  LogIn,
-  UserPlus,
-  LayoutDashboard,
-  Layers,
-  ChevronRight,
-  ShieldAlert,
+  Terminal,
+  Activity,
+  Laptop,
+  Sun,
+  Moon,
+  Check,
 } from 'lucide-react';
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
-
-  const rolePersonas = [
-    {
-      role: 'Student',
-      title: 'Students & Candidates',
-      name: 'Rahul Verma',
-      tagline: 'Streamlined exam registration and instant result viewing.',
-      icon: GraduationCap,
-      accentBg: 'bg-[#e9f5ef]',
-      accentColor: 'text-[#29714f]',
-      borderColor: 'border-emerald-200',
-      features: [
-        'Browse enrolled courses & eligible exams',
-        '1-click exam registration (Flow A)',
-        'Verified digital hall tickets',
-        'Secure result viewing upon faculty publication',
-      ],
-    },
-    {
-      role: 'Faculty member',
-      title: 'Course Instructors & Faculty',
-      name: 'Dr. Rajesh Sharma',
-      tagline: 'Marks entry, grading calibration, and publishing.',
-      icon: BookOpen,
-      accentBg: 'bg-[#eaf0fd]',
-      accentColor: 'text-[#3561ba]',
-      borderColor: 'border-blue-200',
-      features: [
-        'Candidate marks entry with strict bounds [0, Max] (Flow B)',
-        'Instant statistical recalculations (Mean, Median, Pass %)',
-        'Customizable grading boundaries (Flow C)',
-        'Explicit result publication control',
-      ],
-    },
-    {
-      role: 'Examination administrator',
-      title: 'Exam Controllers & Staff',
-      name: 'Chief Exam Controller',
-      tagline: 'Conflict-free timetables and venue allocation.',
-      icon: CalendarDays,
-      accentBg: 'bg-[#fff3e3]',
-      accentColor: 'text-[#91601e]',
-      borderColor: 'border-amber-200',
-      features: [
-        'Automated venue collision engine (zero double-booking)',
-        'Course catalog & curriculum maintenance',
-        'Faculty assignment & student cohort enrollment',
-        'Comprehensive institutional exam audits',
-      ],
-    },
-    {
-      role: 'Department coordinator',
-      title: 'Department Chairs & HODs',
-      name: 'Prof. Vikram Malhotra · HOD',
-      tagline: 'Read-only departmental academic oversight.',
-      icon: Building2,
-      accentBg: 'bg-[#f0ebf9]',
-      accentColor: 'text-[#7550a4]',
-      borderColor: 'border-purple-200',
-      features: [
-        'Department-wide pass/fail cohort metrics',
-        'Score dispersion & histogram analytics',
-        'Curriculum performance benchmarking',
-        'Strictly read-only administrative oversight',
-      ],
-    },
-    {
-      role: 'System administrator',
-      title: 'IT & System Administrators',
-      name: 'System Admin',
-      tagline: 'Institutional security, provisioning, and access.',
-      icon: ShieldCheck,
-      accentBg: 'bg-[#eaf0f5]',
-      accentColor: 'text-[#506480]',
-      borderColor: 'border-slate-200',
-      features: [
-        'Centralized user provisioning & credentialing',
-        'Granular role-based access control (RBAC)',
-        'Active/deactivated student & staff status management',
-        'System health & session audit verification',
-      ],
-    },
-  ];
+  const [activeTab, setActiveTab] = useState<'student' | 'faculty' | 'admin' | 'hod' | 'sysadmin'>('admin');
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-[#172b4d] flex flex-col font-sans selection:bg-[#ccdcff] selection:text-[#172b4d]">
-      {/* Top Header / Navigation Bar */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <span className="w-11 h-11 rounded-xl bg-[#2459dc] text-white flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
-              <GraduationCap className="w-6 h-6" strokeWidth={2} />
-            </span>
-            <div className="flex flex-col">
-              <span className="text-2xl font-extrabold tracking-tight text-[#172b4d] leading-none">
-                ExamEase<span className="text-[#2459dc]">.</span>
+    <div className="min-h-screen bg-[#000000] text-[#ededed] font-sans selection:bg-neutral-800 selection:text-white flex flex-col antialiased">
+      {/* Vercel-style Top Navbar */}
+      <header className="sticky top-0 z-50 bg-[#000000]/80 backdrop-blur-md border-b border-neutral-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Left Brand with Triangle Logo */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <svg
+                width="22"
+                height="19"
+                viewBox="0 0 76 65"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-white group-hover:opacity-85 transition-opacity"
+              >
+                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />
+              </svg>
+              <span className="font-semibold text-[15px] tracking-tight text-white">
+                ExamEase
               </span>
-              <span className="text-[11px] font-medium text-[#586a82] tracking-wide mt-1">
-                Examination Management System
-              </span>
-            </div>
-          </Link>
+            </Link>
 
-          {/* Center Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-[#586a82]">
-            <a href="#features" className="hover:text-[#2459dc] transition-colors">
-              Features
-            </a>
-            <a href="#roles" className="hover:text-[#2459dc] transition-colors">
-              Institutional Roles
-            </a>
-            <a href="#architecture" className="hover:text-[#2459dc] transition-colors">
-              Core Flows
-            </a>
-            <a href="#security" className="hover:text-[#2459dc] transition-colors">
-              Security
-            </a>
-          </nav>
+            {/* Desktop Nav Items */}
+            <nav className="hidden md:flex items-center gap-6 text-[13px] font-normal text-neutral-400">
+              <div className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer group">
+                <a href="#workspaces">Workspaces</a>
+                <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-white transition-colors" />
+              </div>
+              <div className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer group">
+                <a href="#workflows">Workflows</a>
+                <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-white transition-colors" />
+              </div>
+              <a href="#architecture" className="hover:text-white transition-colors">
+                Architecture
+              </a>
+              <a href="#security" className="hover:text-white transition-colors">
+                Security
+              </a>
+            </nav>
+          </div>
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-3">
@@ -152,34 +77,34 @@ export default function HomePage() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 bg-[#2459dc] hover:bg-[#1949be] text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-all duration-150 hover:shadow"
+                  className="bg-white text-black hover:bg-neutral-200 text-[13px] font-medium px-4 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm"
                 >
-                  <LayoutDashboard className="w-4 h-4" />
-                  <span>Go to Dashboard</span>
+                  <span>Dashboard</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
-                <div className="hidden sm:flex flex-col text-right">
-                  <span className="text-xs font-bold text-slate-800">{user.fullName}</span>
-                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-medium">
-                    {user.role}
-                  </span>
-                </div>
+                <span className="hidden sm:inline-block text-[11px] text-neutral-400 border border-neutral-800 px-2 py-0.5 rounded-full">
+                  {user.role}
+                </span>
               </div>
             ) : (
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-lg text-[#172b4d] hover:bg-slate-100 transition-colors"
+                  className="text-neutral-400 hover:text-white text-[13px] font-normal px-2.5 py-1.5 transition-colors hidden sm:inline-block"
                 >
-                  <LogIn className="w-4 h-4 text-[#586a82]" />
-                  <span>Log In</span>
+                  Get a Demo
                 </Link>
-
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-lg bg-[#2459dc] hover:bg-[#1949be] text-white shadow-sm shadow-blue-600/20 hover:shadow transition-all duration-150"
+                  className="text-neutral-300 hover:text-white text-[13px] font-normal px-3 py-1.5 rounded-full border border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 transition-colors"
                 >
-                  <UserPlus className="w-4 h-4" />
-                  <span>Sign Up</span>
+                  Log In
+                </Link>
+                <Link
+                  href="/login"
+                  className="bg-white text-black hover:bg-neutral-200 text-[13px] font-medium px-4 py-1.5 rounded-full transition-colors shadow-sm"
+                >
+                  Sign Up
                 </Link>
               </div>
             )}
@@ -187,466 +112,554 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-32 bg-gradient-to-b from-[#edf2f8] via-[#f7f9fd] to-[#f8fafc] border-b border-slate-200/80">
-          {/* Subtle decorative background circles */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-blue-100/40 via-sky-50/20 to-transparent blur-3xl pointer-events-none -z-10" />
+      {/* Hero Section (Replicating Vercel Reference Image 1) */}
+      <section className="relative overflow-hidden pt-20 pb-24 sm:pt-28 sm:pb-32 border-b border-neutral-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[460px]">
+            {/* Left Column: Bold Headline & Pill CTAs */}
+            <div className="lg:col-span-5 flex flex-col justify-center text-left">
+              <h1 className="text-5xl sm:text-6xl xl:text-7xl font-bold tracking-[-0.04em] text-white leading-[1.04]">
+                Academic
+                <br />
+                Infrastructure
+              </h1>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {/* Academic Year Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-blue-200 shadow-sm text-xs font-semibold text-[#2459dc] mb-8 animate-fade-in">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Academic Year 2026–2027 • Institutional Examination Suite</span>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/login"
+                  className="bg-white text-black hover:bg-neutral-200 text-[14px] font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-[0_0_25px_rgba(255,255,255,0.2)] hover:shadow-[0_0_35px_rgba(255,255,255,0.35)] inline-flex items-center gap-2"
+                >
+                  <span>Access portal</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <Link
+                  href="/login"
+                  className="bg-transparent text-white border border-neutral-800 hover:border-neutral-600 hover:bg-neutral-900/50 text-[14px] font-medium px-5 py-2.5 rounded-full transition-colors inline-flex items-center gap-2"
+                >
+                  <span>View demo roles</span>
+                </Link>
+              </div>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#172b4d] tracking-tight max-w-4xl mx-auto leading-[1.15]">
-              Unified Examination Management for{' '}
-              <span className="text-[#2459dc] underline decoration-blue-200 underline-offset-8">
-                Academic Excellence
-              </span>
-            </h1>
+            {/* Center Column: The Glowing Triangle Monolith */}
+            <div className="lg:col-span-4 flex items-center justify-center relative my-8 lg:my-0">
+              {/* Radial backlight blur behind triangle */}
+              <div
+                className="absolute w-72 h-72 sm:w-80 sm:h-80 rounded-full pointer-events-none -z-0"
+                style={{
+                  background:
+                    'radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 255, 255, 0.02) 65%, transparent 75%)',
+                  filter: 'blur(35px)',
+                }}
+              />
 
-            {/* Subtitle */}
-            <p className="mt-6 text-lg sm:text-xl text-[#586a82] max-w-2xl mx-auto leading-relaxed">
-              Replace disjointed spreadsheets and manual logs with automated conflict-free venue
-              scheduling, student registration, faculty marks entry, and transparent grade publication.
-            </p>
-
-            {/* CTAs */}
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#2459dc] hover:bg-[#1949be] text-white font-semibold text-base px-8 py-3.5 rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 hover:-translate-y-0.5"
-              >
-                <LogIn className="w-5 h-5" />
-                <span>Log In to Portal</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Link>
-
-              <Link
-                href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-[#172b4d] border border-slate-300 font-semibold text-base px-8 py-3.5 rounded-xl shadow-sm transition-all duration-200 hover:border-slate-400"
-              >
-                <UserPlus className="w-5 h-5 text-[#2459dc]" />
-                <span>Sign Up / Create Account</span>
-              </Link>
+              {/* The crisp black triangle with glowing rim */}
+              <div className="relative z-10 drop-shadow-[0_0_50px_rgba(255,255,255,0.25)] hover:scale-105 transition-transform duration-500 ease-out">
+                <svg
+                  width="220"
+                  height="190"
+                  viewBox="0 0 220 190"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-44 h-38 sm:w-56 sm:h-48"
+                >
+                  {/* Subtle rim highlight */}
+                  <polygon
+                    points="110,12 208,180 12,180"
+                    fill="#000000"
+                    stroke="#ffffff"
+                    strokeWidth="1.2"
+                    strokeOpacity="0.3"
+                  />
+                  <polygon points="110,15 205,178 15,178" fill="#000000" />
+                </svg>
+              </div>
             </div>
 
-            {/* Quick Demo Access Note */}
-            <p className="mt-4 text-xs text-[#586a82]">
-              Need a quick demo?{' '}
-              <Link
-                href="/login"
-                className="font-semibold text-[#2459dc] hover:underline underline-offset-2"
-              >
-                One-click instant login is available for all 5 roles →
-              </Link>
-            </p>
-
-            {/* Stats / Value Highlights Strip */}
-            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm text-left">
-                <div className="text-2xl font-bold text-[#172b4d]">5 Workspaces</div>
-                <div className="text-xs font-medium text-[#586a82] mt-1">
-                  Tailored views for Students, Faculty, Admins & HODs
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm text-left">
-                <div className="text-2xl font-bold text-emerald-600">100% Conflict-Free</div>
-                <div className="text-xs font-medium text-[#586a82] mt-1">
-                  Automated venue & timetable collision prevention
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm text-left">
-                <div className="text-2xl font-bold text-[#2459dc]">Real-Time Stats</div>
-                <div className="text-xs font-medium text-[#586a82] mt-1">
-                  Instant Mean, Median, and Pass/Fail calculations
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm text-left">
-                <div className="text-2xl font-bold text-purple-600">Strict RBAC</div>
-                <div className="text-xs font-medium text-[#586a82] mt-1">
-                  Zero-trust server authorization on every API route
-                </div>
-              </div>
+            {/* Right Column: Minimalist Poetic Statement */}
+            <div className="lg:col-span-3 flex flex-col justify-center lg:items-start text-neutral-400 text-[15px] sm:text-[16px] leading-[1.8] font-normal">
+              <p className="text-neutral-200">For academic controllers</p>
+              <p>To schedule conflict-free exams</p>
+              <p>Calibrated with automated grading</p>
             </div>
           </div>
-        </section>
 
-        {/* Core Institutional Roles Section */}
-        <section id="roles" className="py-20 bg-white border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#2459dc]">
-                Institutional Architecture
-              </h2>
-              <p className="mt-2 text-3xl sm:text-4xl font-extrabold text-[#172b4d] tracking-tight">
-                Designed for Every Academic Stakeholder
-              </p>
-              <p className="mt-4 text-[#586a82] text-base leading-relaxed">
-                ExamEase separates privileges across five distinct institutional personas to ensure
-                data integrity, exam confidentiality, and frictionless workflows.
-              </p>
-            </div>
-
-            <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {rolePersonas.map((persona) => {
-                const Icon = persona.icon;
-                return (
-                  <div
-                    key={persona.role}
-                    className="flex flex-col justify-between bg-[#fbfcfe] p-7 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all duration-200 group"
-                  >
-                    <div>
-                      {/* Role Header */}
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`w-12 h-12 rounded-xl ${persona.accentBg} ${persona.accentColor} flex items-center justify-center shadow-xs`}
-                        >
-                          <Icon className="w-6 h-6" strokeWidth={1.8} />
-                        </span>
-                        <span className="text-[11px] font-semibold text-[#586a82] bg-slate-100 px-2.5 py-1 rounded-md">
-                          Demo: {persona.name}
-                        </span>
-                      </div>
-
-                      <h3 className="mt-5 text-xl font-bold text-[#172b4d]">
-                        {persona.title}
-                      </h3>
-                      <p className="mt-2 text-xs text-[#586a82] leading-relaxed">
-                        {persona.tagline}
-                      </p>
-
-                      {/* Feature Bullet Points */}
-                      <ul className="mt-6 space-y-2.5 text-xs text-slate-700">
-                        {persona.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="mt-8 pt-4 border-t border-slate-100">
-                      <Link
-                        href="/login"
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#2459dc] group-hover:text-[#1949be] transition-colors"
-                      >
-                        <span>Access as {persona.role}</span>
-                        <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* Security & Access Box */}
-              <div className="flex flex-col justify-between bg-gradient-to-br from-[#172b4d] to-[#203a63] p-7 rounded-2xl text-white shadow-md">
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-white/10 text-white flex items-center justify-center">
-                    <Lock className="w-6 h-6" />
-                  </div>
-                  <h3 className="mt-5 text-xl font-bold text-white">
-                    Zero-Trust Authorization
-                  </h3>
-                  <p className="mt-2 text-xs text-slate-300 leading-relaxed">
-                    Every API request validates JSON Web Tokens, cryptographically checks institutional
-                    role boundaries, and prevents horizontal privilege escalation.
-                  </p>
-                  <ul className="mt-6 space-y-2.5 text-xs text-slate-200">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <span>Bcryptjs salted password hashing</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <span>Role-aware interface guards</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <span>Publish-gated student result visibility</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-8 pt-4 border-t border-white/10">
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center gap-2 text-xs font-bold text-blue-200 hover:text-white transition-colors"
-                  >
-                    <span>View Demo Credentials</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            </div>
+          {/* Monochrome Institutions Strip (Reference Image 1 Bottom) */}
+          <div className="mt-20 pt-10 border-t border-neutral-900 flex flex-wrap items-center justify-between gap-8 text-[12px] font-mono tracking-wider text-neutral-500 uppercase">
+            <span>HARVARD CS</span>
+            <span>MIT EECS</span>
+            <span>STANFORD ENG</span>
+            <span>OXFORD ACADEMY</span>
+            <span>BERKELEY DATA</span>
+            <span>CAMBRIDGE LAB</span>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* 3 Core Production Flows Section */}
-        <section id="architecture" className="py-20 bg-[#f8fafc] border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#2459dc]">
-                End-to-End Workflow
-              </h2>
-              <p className="mt-2 text-3xl sm:text-4xl font-extrabold text-[#172b4d] tracking-tight">
-                Three Integrated Viva & Production Flows
-              </p>
-              <p className="mt-4 text-[#586a82] text-base">
-                From examination announcement to calibrated result delivery, every step is automated and verified.
-              </p>
-            </div>
-
-            <div className="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Flow A */}
-              <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-500" />
-                <div className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-md">
-                  Flow A • UC-007
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-[#172b4d]">
-                  Student Exam Registration
-                </h3>
-                <p className="mt-2 text-xs text-[#586a82] leading-relaxed">
-                  Students inspect eligible upcoming examinations tied to their enrolled courses.
-                  The system prevents duplicate registrations and supports one-click registration cancellation with instantaneous hall ticket status updates.
-                </p>
-                <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-100 text-xs space-y-2">
-                  <div className="font-semibold text-slate-700">Automated Checks:</div>
-                  <div className="text-slate-600 flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Course enrollment prerequisite</span>
-                  </div>
-                  <div className="text-slate-600 flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Schedule cutoff & deadline enforcement</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Flow B */}
-              <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-[#2459dc]" />
-                <div className="inline-block px-3 py-1 bg-blue-50 text-[#2459dc] text-xs font-bold rounded-md">
-                  Flow B • UC-008
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-[#172b4d]">
-                  Marks Entry & Validation
-                </h3>
-                <p className="mt-2 text-xs text-[#586a82] leading-relaxed">
-                  Faculty members enter marks for registered candidates. Strict server validation prevents out-of-range values. Every score update triggers real-time class statistics recalculations.
-                </p>
-                <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-100 text-xs space-y-2">
-                  <div className="font-semibold text-slate-700">Dynamic Metrics:</div>
-                  <div className="text-slate-600 flex items-center gap-2">
-                    <BarChart3 className="w-3.5 h-3.5 text-[#2459dc]" />
-                    <span>Automatic Mean, Median, Min & Max</span>
-                  </div>
-                  <div className="text-slate-600 flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#2459dc]" />
-                    <span>Range validation: [0, Max Marks]</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Flow C */}
-              <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-purple-600" />
-                <div className="inline-block px-3 py-1 bg-purple-50 text-purple-700 text-xs font-bold rounded-md">
-                  Flow C • UC-010
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-[#172b4d]">
-                  Grade Calibration & Publication
-                </h3>
-                <p className="mt-2 text-xs text-[#586a82] leading-relaxed">
-                  Configure custom institutional grade cutoffs (A+, A, B, C, D, F) with monotonic boundary validation. Results remain strictly hidden from students until faculty explicitly triggers publication.
-                </p>
-                <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-100 text-xs space-y-2">
-                  <div className="font-semibold text-slate-700">Security Safeguards:</div>
-                  <div className="text-slate-600 flex items-center gap-2">
-                    <Sliders className="w-3.5 h-3.5 text-purple-600" />
-                    <span>Monotonic threshold verification</span>
-                  </div>
-                  <div className="text-slate-600 flex items-center gap-2">
-                    <Lock className="w-3.5 h-3.5 text-purple-600" />
-                    <span>Explicit publication gatekeeper</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Security & Reliability Feature Highlights */}
-        <section id="security" className="py-20 bg-white border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-blue-50 border border-blue-200 text-xs font-semibold text-[#2459dc] mb-4">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Confidentiality & Compliance</span>
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-[#172b4d] tracking-tight">
-                  Engineered for Reliability and Academic Trust
-                </h2>
-                <p className="mt-4 text-sm text-[#586a82] leading-relaxed">
-                  Academic records require unwavering reliability. ExamEase provides an enterprise-grade
-                  architecture with deterministic local persistence, eliminating external cloud failure points during high-stakes exams.
-                </p>
-
-                <div className="mt-8 space-y-4">
-                  <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded-lg bg-blue-50 text-[#2459dc]">
-                      <CalendarDays className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-[#172b4d]">
-                        Venue Double-Booking Collision Prevention
-                      </h4>
-                      <p className="text-xs text-[#586a82] mt-0.5">
-                        Our scheduling engine detects room and time conflicts, ensuring no hall is double-booked across competing subjects.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded-lg bg-emerald-50 text-emerald-700">
-                      <Lock className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-[#172b4d]">
-                        Encrypted Passwords & Signed JWTs
-                      </h4>
-                      <p className="text-xs text-[#586a82] mt-0.5">
-                        All passwords are encrypted with bcryptjs (10 salt rounds). Sessions utilize cryptographically signed JWT tokens.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3.5">
-                    <div className="p-2 rounded-lg bg-purple-50 text-purple-700">
-                      <Building2 className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-[#172b4d]">
-                        HOD Read-Only Governance Mode
-                      </h4>
-                      <p className="text-xs text-[#586a82] mt-0.5">
-                        Department heads enjoy high-level academic oversight without the risk of accidental record or marks modification.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Code / System Audit Box */}
-              <div className="bg-[#172b4d] rounded-2xl p-6 sm:p-8 text-white shadow-xl">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-700/80">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-red-400" />
-                    <span className="w-3 h-3 rounded-full bg-amber-400" />
-                    <span className="w-3 h-3 rounded-full bg-emerald-400" />
-                  </div>
-                  <span className="text-xs font-mono text-slate-400">system-health.check</span>
-                </div>
-
-                <div className="mt-5 space-y-3 font-mono text-xs">
-                  <div className="text-emerald-400">✓ Database: SQLite (dev.db via Prisma ORM v6)</div>
-                  <div className="text-emerald-400">✓ Test Suite: 8/8 Automated Verification Tests Passed</div>
-                  <div className="text-emerald-400">✓ Venue Engine: Conflict Check Routine Active</div>
-                  <div className="text-emerald-400">✓ Auth Module: bcryptjs + JWT Verification Active</div>
-                  <div className="text-emerald-400">✓ Boundary Engine: Monotonicity Validator Verified</div>
-                  <div className="text-slate-400 pt-2 border-t border-slate-700/80">
-                    $ examease --status: Ready for Academic Operations
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-4 border-t border-slate-700/80 flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Ready to test the live app?</span>
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#2459dc] hover:bg-blue-600 text-white px-3.5 py-2 rounded-lg transition"
-                  >
-                    <span>Launch Portal</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Call to Action Banner */}
-        <section className="py-16 bg-gradient-to-r from-[#172b4d] via-[#1d355e] to-[#2459dc] text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Ready to Experience ExamEase?
+      {/* Section 2: Interactive Product Card (Replicating Vercel Reference Image 2) */}
+      <section id="workflows" className="py-24 sm:py-32 border-b border-neutral-900 bg-[#000000]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mb-16">
+            <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-white leading-tight">
+              Schedule exams on infrastructure that thinks like them
             </h2>
-            <p className="mt-4 text-blue-100 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-              Log in to your institutional workspace or sign up for account access to get started right away.
-            </p>
+          </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#172b4d] hover:bg-slate-100 font-bold text-sm px-7 py-3.5 rounded-xl shadow-lg transition"
-              >
-                <LogIn className="w-4 h-4 text-[#2459dc]" />
-                <span>Log In to Your Account</span>
-              </Link>
+          {/* Split layout: Sleek mock interface + Feature narrative */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+            {/* Left: Vercel-style Dark Mock Interface Window */}
+            <div className="lg:col-span-7 bg-[#0a0a0a] border border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+              {/* Window Bar */}
+              <div className="flex items-center justify-between pb-6 border-b border-neutral-800/80 mb-6">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
+                  <span className="text-[12px] font-mono text-neutral-400 ml-2">
+                    ExamEase Engine v1.0
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-neutral-500 text-xs">
+                  <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-neutral-400 font-mono text-[11px]">0 CONFLICTS</span>
+                </div>
+              </div>
 
-              <Link
-                href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600/50 hover:bg-blue-600 text-white border border-blue-400/40 font-bold text-sm px-7 py-3.5 rounded-xl transition"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span>Sign Up for Access</span>
-              </Link>
+              {/* Mock Chat / Assistant UI like Image 2 */}
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-white flex-shrink-0">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[15px] font-medium text-white">
+                      How can I coordinate your next session?
+                    </p>
+                    <p className="text-[12px] text-neutral-400 mt-1">
+                      Automated venue validation and candidate hall allocations are live.
+                    </p>
+
+                    {/* Quick action pill buttons */}
+                    <div className="mt-4 flex flex-col gap-2">
+                      <div className="flex items-center gap-2.5 text-[13px] text-neutral-300 bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 px-3.5 py-2 rounded-lg cursor-pointer transition-colors">
+                        <Terminal className="w-3.5 h-3.5 text-neutral-400" />
+                        <span>Run automated room double-booking collision check</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 text-[13px] text-neutral-300 bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 px-3.5 py-2 rounded-lg cursor-pointer transition-colors">
+                        <Sliders className="w-3.5 h-3.5 text-neutral-400" />
+                        <span>Recalculate cohort mean, median, and grade boundaries</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 text-[13px] text-neutral-300 bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 px-3.5 py-2 rounded-lg cursor-pointer transition-colors">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Generate verified digital hall tickets for registered candidates</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Input Pill */}
+                <div className="mt-6 pt-4 border-t border-neutral-800/80">
+                  <div className="flex items-center gap-3 bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-neutral-400 text-xs">
+                    <Search className="w-4 h-4 text-neutral-500" />
+                    <span>Ask, search, or allocate examination venues...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Feature Narrative List */}
+            <div className="lg:col-span-5 flex flex-col justify-center">
+              <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-white mb-8 leading-snug">
+                ExamEase powers thousands of examination registrations and grade calibrations with zero downtime.
+              </h3>
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-sm font-semibold text-neutral-200">
+                    Durable Orchestration
+                  </h4>
+                  <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
+                    Automated conflict checker prevents overlapping venue and timeslot collisions before schedules are finalized.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-neutral-200">
+                    Sandboxed Evaluation Guardrails
+                  </h4>
+                  <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
+                    Faculty marks entry strictly bounds scores within [0, Max] with instantaneous real-time percentile distribution recalculations.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-neutral-200">
+                    Monotonic Grading Boundary
+                  </h4>
+                  <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
+                    Customizable institutional grade cutoffs (A+, A, B, C, D, F) verified mathematically to prevent inverse thresholds.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-neutral-200">
+                    Zero-Leakage Result Gatekeeper
+                  </h4>
+                  <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
+                    Cryptographic server authorization ensures student scores remain strictly confidential until explicit faculty release.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-[#2459dc] text-white flex items-center justify-center">
-              <GraduationCap className="w-5 h-5" />
-            </span>
-            <span className="text-lg font-bold text-[#172b4d]">
-              ExamEase<span className="text-[#2459dc]">.</span>
-            </span>
-            <span className="text-xs text-[#586a82] border-l border-slate-200 pl-3">
-              Examination Management System
-            </span>
+      {/* Section 3: Bento Grid for Institutional Workspaces */}
+      <section id="workspaces" className="py-24 sm:py-32 border-b border-neutral-900 bg-[#000000]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-left mb-16">
+            <h2 className="text-xs font-mono uppercase tracking-widest text-neutral-400">
+              Role Architecture
+            </h2>
+            <p className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mt-2">
+              Engineered for every academic stakeholder
+            </p>
           </div>
 
-          <div className="flex items-center gap-6 text-xs font-semibold text-[#586a82]">
-            <Link href="/login" className="hover:text-[#2459dc] transition-colors">
-              Log In
-            </Link>
-            <Link href="/login" className="hover:text-[#2459dc] transition-colors">
-              Sign Up
-            </Link>
-            <a href="#roles" className="hover:text-[#2459dc] transition-colors">
-              Roles
-            </a>
-            <a href="#features" className="hover:text-[#2459dc] transition-colors">
-              Features
-            </a>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Student Card */}
+            <div className="bg-[#0a0a0a] border border-neutral-800 hover:border-neutral-700 rounded-2xl p-7 transition-all flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white">
+                    <GraduationCap className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <span className="text-[11px] font-mono text-neutral-500">FLOW A</span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">Students & Candidates</h3>
+                <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                  Browse enrolled courses, register for scheduled exams with 1-click verification, and view published grade cards.
+                </p>
+                <div className="mt-5 space-y-2 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Real-time course eligibility validation</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Digital hall tickets with unique seating</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 pt-4 border-t border-neutral-900">
+                <Link
+                  href="/login"
+                  className="text-xs font-medium text-white group-hover:text-neutral-300 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>Access candidate portal</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
 
-          <p className="text-xs text-[#586a82]">
-            © 2026 ExamEase. Built for Academic Institutions.
+            {/* Faculty Card */}
+            <div className="bg-[#0a0a0a] border border-neutral-800 hover:border-neutral-700 rounded-2xl p-7 transition-all flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white">
+                    <BookOpen className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <span className="text-[11px] font-mono text-neutral-500">FLOW B & C</span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">Faculty & Evaluators</h3>
+                <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                  Enter candidate marks within bounds, calibrate grade cutoffs with live statistical feedback, and publish results.
+                </p>
+                <div className="mt-5 space-y-2 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-blue-400" />
+                    <span>Instant Mean, Median, and Pass/Fail metrics</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-blue-400" />
+                    <span>Explicit publication release gate</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 pt-4 border-t border-neutral-900">
+                <Link
+                  href="/login"
+                  className="text-xs font-medium text-white group-hover:text-neutral-300 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>Access instructor workspace</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Exam Admin Card */}
+            <div className="bg-[#0a0a0a] border border-neutral-800 hover:border-neutral-700 rounded-2xl p-7 transition-all flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white">
+                    <CalendarDays className="w-5 h-5 text-amber-400" />
+                  </div>
+                  <span className="text-[11px] font-mono text-neutral-500">TIMETABLE</span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">Exam Administrators</h3>
+                <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                  Schedule examination sessions with automated venue conflict checking, manage courses, and enroll student batches.
+                </p>
+                <div className="mt-5 space-y-2 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Zero double-booking venue collision engine</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Curriculum & faculty allocation</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 pt-4 border-t border-neutral-900">
+                <Link
+                  href="/login"
+                  className="text-xs font-medium text-white group-hover:text-neutral-300 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>Access controller console</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            {/* HOD Card */}
+            <div className="bg-[#0a0a0a] border border-neutral-800 hover:border-neutral-700 rounded-2xl p-7 transition-all flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white">
+                    <Building2 className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <span className="text-[11px] font-mono text-neutral-500">GOVERNANCE</span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">Department Chairs (HOD)</h3>
+                <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                  Strictly read-only academic oversight with cohort pass/fail analytics, score dispersion, and performance benchmarks.
+                </p>
+                <div className="mt-5 space-y-2 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Read-only compliance governance mode</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Cohort grade distribution charts</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 pt-4 border-t border-neutral-900">
+                <Link
+                  href="/login"
+                  className="text-xs font-medium text-white group-hover:text-neutral-300 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>View oversight reports</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            {/* System Admin Card */}
+            <div className="bg-[#0a0a0a] border border-neutral-800 hover:border-neutral-700 rounded-2xl p-7 transition-all flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white">
+                    <ShieldCheck className="w-5 h-5 text-neutral-300" />
+                  </div>
+                  <span className="text-[11px] font-mono text-neutral-500">RBAC</span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">System Administrators</h3>
+                <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                  Institutional user provisioning, active/deactivated toggles, and cryptographic access control policies.
+                </p>
+                <div className="mt-5 space-y-2 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-neutral-300" />
+                    <span>Centralized account management</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-neutral-300" />
+                    <span>Cryptographic bcryptjs password hashes</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 pt-4 border-t border-neutral-900">
+                <Link
+                  href="/login"
+                  className="text-xs font-medium text-white group-hover:text-neutral-300 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>Manage institutional security</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Zero-Dependencies Monolith Box */}
+            <div className="bg-gradient-to-b from-neutral-900/60 to-black border border-neutral-800 rounded-2xl p-7 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center font-bold">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-400">100% LOCAL</span>
+                </div>
+                <h3 className="text-lg font-semibold text-white">Deterministic Architecture</h3>
+                <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                  Runs completely locally with SQLite via Prisma ORM v6. Zero external cloud vendor dependencies, zero paid API keys, and zero telemetry.
+                </p>
+                <div className="mt-4 font-mono text-[11px] text-neutral-400 bg-black/60 p-3 rounded-lg border border-neutral-800/80">
+                  $ sqlite3 dev.db &quot;PRAGMA integrity_check;&quot;
+                  <div className="text-emerald-400 mt-1">ok</div>
+                </div>
+              </div>
+              <div className="mt-6 pt-4 border-t border-neutral-900">
+                <Link
+                  href="/login"
+                  className="text-xs font-medium text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>Explore demo accounts</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Banner */}
+      <section className="py-20 bg-[#000000] border-b border-neutral-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+            Ready to deploy your examination operations?
+          </h2>
+          <p className="mt-4 text-sm text-neutral-400 max-w-xl mx-auto">
+            Experience conflict-free scheduling and automated grade recalibrations today.
           </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/login"
+              className="bg-white text-black hover:bg-neutral-200 text-sm font-medium px-6 py-2.5 rounded-full transition-colors shadow-sm inline-flex items-center gap-2"
+            >
+              <span>Get started</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/login"
+              className="bg-transparent text-white border border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/60 text-sm font-medium px-6 py-2.5 rounded-full transition-colors"
+            >
+              <span>View interactive demo</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Vercel-style Footer (Exact Replication of Reference Image 3) */}
+      <footer className="bg-[#000000] text-neutral-400 text-xs py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Multi-Column Links */}
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-16">
+            <div>
+              <h4 className="text-white font-medium text-xs mb-4">Portals</h4>
+              <ul className="space-y-2.5">
+                <li><Link href="/login" className="hover:text-white transition-colors">Student Portal</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">Faculty Portal</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">Exam Controller</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">HOD Analytics</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">System Admin</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-medium text-xs mb-4">Workflows</h4>
+              <ul className="space-y-2.5">
+                <li><a href="#workflows" className="hover:text-white transition-colors">Venue Collisions</a></li>
+                <li><a href="#workflows" className="hover:text-white transition-colors">Hall Tickets</a></li>
+                <li><a href="#workflows" className="hover:text-white transition-colors">Marks Clamping</a></li>
+                <li><a href="#workflows" className="hover:text-white transition-colors">Grading Engine</a></li>
+                <li><a href="#workflows" className="hover:text-white transition-colors">Result Release</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-medium text-xs mb-4">Architecture</h4>
+              <ul className="space-y-2.5">
+                <li><span className="text-neutral-500">Next.js 14</span></li>
+                <li><span className="text-neutral-500">Express API</span></li>
+                <li><span className="text-neutral-500">Prisma ORM v6</span></li>
+                <li><span className="text-neutral-500">SQLite Dev DB</span></li>
+                <li><span className="text-neutral-500">Signed JWT RBAC</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-medium text-xs mb-4">Institution</h4>
+              <ul className="space-y-2.5">
+                <li><span className="hover:text-white transition-colors cursor-pointer">About ExamEase</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Examination Policy</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Academic Year 2026</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Audit Records</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-medium text-xs mb-4">Legal & Trust</h4>
+              <ul className="space-y-2.5">
+                <li><span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Student Data Safety</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Zero Cloud Lock-in</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-medium text-xs mb-4">Connect</h4>
+              <ul className="space-y-2.5">
+                <li><a href="https://github.com/samarthh22/ExamEase" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub Repository</a></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Documentation</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Lab Evaluation</span></li>
+                <li><span className="hover:text-white transition-colors cursor-pointer">Support</span></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar matching Image 3: Left triangle + ALL SYSTEMS NORMAL + Right theme switcher */}
+          <div className="pt-8 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              {/* White Triangle */}
+              <svg
+                width="16"
+                height="14"
+                viewBox="0 0 76 65"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-white"
+              >
+                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor" />
+              </svg>
+
+              {/* Status Indicator */}
+              <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-400 tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                <span className="uppercase text-neutral-300 font-semibold">ALL SYSTEMS NORMAL.</span>
+              </div>
+            </div>
+
+            {/* Copyright */}
+            <p className="text-neutral-500 text-[11px]">
+              © 2026 ExamEase. Built for Academic Institutions.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
