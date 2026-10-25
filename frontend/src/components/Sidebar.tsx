@@ -142,7 +142,7 @@ export default function Sidebar() {
           {user.fullName}
         </div>
         <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate mb-2">
-          {user.email}
+          {user.email ? user.email.replace(/@.*$/, '@lnmiit.ac.in') : ''}
         </div>
         <span
           className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-md border ${badge.bg}`}

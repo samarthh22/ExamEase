@@ -136,7 +136,7 @@ export default function AdminUsersPage() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="user@examease.edu"
+                placeholder="user@lnmiit.ac.in"
                 required
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold"
               />
@@ -234,7 +234,7 @@ export default function AdminUsersPage() {
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-slate-900 text-xs">{u.fullName}</span>
                       <span className="text-slate-300">•</span>
-                      <span className="text-xs text-slate-500">{u.email}</span>
+                      <span className="text-xs text-slate-500">{u.email ? u.email.replace(/@.*$/, '@lnmiit.ac.in') : ''}</span>
                     </div>
                     <div className="text-[11px] text-slate-400 mt-0.5">
                       Role: <strong className="text-slate-600">{u.role}</strong>

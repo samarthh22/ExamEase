@@ -350,7 +350,7 @@ export default function FacultyMarksPage() {
                       </td>
                       <td className="py-4 px-6">
                         <div className="font-semibold text-slate-900 text-xs">{entry.fullName}</div>
-                        <div className="text-[11px] text-slate-400">{entry.email}</div>
+                        <div className="text-[11px] text-slate-400">{entry.email ? entry.email.replace(/@.*$/, '@lnmiit.ac.in') : ''}</div>
                       </td>
                       <td className="py-4 px-6">
                         <div className="relative">

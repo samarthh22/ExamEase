@@ -130,13 +130,21 @@ export default function DashboardPage() {
 
       {/* Metrics Row */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
-          {[1, 2, 3, 4].map(n => (
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 ${
+            user.role === 'STUDENT' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
+          } gap-5 mb-8`}
+        >
+          {(user.role === 'STUDENT' ? [1, 2, 3] : [1, 2, 3, 4]).map(n => (
             <div key={n} className="h-28 bg-slate-100 rounded-xl animate-pulse"></div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 ${
+            user.role === 'STUDENT' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
+          } gap-5 mb-8`}
+        >
           {user.role === 'STUDENT' ? (
             <>
               <StatsCard
@@ -159,13 +167,6 @@ export default function DashboardPage() {
                 subtitle="Official grades released"
                 icon={Award}
                 color="emerald"
-              />
-              <StatsCard
-                title="Institution Pass Rate"
-                value={stats?.systemStats?.passRate ?? '96.2%'}
-                subtitle="Department benchmark"
-                icon={TrendingUp}
-                color="purple"
               />
             </>
           ) : user.role === 'FACULTY' ? (

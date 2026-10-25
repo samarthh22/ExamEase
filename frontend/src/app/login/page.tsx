@@ -8,11 +8,11 @@ import { GraduationCap, ShieldCheck, BookOpen, CalendarDays, Building2, ArrowRig
 import './login.css';
 
 const institutionalPortals = [
-  { role: 'Student', name: 'Rahul Verma', email: 'rahul.verma@student.examease.edu', password: 'Student@123', description: 'Exam registration, hall tickets, and published results.', icon: GraduationCap, tone: 'student' },
-  { role: 'Faculty member', name: 'Dr. Rajesh Sharma', email: 'prof.sharma@examease.edu', password: 'Faculty@123', description: 'Marks entry, grade boundary calibration, and publication.', icon: BookOpen, tone: 'faculty' },
-  { role: 'Examination administrator', name: 'Chief Exam Controller', email: 'examadmin@examease.edu', password: 'Admin@123', description: 'Timetable scheduling, venue allocation, and records.', icon: CalendarDays, tone: 'exam' },
-  { role: 'Department coordinator', name: 'Prof. Vikram Malhotra · HOD', email: 'hod.cs@examease.edu', password: 'Hod@123', description: 'Department academic oversight and cohort performance analytics.', icon: Building2, tone: 'hod' },
-  { role: 'System administrator', name: 'System Administrator', email: 'sysadmin@examease.edu', password: 'Admin@123', description: 'User provisioning, access policies, and institutional security.', icon: ShieldCheck, tone: 'system' },
+  { role: 'Student', name: 'Rahul Verma', email: 'rahul.verma@lnmiit.ac.in', password: 'Student@123', description: 'Exam registration, hall tickets, and published results.', icon: GraduationCap, tone: 'student' },
+  { role: 'Faculty member', name: 'Dr. Rajesh Sharma', email: 'prof.sharma@lnmiit.ac.in', password: 'Faculty@123', description: 'Marks entry, grade boundary calibration, and publication.', icon: BookOpen, tone: 'faculty' },
+  { role: 'Examination administrator', name: 'Chief Exam Controller', email: 'examadmin@lnmiit.ac.in', password: 'Admin@123', description: 'Timetable scheduling, venue allocation, and records.', icon: CalendarDays, tone: 'exam' },
+  { role: 'Department coordinator', name: 'Prof. Vikram Malhotra · HOD', email: 'hod.cs@lnmiit.ac.in', password: 'Hod@123', description: 'Department academic oversight and cohort performance analytics.', icon: Building2, tone: 'hod' },
+  { role: 'System administrator', name: 'System Administrator', email: 'sysadmin@lnmiit.ac.in', password: 'Admin@123', description: 'User provisioning, access policies, and institutional security.', icon: ShieldCheck, tone: 'system' },
 ];
 
 export default function LoginPage() {
@@ -73,7 +73,7 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="login-form" aria-describedby={error ? 'login-error' : undefined} aria-busy={submitting}>
               <div className="login-field">
                 <label htmlFor="login-email">Institutional email</label>
-                <input id="login-email" name="email" type="email" autoComplete="username" placeholder="you@examease.edu" value={email} onChange={e => setEmail(e.target.value)} required disabled={submitting} />
+                <input id="login-email" name="email" type="email" autoComplete="username" placeholder="you@lnmiit.ac.in" value={email} onChange={e => setEmail(e.target.value)} required disabled={submitting} />
               </div>
               <div className="login-field">
                 <label htmlFor="login-password">Password</label>
