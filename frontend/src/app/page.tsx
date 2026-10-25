@@ -126,7 +126,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs">
-                  <Activity className="w-3.5 h-3.5 text-emerald-500" />
+                  <Activity className="w-3.5 h-3.5 text-blue-500" />
                   <span className="text-neutral-600 dark:text-neutral-400 font-mono text-[11px]">0 CONFLICTS</span>
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function HomePage() {
                         <span>Recalculate cohort mean, median, and grade boundaries</span>
                       </div>
                       <div className="flex items-center gap-2.5 text-[13px] text-neutral-700 dark:text-neutral-300 bg-neutral-100/80 dark:bg-neutral-900/90 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 px-3.5 py-2 rounded-lg cursor-pointer transition-colors">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
                         <span>Generate verified digital hall tickets for registered candidates</span>
                       </div>
                     </div>
@@ -239,7 +239,7 @@ export default function HomePage() {
               <div>
                 <div className="flex items-center justify-between mb-5">
                   <div className="w-10 h-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
-                    <GraduationCap className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    <GraduationCap className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <span className="text-[11px] font-mono text-neutral-500">REGISTRATION</span>
                 </div>
@@ -249,11 +249,11 @@ export default function HomePage() {
                 </p>
                 <div className="mt-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300">
                   <div className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Real-time course eligibility validation</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Digital hall tickets with unique seating</span>
                   </div>
                 </div>
@@ -309,7 +309,7 @@ export default function HomePage() {
               <div>
                 <div className="flex items-center justify-between mb-5">
                   <div className="w-10 h-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
-                    <CalendarDays className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    <CalendarDays className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <span className="text-[11px] font-mono text-neutral-500">TIMETABLE</span>
                 </div>
@@ -319,11 +319,11 @@ export default function HomePage() {
                 </p>
                 <div className="mt-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300">
                   <div className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Zero double-booking venue collision engine</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Curriculum & faculty allocation</span>
                   </div>
                 </div>
@@ -344,7 +344,7 @@ export default function HomePage() {
               <div>
                 <div className="flex items-center justify-between mb-5">
                   <div className="w-10 h-10 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
-                    <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <span className="text-[11px] font-mono text-neutral-500">GOVERNANCE</span>
                 </div>
@@ -354,11 +354,11 @@ export default function HomePage() {
                 </p>
                 <div className="mt-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300">
                   <div className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Read-only compliance governance mode</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Cohort grade distribution charts</span>
                   </div>
                 </div>
@@ -416,7 +416,7 @@ export default function HomePage() {
                   <div className="w-10 h-10 rounded-xl bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-bold">
                     <Lock className="w-5 h-5" />
                   </div>
-                  <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">100% LOCAL</span>
+                  <span className="text-[11px] font-mono text-blue-600 dark:text-blue-400">100% LOCAL</span>
                 </div>
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Deterministic Architecture</h3>
                 <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-2 leading-relaxed">
@@ -424,7 +424,7 @@ export default function HomePage() {
                 </p>
                 <div className="mt-4 font-mono text-[11px] text-neutral-700 dark:text-neutral-400 bg-neutral-200/50 dark:bg-black/60 p-3 rounded-lg border border-neutral-300 dark:border-neutral-800/80">
                   $ sqlite3 dev.db &quot;PRAGMA integrity_check;&quot;
-                  <div className="text-emerald-600 dark:text-emerald-400 mt-1">ok</div>
+                  <div className="text-blue-600 dark:text-blue-400 mt-1">ok</div>
                 </div>
               </div>
               <div className="mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-900">

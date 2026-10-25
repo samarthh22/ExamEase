@@ -15,7 +15,6 @@ import {
   Award,
   ArrowRight,
   ShieldCheck,
-  TrendingUp,
   AlertCircle,
   Clock,
   MapPin,
@@ -130,21 +129,13 @@ export default function DashboardPage() {
 
       {/* Metrics Row */}
       {loading ? (
-        <div
-          className={`grid grid-cols-1 sm:grid-cols-2 ${
-            user.role === 'STUDENT' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
-          } gap-5 mb-8`}
-        >
-          {(user.role === 'STUDENT' ? [1, 2, 3] : [1, 2, 3, 4]).map(n => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+          {[1, 2, 3].map(n => (
             <div key={n} className="h-28 bg-slate-100 rounded-xl animate-pulse"></div>
           ))}
         </div>
       ) : (
-        <div
-          className={`grid grid-cols-1 sm:grid-cols-2 ${
-            user.role === 'STUDENT' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
-          } gap-5 mb-8`}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
           {user.role === 'STUDENT' ? (
             <>
               <StatsCard
@@ -159,14 +150,14 @@ export default function DashboardPage() {
                 value={stats?.roleSpecific?.registrations ?? 0}
                 subtitle="Confirmed exams"
                 icon={ClipboardList}
-                color="indigo"
+                color="blue"
               />
               <StatsCard
                 title="Published Results"
                 value={stats?.roleSpecific?.publishedResults ?? 0}
                 subtitle="Official grades released"
                 icon={Award}
-                color="emerald"
+                color="blue"
               />
             </>
           ) : user.role === 'FACULTY' ? (
@@ -183,21 +174,14 @@ export default function DashboardPage() {
                 value={stats?.roleSpecific?.assignedExams ?? 2}
                 subtitle="Examinations conducted"
                 icon={Calendar}
-                color="indigo"
+                color="blue"
               />
               <StatsCard
                 title="Registered Candidates"
                 value={stats?.systemStats?.registrations ?? 5}
                 subtitle="Across your courses"
                 icon={Users}
-                color="amber"
-              />
-              <StatsCard
-                title="Overall Pass Rate"
-                value={stats?.systemStats?.passRate ?? '94.0%'}
-                subtitle="Published outcomes"
-                icon={TrendingUp}
-                color="emerald"
+                color="blue"
               />
             </>
           ) : (
@@ -214,21 +198,14 @@ export default function DashboardPage() {
                 value={stats?.systemStats?.faculty ?? 2}
                 subtitle="Assigned instructors"
                 icon={GraduationCap}
-                color="purple"
+                color="blue"
               />
               <StatsCard
                 title="Active Courses"
                 value={stats?.systemStats?.courses ?? 4}
                 subtitle="Offered curriculum"
                 icon={BookOpen}
-                color="indigo"
-              />
-              <StatsCard
-                title="Institutional Pass Rate"
-                value={stats?.systemStats?.passRate ?? '100%'}
-                subtitle="Average academic standing"
-                icon={TrendingUp}
-                color="emerald"
+                color="blue"
               />
             </>
           )}
@@ -292,12 +269,12 @@ export default function DashboardPage() {
 
                 <div className="flex items-center gap-2 shrink-0">
                   {exam.resultsPublished ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                       <ShieldCheck className="w-3 h-3" />
                       Results Published
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
                       Results Unpublished
                     </span>
                   )}

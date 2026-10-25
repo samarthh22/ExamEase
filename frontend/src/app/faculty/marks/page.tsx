@@ -210,16 +210,16 @@ export default function FacultyMarksPage() {
           <div
             className={`mt-4 p-4 rounded-xl border flex items-start gap-3 text-sm ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
                 : feedback.type === 'warning'
-                ? 'bg-amber-50 border-amber-200 text-amber-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
+                : 'bg-red-50 border-red-200 text-red-800'
             }`}
           >
             {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-blue-600 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
             )}
             <div>
               <p className="font-semibold">
@@ -236,16 +236,16 @@ export default function FacultyMarksPage() {
 
         {/* Stale Warning Banner */}
         {hasStaleResults && (
-          <div className="mt-4 p-3.5 rounded-xl border border-amber-200 bg-amber-50/70 text-amber-800 text-xs flex items-center justify-between gap-3">
+          <div className="mt-4 p-3.5 rounded-xl border border-blue-200 bg-blue-50/70 text-blue-800 text-xs flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+              <AlertTriangle className="w-4 h-4 text-blue-600 shrink-0" />
               <span>
                 <strong>Grades Stale / Recalculation Required:</strong> Marks have been modified. Dependent generated results must be recalculated in Grading & Boundaries before publication.
               </span>
             </div>
             <a
               href="/faculty/grading"
-              className="shrink-0 text-xs font-bold text-amber-900 underline hover:no-underline"
+              className="shrink-0 text-xs font-bold text-blue-900 underline hover:no-underline"
             >
               Go to Grading & Boundaries →
             </a>
@@ -268,22 +268,22 @@ export default function FacultyMarksPage() {
           </div>
           <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-2xs">
             <span className="text-[10px] uppercase font-bold text-slate-400">Median</span>
-            <p className="text-xl font-bold text-indigo-600 mt-0.5">{statistics.median}</p>
+            <p className="text-xl font-bold text-blue-600 mt-0.5">{statistics.median}</p>
             <span className="text-[10px] text-slate-500">50th percentile</span>
           </div>
           <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-2xs">
             <span className="text-[10px] uppercase font-bold text-slate-400">Highest</span>
-            <p className="text-xl font-bold text-emerald-600 mt-0.5">{statistics.max}</p>
+            <p className="text-xl font-bold text-blue-600 mt-0.5">{statistics.max}</p>
             <span className="text-[10px] text-slate-500">Max achieved</span>
           </div>
           <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-2xs">
             <span className="text-[10px] uppercase font-bold text-slate-400">Lowest</span>
-            <p className="text-xl font-bold text-rose-600 mt-0.5">{statistics.min}</p>
+            <p className="text-xl font-bold text-red-600 mt-0.5">{statistics.min}</p>
             <span className="text-[10px] text-slate-500">Min achieved</span>
           </div>
           <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-2xs">
             <span className="text-[10px] uppercase font-bold text-slate-400">Std Deviation</span>
-            <p className="text-xl font-bold text-purple-600 mt-0.5">{statistics.stdDev}</p>
+            <p className="text-xl font-bold text-slate-800 mt-0.5">{statistics.stdDev}</p>
             <span className="text-[10px] text-slate-500">Score variance</span>
           </div>
         </div>
@@ -342,7 +342,7 @@ export default function FacultyMarksPage() {
                     <tr
                       key={entry.studentId}
                       className={`hover:bg-slate-50/50 transition ${
-                        isInvalid ? 'bg-rose-50/40' : ''
+                        isInvalid ? 'bg-red-50/40' : ''
                       }`}
                     >
                       <td className="py-4 px-6 font-mono font-semibold text-slate-800 text-xs">
@@ -364,12 +364,12 @@ export default function FacultyMarksPage() {
                             placeholder="Enter mark"
                             className={`w-32 px-3 py-1.5 rounded-lg border text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 ${
                               isInvalid
-                                ? 'border-rose-400 bg-rose-50 focus:ring-rose-500 text-rose-700'
+                                ? 'border-red-400 bg-red-50 focus:ring-red-500 text-red-700'
                                 : 'border-slate-300 bg-white focus:ring-blue-500'
                             }`}
                           />
                           {isInvalid && (
-                            <span className="block text-[10px] text-rose-600 font-semibold mt-1">
+                            <span className="block text-[10px] text-red-600 font-semibold mt-1">
                               Out of range [0, {currentExam?.maxMarks}]
                             </span>
                           )}

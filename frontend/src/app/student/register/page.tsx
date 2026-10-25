@@ -92,7 +92,7 @@ export default function StudentRegisterPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 uppercase tracking-wide">
+              <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200 uppercase tracking-wide">
                 Course Registration
               </span>
               <h2 className="text-lg font-bold text-slate-800">Register for Course Examinations</h2>
@@ -110,14 +110,14 @@ export default function StudentRegisterPage() {
           <div
             className={`mt-4 p-4 rounded-xl border flex items-start gap-3 text-sm transition-all ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
+                : 'bg-red-50 border-red-200 text-red-800'
             }`}
           >
             {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-blue-600 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
             )}
             <div>
               <p className="font-semibold">{feedback.type === 'success' ? 'Operation Succeeded' : 'Operation Blocked'}</p>
@@ -140,7 +140,7 @@ export default function StudentRegisterPage() {
           </div>
         ) : loadError ? (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center" role="alert">
-            <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-3" aria-hidden="true" />
+            <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" aria-hidden="true" />
             <p className="text-slate-700 font-semibold text-sm">Unable to load examinations</p>
             <p className="text-slate-500 text-xs mt-1">Your examination list could not be retrieved. Please try again.</p>
             <button type="button" onClick={() => { setFeedback(null); void loadEligibleExams(); }} className="mt-4 min-h-[44px] px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Retry</button>
@@ -162,7 +162,7 @@ export default function StudentRegisterPage() {
                   key={exam.examId}
                   className={`bg-white rounded-2xl border p-6 transition-all ${
                     isRegistered
-                      ? 'border-emerald-300 ring-2 ring-emerald-500/10 shadow-sm'
+                      ? 'border-blue-300 ring-2 ring-blue-500/10 shadow-sm'
                       : isEligible
                       ? 'border-slate-200 hover:border-blue-300 hover:shadow-md'
                       : 'border-slate-200 opacity-75 bg-slate-50/50'
@@ -209,8 +209,8 @@ export default function StudentRegisterPage() {
                     <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-3 shrink-0">
                       {isRegistered ? (
                         <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl">
+                            <CheckCircle2 className="w-4 h-4 text-blue-600" />
                             <span>Confirmed Registered</span>
                           </div>
                         </div>

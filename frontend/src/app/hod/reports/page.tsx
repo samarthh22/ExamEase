@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import AppLayout from '../../../components/AppLayout';
 import { fetchApi } from '../../../lib/api';
-import { BarChart3, TrendingUp, ShieldAlert, Award, BookOpen, Users, CheckCircle2 } from 'lucide-react';
-import StatsCard from '../../../components/StatsCard';
+import { ShieldAlert } from 'lucide-react';
 
 export default function HodReportsPage() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -27,23 +26,23 @@ export default function HodReportsPage() {
   return (
     <AppLayout title="Academic Performance Analytics & HOD Oversight" allowedRoles={['HOD', 'EXAM_ADMIN', 'FACULTY']}>
       {/* Oversight Banner */}
-      <div className="bg-purple-900 text-white rounded-2xl p-6 mb-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-neutral-900 text-white rounded-2xl p-6 mb-8 border border-neutral-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-purple-200 bg-purple-800/80 px-2.5 py-0.5 rounded-full border border-purple-700 uppercase tracking-wide">
+            <span className="text-xs font-bold text-blue-400 bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-800 uppercase tracking-wide">
               Read-Only Oversight Surface
             </span>
-            <span className="text-xs text-purple-200">LNMIIT Jaipur · Department of Computer Science & Engineering</span>
+            <span className="text-xs text-neutral-400">LNMIIT Jaipur · Department of Computer Science & Engineering</span>
           </div>
-          <h2 className="text-xl font-bold tracking-tight">Curriculum Examination Outcomes & Pass/Fail Analysis</h2>
-          <p className="text-xs text-purple-200/90 mt-1 max-w-2xl leading-relaxed">
-            Coordinators and Department Heads can audit cohort statistics, pass rates, score dispersion,
+          <h2 className="text-xl font-bold tracking-tight">Curriculum Examination Outcomes & Academic Standings</h2>
+          <p className="text-xs text-neutral-400 mt-1 max-w-2xl leading-relaxed">
+            Coordinators and Department Heads can audit cohort statistics, score dispersion,
             and grade distributions with strictly read-only access (FR-030), without authorization to modify candidate marks or alter grading thresholds.
           </p>
         </div>
 
-        <div className="shrink-0 flex items-center gap-2 bg-purple-800/50 border border-purple-700 px-3.5 py-2 rounded-xl text-xs font-medium">
-          <ShieldAlert className="w-4 h-4 text-purple-300 shrink-0" />
+        <div className="shrink-0 flex items-center gap-2 bg-neutral-800/80 border border-neutral-700 px-3.5 py-2 rounded-xl text-xs font-medium">
+          <ShieldAlert className="w-4 h-4 text-blue-400 shrink-0" />
           <span>Marks Editing Guard Enforced</span>
         </div>
       </div>
@@ -55,7 +54,7 @@ export default function HodReportsPage() {
             <h3 className="font-bold text-slate-800 text-sm">Course Examination Standing</h3>
             <p className="text-xs text-slate-500">Comprehensive cohort metrics across all active examinations</p>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
             {courses.length} Active Courses Monitored
           </span>
         </div>
@@ -75,7 +74,6 @@ export default function HodReportsPage() {
                   <th className="py-3.5 px-6 text-center">Mean Score</th>
                   <th className="py-3.5 px-6 text-center">Score Range [Min - Max]</th>
                   <th className="py-3.5 px-6 text-center">Passed / Total</th>
-                  <th className="py-3.5 px-6 text-center">Pass Rate</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -99,19 +97,6 @@ export default function HodReportsPage() {
                     </td>
                     <td className="py-4 px-6 text-center text-xs font-semibold text-slate-800">
                       {c.passedCount} / {c.passedCount + c.failedCount}
-                    </td>
-                    <td className="py-4 px-6 text-center">
-                      <span
-                        className={`inline-block text-xs font-bold px-2.5 py-0.5 rounded-full border ${
-                          c.passRate === 'N/A'
-                            ? 'bg-slate-100 text-slate-600 border-slate-200'
-                            : parseFloat(c.passRate) >= 80
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-amber-50 text-amber-700 border-amber-200'
-                        }`}
-                      >
-                        {c.passRate}
-                      </span>
                     </td>
                   </tr>
                 ))}

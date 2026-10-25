@@ -109,14 +109,14 @@ export default function AdminCoursesPage() {
           <div
             className={`mt-4 p-4 rounded-xl border flex items-start gap-3 text-sm ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
+                : 'bg-red-50 border-red-200 text-red-800'
             }`}
           >
             {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-blue-600 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
             )}
             <div>
               <p className="font-semibold">{feedback.type === 'success' ? 'Success' : 'Action Failed'}</p>
@@ -230,7 +230,7 @@ export default function AdminCoursesPage() {
           {/* Enroll Student Form */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <UserPlus className="w-4 h-4 text-emerald-600" />
+              <UserPlus className="w-4 h-4 text-blue-600" />
               <h3 className="font-bold text-slate-800 text-sm">Enroll Student in Course</h3>
             </div>
 
@@ -271,7 +271,7 @@ export default function AdminCoursesPage() {
 
               <button
                 type="submit"
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-md shadow-emerald-500/20 transition mt-2"
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-md shadow-blue-500/20 transition mt-2"
               >
                 Enroll Student
               </button>

@@ -140,3 +140,24 @@ body {
 .dark table tbody tr:hover {
   background-color: #121212 !important;
 }
+
+/* Unified Theme: Blue & Red Accent Badges in Dark Mode */
+.dark .bg-blue-50 {
+  background-color: rgba(30, 58, 138, 0.28) !important;
+}
+.dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.35) !important;
+}
+.dark .text-blue-700 {
+  color: #93c5fd !important;
+}
+
+.dark .bg-red-50 {
+  background-color: rgba(127, 29, 29, 0.28) !important;
+}
+.dark .border-red-200 {
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+.dark .text-red-700 {
+  color: #fca5a5 !important;
+}

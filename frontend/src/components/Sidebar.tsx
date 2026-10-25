@@ -98,13 +98,13 @@ export default function Sidebar() {
   const getRoleBadge = (r: string) => {
     switch (r) {
       case 'STUDENT':
-        return { label: 'Student', bg: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60' };
+        return { label: 'Student', bg: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60' };
       case 'FACULTY':
         return { label: 'Faculty Member', bg: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60' };
       case 'EXAM_ADMIN':
-        return { label: 'Exam Administrator', bg: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/60' };
+        return { label: 'Exam Administrator', bg: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60' };
       case 'HOD':
-        return { label: 'Dept Coordinator / HOD', bg: 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800/60' };
+        return { label: 'Dept Coordinator / HOD', bg: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60' };
       case 'SYSTEM_ADMIN':
         return { label: 'System Administrator', bg: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-300 border-neutral-300 dark:border-neutral-700' };
       default:
@@ -180,7 +180,7 @@ export default function Sidebar() {
       <div className="p-4 border-t border-neutral-200 dark:border-neutral-900">
         <button
           onClick={logout}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-rose-200/60 dark:border-rose-900/40"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors border border-red-200/60 dark:border-red-900/40"
         >
           <LogOut className="w-3.5 h-3.5" />
           <span>Sign Out</span>

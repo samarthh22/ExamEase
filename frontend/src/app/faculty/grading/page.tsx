@@ -229,7 +229,7 @@ export default function FacultyGradingPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200 uppercase tracking-wide">
+              <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200 uppercase tracking-wide">
                 Grade Calibration
               </span>
               <h2 className="text-lg font-bold text-slate-800">Define Grading Boundaries & Generate Grades</h2>
@@ -265,16 +265,16 @@ export default function FacultyGradingPage() {
           <div
             className={`mt-4 p-4 rounded-xl border flex items-start gap-3 text-sm ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
                 : feedback.type === 'warning'
-                ? 'bg-amber-50 border-amber-200 text-amber-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
+                : 'bg-red-50 border-red-200 text-red-800'
             }`}
           >
             {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-blue-600 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
             )}
             <div>
               <p className="font-semibold">
@@ -302,19 +302,19 @@ export default function FacultyGradingPage() {
             </div>
             <div className="bg-white p-3 rounded-xl border border-slate-200/80">
               <span className="text-[10px] text-slate-400 font-bold uppercase">Median</span>
-              <p className="text-lg font-bold text-indigo-600">{statistics.median}</p>
+              <p className="text-lg font-bold text-blue-600">{statistics.median}</p>
             </div>
             <div className="bg-white p-3 rounded-xl border border-slate-200/80">
               <span className="text-[10px] text-slate-400 font-bold uppercase">Highest</span>
-              <p className="text-lg font-bold text-emerald-600">{statistics.max}</p>
+              <p className="text-lg font-bold text-blue-600">{statistics.max}</p>
             </div>
             <div className="bg-white p-3 rounded-xl border border-slate-200/80">
               <span className="text-[10px] text-slate-400 font-bold uppercase">Lowest</span>
-              <p className="text-lg font-bold text-rose-600">{statistics.min}</p>
+              <p className="text-lg font-bold text-red-600">{statistics.min}</p>
             </div>
             <div className="bg-white p-3 rounded-xl border border-slate-200/80">
               <span className="text-[10px] text-slate-400 font-bold uppercase">Std Dev</span>
-              <p className="text-lg font-bold text-purple-600">{statistics.stdDev}</p>
+              <p className="text-lg font-bold text-slate-800">{statistics.stdDev}</p>
             </div>
             <div className="bg-white p-3 rounded-xl border border-slate-200/80">
               <span className="text-[10px] text-slate-400 font-bold uppercase">Max Marks</span>
@@ -398,7 +398,7 @@ export default function FacultyGradingPage() {
                 <div className="pt-3.5">
                   <button
                     onClick={() => handleRemoveBoundary(idx)}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition"
+                    className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition"
                     title="Remove boundary"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -431,13 +431,13 @@ export default function FacultyGradingPage() {
                 Current Lifecycle State
               </span>
               {currentExam?.resultsPublished ? (
-                <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                <div className="flex items-center gap-2 text-blue-700 font-bold text-sm">
+                  <CheckCircle2 className="w-5 h-5 text-blue-600" />
                   <span>OFFICIALLY PUBLISHED</span>
                 </div>
               ) : hasStaleResults ? (
-                <div className="flex items-center gap-2 text-amber-700 font-bold text-sm">
-                  <AlertTriangle className="w-5 h-5 text-amber-600" />
+                <div className="flex items-center gap-2 text-red-700 font-bold text-sm">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
                   <span>STALE / RECALCULATION REQUIRED</span>
                 </div>
               ) : resultsData?.results && resultsData.results.length > 0 ? (
@@ -464,7 +464,7 @@ export default function FacultyGradingPage() {
               <button
                 onClick={handleGenerateGrades}
                 disabled={generatingGrades}
-                className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>{generatingGrades ? 'Computing Grades...' : 'Generate / Recalculate Grades'}</span>
@@ -474,7 +474,7 @@ export default function FacultyGradingPage() {
                 <button
                   onClick={handlePublish}
                   disabled={publishing || hasStaleResults || !resultsData?.results || resultsData.results.length === 0}
-                  className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <Eye className="w-4 h-4" />
                   <span>{publishing ? 'Publishing...' : 'Publish Official Results'}</span>
@@ -483,7 +483,7 @@ export default function FacultyGradingPage() {
                 <button
                   onClick={handleUnpublish}
                   disabled={publishing}
-                  className="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-md shadow-red-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <EyeOff className="w-4 h-4" />
                   <span>{publishing ? 'Updating...' : 'Unpublish Results (Reopen for Correction)'}</span>
@@ -523,7 +523,7 @@ export default function FacultyGradingPage() {
               </h3>
               <p className="text-xs text-slate-500">
                 Publication Status:{' '}
-                <strong className={currentExam?.resultsPublished ? 'text-emerald-600' : 'text-amber-600'}>
+                <strong className={currentExam?.resultsPublished ? 'text-blue-600' : 'text-slate-500'}>
                   {currentExam?.resultsPublished ? 'PUBLISHED' : 'UNPUBLISHED (Hidden from students)'}
                 </strong>
               </p>
@@ -554,7 +554,13 @@ export default function FacultyGradingPage() {
                       {r.marksObtained} <span className="text-slate-400 font-normal">/ {currentExam?.maxMarks}</span>
                     </td>
                     <td className="py-3 px-6">
-                      <span className="inline-block px-2.5 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      <span
+                        className={`inline-block px-2.5 py-0.5 rounded text-xs font-bold border ${
+                          r.computedGrade === 'F'
+                            ? 'bg-red-50 text-red-700 border-red-200'
+                            : 'bg-blue-50 text-blue-700 border-blue-200'
+                        }`}
+                      >
                         {r.computedGrade}
                       </span>
                     </td>
@@ -562,10 +568,10 @@ export default function FacultyGradingPage() {
                       <span
                         className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                           r.status === 'PUBLISHED'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            ? 'bg-blue-50 text-blue-700 border-blue-200'
                             : r.status === 'NEEDS_RECALCULATION'
-                            ? 'bg-rose-50 text-rose-700 border-rose-200'
-                            : 'bg-amber-50 text-amber-700 border-amber-200'
+                            ? 'bg-red-50 text-red-700 border-red-200'
+                            : 'bg-slate-100 text-slate-700 border-slate-200'
                         }`}
                       >
                         {r.status}

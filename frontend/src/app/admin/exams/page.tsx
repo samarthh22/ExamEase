@@ -136,14 +136,14 @@ export default function AdminExamsPage() {
           <div
             className={`mt-4 p-4 rounded-xl border flex items-start gap-3 text-sm ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
+                : 'bg-red-50 border-red-200 text-red-800'
             }`}
           >
             {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-blue-600 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
             )}
             <div>
               <p className="font-semibold">{feedback.type === 'success' ? 'Success' : 'Server Rejection'}</p>
@@ -269,19 +269,19 @@ export default function AdminExamsPage() {
               <div
                 className={`p-3.5 rounded-xl border text-xs ${
                   conflictResult.hasConflict
-                    ? 'bg-rose-50 border-rose-200 text-rose-800'
-                    : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    ? 'bg-red-50 border-red-200 text-red-800'
+                    : 'bg-blue-50 border-blue-200 text-blue-800'
                 }`}
               >
                 <div className="flex items-center gap-1.5 font-bold mb-1">
                   {conflictResult.hasConflict ? (
                     <>
-                      <ShieldAlert className="w-4 h-4 text-rose-600" />
+                      <ShieldAlert className="w-4 h-4 text-red-600" />
                       <span>CONFLICT DETECTED — VENUE OCCUPIED</span>
                     </>
                   ) : (
                     <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      <CheckCircle2 className="w-4 h-4 text-blue-600" />
                       <span>CLEAR — VENUE AVAILABLE</span>
                     </>
                   )}
@@ -367,10 +367,10 @@ export default function AdminExamsPage() {
                         <span
                           className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
                             isCancelled
-                              ? 'bg-rose-50 text-rose-700 border-rose-200'
+                              ? 'bg-red-50 text-red-700 border-red-200'
                               : exam.status === 'PUBLISHED'
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                              : 'bg-amber-50 text-amber-700 border-amber-200'
+                              ? 'bg-blue-50 text-blue-700 border-blue-200'
+                              : 'bg-slate-100 text-slate-700 border-slate-200'
                           }`}
                         >
                           {exam.status}
@@ -379,7 +379,7 @@ export default function AdminExamsPage() {
                         {!isCancelled && (
                           <button
                             onClick={() => handleCancelExam(exam.id)}
-                            className="text-[11px] font-semibold text-rose-600 hover:text-rose-800 transition"
+                            className="text-[11px] font-semibold text-red-600 hover:text-red-800 transition"
                           >
                             Cancel Exam
                           </button>

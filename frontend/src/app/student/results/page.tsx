@@ -28,15 +28,14 @@ export default function StudentResultsPage() {
     switch (grade) {
       case 'A+':
       case 'A':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-300';
-      case 'B':
         return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'B':
+        return 'bg-blue-50 text-blue-700 border-blue-200';
       case 'C':
-        return 'bg-amber-100 text-amber-800 border-amber-300';
       case 'D':
-        return 'bg-purple-100 text-purple-800 border-purple-300';
+        return 'bg-slate-100 text-slate-800 border-slate-300';
       case 'F':
-        return 'bg-rose-100 text-rose-800 border-rose-300';
+        return 'bg-red-100 text-red-800 border-red-300';
       default:
         return 'bg-slate-100 text-slate-800 border-slate-300';
     }
@@ -78,7 +77,7 @@ export default function StudentResultsPage() {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-slate-100 flex items-center justify-between">
             <h3 className="font-bold text-slate-800 text-sm">Released Course Grades</h3>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
               {results.length} Course Result(s) Released
             </span>
           </div>
@@ -128,7 +127,7 @@ export default function StudentResultsPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6">
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
                         <CheckCircle2 className="w-3 h-3" />
                         Published
                       </span>

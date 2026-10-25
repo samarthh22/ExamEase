@@ -44,12 +44,12 @@ export default function UnauthorizedFallback({
       <main className="flex-1 flex items-center justify-center p-6 sm:p-12">
         <div className="max-w-lg w-full bg-neutral-50/60 dark:bg-[#0a0a0a] border border-neutral-200 dark:border-neutral-800 rounded-2xl p-8 sm:p-10 text-center shadow-lg transition-colors">
           {/* Icon Badge */}
-          <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400 mx-auto mb-6 shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 mx-auto mb-6 shadow-xs">
             <ShieldAlert className="w-7 h-7" />
           </div>
 
           {/* Badge */}
-          <span className="inline-block text-[11px] font-mono tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-rose-100/80 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-900 mb-3">
+          <span className="inline-block text-[11px] font-mono tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-red-100/80 dark:bg-red-950/60 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900 mb-3">
             403 · Access Restricted
           </span>
 

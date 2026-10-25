@@ -88,14 +88,14 @@ export default function AdminUsersPage() {
           <div
             className={`mt-4 p-4 rounded-xl border flex items-start gap-3 text-sm ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-blue-50 border-blue-200 text-blue-800'
+                : 'bg-red-50 border-red-200 text-red-800'
             }`}
           >
             {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-blue-600 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
             )}
             <div>
               <p className="font-semibold">{feedback.type === 'success' ? 'Account Provisioned' : 'Action Failed'}</p>
@@ -247,8 +247,8 @@ export default function AdminUsersPage() {
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                         u.active
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-rose-50 text-rose-700 border-rose-200'
+                          ? 'bg-blue-50 text-blue-700 border-blue-200'
+                          : 'bg-red-50 text-red-700 border-red-200'
                       }`}
                     >
                       {u.active ? 'ACTIVE' : 'DEACTIVATED'}
