@@ -78,13 +78,6 @@ export default function HomePage() {
                   <span>Access portal</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-
-                <Link
-                  href="/login"
-                  className="bg-transparent text-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-neutral-100 dark:hover:bg-neutral-900/50 text-[14px] font-medium px-5 py-2.5 rounded-full transition-colors inline-flex items-center gap-2"
-                >
-                  <span>Explore portals</span>
-                </Link>
               </div>
             </div>
 
@@ -448,33 +441,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Call to Action Banner */}
-      <section className="py-20 bg-white dark:bg-[#000000] border-b border-neutral-200 dark:border-neutral-900 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-950 dark:text-white">
-            Ready to deploy your examination operations?
-          </h2>
-          <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400 max-w-xl mx-auto">
-            Experience conflict-free scheduling and automated grade recalibrations today.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/login"
-              className="bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-sm font-medium px-6 py-2.5 rounded-full transition-colors shadow-sm inline-flex items-center gap-2"
-            >
-              <span>Get started</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/login"
-              className="bg-transparent text-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900/60 text-sm font-medium px-6 py-2.5 rounded-full transition-colors"
-            >
-              <span>Institutional guidelines</span>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-white dark:bg-[#000000] text-neutral-600 dark:text-neutral-400 text-xs py-8 border-t border-neutral-200 dark:border-neutral-900 transition-colors">
