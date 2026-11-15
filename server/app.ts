@@ -8,6 +8,7 @@ import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { authService,publicUser } from './services/auth.js';
 import { assert } from './errors.js';
+import { academicRoutes } from './routes/academic.js';
 
 export function createApp(repo:Repository){
   const app=express(),auth=authService(repo),attempts=new Map<string,{count:number;until:number}>();
@@ -24,7 +25,7 @@ export function createApp(repo:Repository){
   app.get('/api/users',allow('SYS_ADMIN'),(_req,res)=>res.json(repo.list<User>('users').map(publicUser)));
   app.post('/api/users',allow('SYS_ADMIN'),(req,res)=>res.status(201).json(auth.save(req.body,null,req.user)));
   app.put('/api/users/:id',allow('SYS_ADMIN'),(req,res)=>res.json(auth.save(req.body,String(req.params.id),req.user)));
-  // Domain routes are composed here in subsequent phases.
+  academicRoutes(app,repo,allow);
   app.use('/api',(_req,res)=>res.status(404).json({message:'API endpoint not found.'}));
   if(existsSync(resolve('dist/index.html'))){app.use(express.static(resolve('dist')));app.get('/{*path}',(_req,res)=>res.sendFile(resolve('dist/index.html')));}
   const errorHandler:ErrorRequestHandler=(error,_req,res,_next)=>{let status=error.status||500,message=error.message,errorCode=error.errorCode||'INTERNAL_ERROR';if(error instanceof ZodError){status=422;message=error.issues.map(i=>`${i.path.join('.')}: ${i.message}`).join('; ');errorCode='INVALID_INPUT';}if(error.code?.startsWith('ERR_SQLITE')&&/UNIQUE constraint/.test(error.message)){status=409;message='A record with these unique details already exists.';errorCode='DUPLICATE_RECORD';}if(error.code?.startsWith('ERR_SQLITE')&&/FOREIGN KEY/.test(error.message)){status=422;message='A referenced record does not exist or is still in use.';errorCode='INVALID_REFERENCE';}if(status>=500){console.error(error);message='The operation could not be saved. Please try again.';}res.status(status).json({status,errorCode,message,timestamp:new Date().toISOString()});};app.use(errorHandler);
