@@ -9,6 +9,7 @@ import type {
   RosterRow,
 } from "../../shared/types.js";
 import { academicService, examEnd } from "./academic.js";
+import { requirePermission } from "./authorization.js";
 export function computeStatistics(values: number[]): Statistics {
   if (!values.length)
     return {
@@ -162,6 +163,7 @@ export function evaluationService(repo: Repository) {
     };
   }
   function saveMarks(user: User, examId: string, body: unknown) {
+    requirePermission(user, "enterMarks");
     const exam = academic.assignedExam(user, examId);
     assert(
       exam.status === "PUBLISHED" && examEnd(exam) <= Date.now(),
@@ -204,6 +206,12 @@ export function evaluationService(repo: Repository) {
       );
     }
     return repo.transaction(() => {
+      const previous = repo
+        .all(
+          "SELECT student_id,marks_obtained,absent,remarks FROM marks WHERE exam_id=?",
+          examId,
+        )
+        .filter((m) => marks.some((input) => input.studentId === m.student_id));
       for (const m of marks) {
         repo.run(
           "INSERT INTO marks(id,student_id,exam_id,marks_obtained,absent,remarks,updated_at) VALUES(?,?,?,?,?,?,?) ON CONFLICT(student_id,exam_id) DO UPDATE SET marks_obtained=excluded.marks_obtained,absent=excluded.absent,remarks=excluded.remarks,updated_at=excluded.updated_at",
@@ -221,16 +229,21 @@ export function evaluationService(repo: Repository) {
       repo.audit(user.id, "MARKS_SAVED", examId, {
         students: marks.map((m) => m.studentId),
         savedCount: marks.length,
+        before: previous,
+        after: marks,
       });
       return { savedCount: marks.length, statistics };
     });
   }
   function boundaries(user: User, examId: string, body: unknown) {
+    requirePermission(user, "configureGrading");
     const exam = academic.assignedExam(user, examId);
     assert(
-      exam.status !== "CANCELLED" && !exam.results_published,
+      exam.status === "PUBLISHED" &&
+        !exam.results_published &&
+        examEnd(exam) <= Date.now(),
       409,
-      "Withdraw publication before changing boundaries; cancelled examinations cannot be graded.",
+      "Grading requires a completed, published examination with unpublished results.",
     );
     const input = z.object({ boundaries: boundarySchema }).strict().parse(body);
     const rows = validateBoundaries(input.boundaries, exam.max_marks);
@@ -244,11 +257,14 @@ export function evaluationService(repo: Repository) {
     });
   }
   function generate(user: User, examId: string, body: unknown) {
+    requirePermission(user, "generateGrades");
     const exam = academic.assignedExam(user, examId);
     assert(
-      exam.status !== "CANCELLED" && !exam.results_published,
+      exam.status === "PUBLISHED" &&
+        !exam.results_published &&
+        examEnd(exam) <= Date.now(),
       409,
-      "Withdraw publication before regenerating grades.",
+      "Grade generation requires a completed, published examination with unpublished results.",
     );
     const input = z
       .object({ confirmMissing: z.boolean().default(false) })
@@ -300,12 +316,30 @@ export function evaluationService(repo: Repository) {
       };
     });
   }
-  function publish(user: User, examId: string, withdraw = false) {
+  function publish(
+    user: User,
+    examId: string,
+    withdraw = false,
+    body: unknown = {},
+  ) {
+    requirePermission(user, withdraw ? "withdrawResults" : "publishResults");
+    const reason = withdraw
+      ? z
+          .object({
+            reason: z
+              .string()
+              .trim()
+              .min(10, "Provide a reason of at least 10 characters.")
+              .max(500),
+          })
+          .strict()
+          .parse(body).reason
+      : undefined;
     const exam = academic.assignedExam(user, examId, true);
     assert(
-      exam.status !== "CANCELLED",
+      exam.status === "PUBLISHED" && examEnd(exam) <= Date.now(),
       409,
-      "Cancelled examinations cannot publish results.",
+      "Only completed, published examinations can publish or withdraw results.",
     );
     const rows = repo.all<{ status: string }>(
       "SELECT status FROM results WHERE exam_id=?",
@@ -332,6 +366,7 @@ export function evaluationService(repo: Repository) {
         user.id,
         withdraw ? "RESULTS_WITHDRAWN" : "RESULTS_PUBLISHED",
         examId,
+        reason ? { reason } : {},
       );
       return {
         count: rows.length,

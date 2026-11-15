@@ -30,16 +30,37 @@ test("FR-015–017 eligible registration is durable, unique and ownership protec
     seed(r);
     const s = academicService(r),
       student = r.get<User>("users", "u-student-1")!,
-      other = r.get<User>("users", "u-student-2")!;
+      other = r.get<User>("users", "u-student-2")!,
+      admin = r.get<User>("users", "u-admin")!;
     const receipt = s.register(student, { examScheduleId: "e-1" });
     assert.equal(receipt.status, "REGISTERED");
     assert.throws(
       () => s.register(student, { examScheduleId: "e-1" }),
       /Duplicate/,
     );
-    assert.throws(() => s.cancel(other, receipt.id), /own/);
-    s.cancel(student, receipt.id);
-    assert.equal(s.register(student, { examScheduleId: "e-1" }).id, receipt.id);
+    assert.throws(
+      () =>
+        s.cancel(other, receipt.id, {
+          reason: "Invalid enrollment correction",
+        }),
+      /role/,
+    );
+    assert.throws(
+      () =>
+        s.cancel(student, receipt.id, {
+          reason: "Invalid enrollment correction",
+        }),
+      /role/,
+    );
+    s.cancel(admin, receipt.id, { reason: "Invalid enrollment correction" });
+    assert.throws(
+      () => s.register(student, { examScheduleId: "e-1" }),
+      /examination office/,
+    );
+    assert.equal(
+      s.register(admin, { examScheduleId: "e-1", studentId: "s-1" }).id,
+      receipt.id,
+    );
     r.run(
       "DELETE FROM enrollments WHERE student_id=? AND course_id=?",
       "s-1",

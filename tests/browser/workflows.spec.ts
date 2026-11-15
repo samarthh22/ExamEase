@@ -23,6 +23,9 @@ test("student registration, receipt and responsive navigation", async ({
   await expect(
     card.getByRole("button", { name: "Registered", exact: true }),
   ).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "Cancel", exact: true }),
+  ).toHaveCount(0);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Open navigation" }).click();
   await page.getByRole("link", { name: "My results", exact: true }).click();
@@ -52,6 +55,7 @@ test("faculty saves marks, validates boundaries, generates and publishes private
   await expect(
     page.getByRole("status").filter({ hasText: "Marks saved" }),
   ).toBeVisible();
+  await page.getByLabel("Grade label 2", { exact: true }).fill("D");
   await page.getByRole("button", { name: "Save boundaries" }).click();
   await expect(
     page.getByRole("status").filter({ hasText: "boundaries" }),
@@ -67,7 +71,10 @@ test("faculty saves marks, validates boundaries, generates and publishes private
   await page.getByRole("button", { name: "Confirm", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Withdraw publication" }),
-  ).toBeVisible();
+  ).toHaveCount(0);
+  await expect(
+    page.getByLabel("Marks for Aarav Sharma", { exact: true }),
+  ).toBeDisabled();
   await page.getByRole("button", { name: "Sign out" }).click();
   await login(page, "student@examease.local");
   await page.getByRole("link", { name: "My results", exact: true }).click();
@@ -113,6 +120,7 @@ test("examination administrator creates course and schedule; conflicts are visib
   await page
     .getByLabel("Schedule status", { exact: true })
     .selectOption("PUBLISHED");
+  page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(page.getByText("Lab 9")).toBeVisible();
@@ -149,6 +157,7 @@ test("system administrator creates and deactivates an account", async ({
     .filter({ hasText: "browser-test@examease.local" });
   await row.getByRole("button", { name: "Manage account" }).click();
   await page.getByLabel("Account is active").uncheck();
+  page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(row).toContainText("Inactive");
 });

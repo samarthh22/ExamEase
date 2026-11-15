@@ -19,6 +19,7 @@ import { existsSync } from "node:fs";
 import { authService, publicUser } from "./services/auth.js";
 import { assert } from "./errors.js";
 import { academicRoutes } from "./routes/academic.js";
+import { permissions } from "../shared/permissions.js";
 import { evaluationRoutes } from "./routes/evaluation.js";
 
 export function createApp(repo: Repository) {
@@ -107,13 +108,13 @@ export function createApp(repo: Repository) {
   app.get("/api/auth/me", (req, res) =>
     res.json({ user: publicUser(req.user) }),
   );
-  app.get("/api/users", allow("SYS_ADMIN"), (_req, res) =>
+  app.get("/api/users", allow(...permissions.manageUsers), (_req, res) =>
     res.json(repo.list<User>("users").map(publicUser)),
   );
-  app.post("/api/users", allow("SYS_ADMIN"), (req, res) =>
+  app.post("/api/users", allow(...permissions.manageUsers), (req, res) =>
     res.status(201).json(auth.save(req.body, null, req.user)),
   );
-  app.put("/api/users/:id", allow("SYS_ADMIN"), (req, res) =>
+  app.put("/api/users/:id", allow(...permissions.manageUsers), (req, res) =>
     res.json(auth.save(req.body, String(req.params.id), req.user)),
   );
   academicRoutes(app, repo, allow);
@@ -138,6 +139,11 @@ export function createApp(repo: Repository) {
         .join("; ");
       errorCode = "INVALID_INPUT";
     }
+    if (error.type === "entity.parse.failed") {
+      status = 400;
+      message = "Malformed JSON request.";
+      errorCode = "INVALID_JSON";
+    }
     if (
       error.code?.startsWith("ERR_SQLITE") &&
       /UNIQUE constraint/.test(error.message)
@@ -153,6 +159,14 @@ export function createApp(repo: Repository) {
       status = 422;
       message = "A referenced record does not exist or is still in use.";
       errorCode = "INVALID_REFERENCE";
+    }
+    if (
+      error.code?.startsWith("ERR_SQLITE") &&
+      /CHECK constraint/.test(error.message)
+    ) {
+      status = 422;
+      message = "The submitted values violate a record validation rule.";
+      errorCode = "INVALID_INPUT";
     }
     if (status >= 500) {
       console.error(error);

@@ -47,6 +47,10 @@ export function Home() {
   const { user, version } = useApp(),
     { data: exams, error, loading } = useData<Exam[]>("/exams", version),
     { data: courses } = useData<Course[]>("/courses", version),
+    { data: ownResults, error: ownResultsError } = useData<ResultRow[]>(
+      user.role === "STUDENT" ? "/results" : "",
+      version,
+    ),
     { data: reports } = useData<CourseReport[]>(
       user.role === "STUDENT" ? "" : "/reports/courses",
       version,
@@ -169,8 +173,16 @@ export function Home() {
         />
         <Stat
           label="Published results"
-          value={published.length}
-          detail="Available to students"
+          value={
+            student
+              ? ownResults?.filter((r) => r.status === "PUBLISHED").length || 0
+              : published.length
+          }
+          detail={
+            student
+              ? "Your published examination results"
+              : "Available to students"
+          }
           icon={<CheckCheck size={19} />}
         />
         <Stat
@@ -180,6 +192,7 @@ export function Home() {
           icon={<Clock size={19} />}
         />
       </div>
+      <ErrorMessage message={ownResultsError} />
       <div className="dashboard-grid">
         <Panel
           title="Upcoming examinations"
@@ -420,7 +433,13 @@ export function Courses() {
       label: "Assigned faculty",
       type: "select",
       required: false,
-      options: faculty?.map((f) => ({ value: f.id, label: f.name || f.id })),
+      options: faculty
+        ?.filter(
+          (f) =>
+            f.id === edit?.faculty_id ||
+            (f.active && f.account_role === "FACULTY"),
+        )
+        .map((f) => ({ value: f.id, label: f.name || f.id })),
     },
     { name: "active", label: "Course is active", type: "checkbox" },
   ];
@@ -553,18 +572,48 @@ export function Schedule() {
       name: "course_id",
       label: "Course",
       type: "select",
+      disabled: !!edit && (edit.registered_count || 0) > 0,
       options: courses
-        ?.filter((c) => c.active)
+        ?.filter((c) => c.active || c.id === edit?.course_id)
         .map((c) => ({ value: c.id, label: `${c.code} · ${c.title}` })),
     },
-    { name: "exam_type", label: "Examination type" },
-    { name: "date", label: "Date", type: "date" },
+    {
+      name: "exam_type",
+      label: "Examination type",
+      disabled: !!edit && (edit.registered_count || 0) > 0,
+    },
+    {
+      name: "date",
+      label: "Date",
+      type: "date",
+      disabled:
+        !!edit &&
+        new Date(`${edit.date}T${edit.start_time}:00+05:30`).getTime() <=
+          Date.now(),
+    },
     { name: "venue", label: "Venue" },
-    { name: "start_time", label: "Start time (IST)", type: "time" },
-    { name: "end_time", label: "End time (IST)", type: "time" },
+    {
+      name: "start_time",
+      label: "Start time (IST)",
+      type: "time",
+      disabled:
+        !!edit &&
+        new Date(`${edit.date}T${edit.start_time}:00+05:30`).getTime() <=
+          Date.now(),
+    },
+    {
+      name: "end_time",
+      label: "End time (IST)",
+      type: "time",
+      disabled:
+        !!edit &&
+        new Date(`${edit.date}T${edit.start_time}:00+05:30`).getTime() <=
+          Date.now(),
+    },
     {
       name: "max_marks",
       label: "Maximum marks",
+      disabled: !!edit && (edit.marked_count || 0) > 0,
       type: "number",
       min: 1,
       max: 10000,
@@ -574,7 +623,14 @@ export function Schedule() {
       name: "status",
       label: "Schedule status",
       type: "select",
-      options: ["DRAFT", "PUBLISHED", "CANCELLED"].map((v) => ({
+      options: ((edit?.marked_count || 0) > 0
+        ? ["PUBLISHED"]
+        : (edit?.registered_count || 0) > 0
+          ? ["PUBLISHED", "CANCELLED"]
+          : edit
+            ? ["DRAFT", "PUBLISHED", "CANCELLED"]
+            : ["DRAFT", "PUBLISHED"]
+      ).map((v) => ({
         value: v,
         label: v,
       })),
@@ -607,7 +663,10 @@ export function Schedule() {
             onChange={(e) => setStatus(e.target.value)}
           >
             <option value="">All statuses</option>
-            {["DRAFT", "PUBLISHED", "CANCELLED"].map((s) => (
+            {(user.role === "STUDENT"
+              ? ["PUBLISHED", "CANCELLED"]
+              : ["DRAFT", "PUBLISHED", "CANCELLED"]
+            ).map((s) => (
               <option key={s}>{s}</option>
             ))}
           </select>
@@ -654,6 +713,16 @@ export function Schedule() {
                     <td>
                       <button
                         className="text-button"
+                        disabled={
+                          e.status === "CANCELLED" || !!e.results_published
+                        }
+                        title={
+                          e.status === "CANCELLED"
+                            ? "Cancelled examinations are closed"
+                            : e.results_published
+                              ? "Withdraw results before editing"
+                              : "Edit this schedule"
+                        }
                         onClick={() => setEdit(e)}
                       >
                         Edit schedule
@@ -692,6 +761,17 @@ export function Schedule() {
             }
             onClose={() => setEdit(undefined)}
             onSave={async (v) => {
+              if (
+                v.status !== edit?.status &&
+                (v.status === "PUBLISHED" || v.status === "CANCELLED")
+              ) {
+                const message =
+                  v.status === "CANCELLED"
+                    ? "Cancel this examination and all its active registrations? This schedule cannot be reopened."
+                    : "Publish this examination schedule and open registration for eligible students?";
+                if (!window.confirm(message))
+                  throw new Error("Schedule changes were not saved.");
+              }
               await api(
                 `/exams${edit ? `/${edit.id}` : ""}`,
                 edit ? "PUT" : "POST",
@@ -713,11 +793,15 @@ export function Registrations() {
       "/registrations",
       version,
     ),
-    { data: eligible } = useData<Exam[]>(
+    {
+      data: eligible,
+      error: eligibleError,
+      loading: eligibleLoading,
+    } = useData<Exam[]>(
       student ? "/registrations/eligible-exams" : "/exams",
       version,
     ),
-    { data: students } = useData<Student[]>(
+    { data: students, error: studentsError } = useData<Student[]>(
       student ? "" : "/students",
       version,
     );
@@ -745,11 +829,20 @@ export function Registrations() {
         }
       />
       {student && (
+        <div className="info-strip">
+          Registrations are official examination records. Contact the
+          examination office if a registration needs to be cancelled or
+          restored.
+        </div>
+      )}
+      <ErrorMessage message={eligibleError || studentsError} />
+      {student && (
         <>
           <div className="section-title">
             <h2>Available examinations</h2>
             <span>For your enrolled courses</span>
           </div>
+          {eligibleLoading && <Loading />}
           <div className="exam-card-grid">
             {eligible?.map((e) => (
               <article className="exam-card" key={e.id}>
@@ -759,7 +852,9 @@ export function Registrations() {
                     value={
                       e.registration_status === "REGISTERED"
                         ? "REGISTERED"
-                        : "Eligible"
+                        : e.registration_status === "CANCELLED"
+                          ? "CANCELLED"
+                          : "Eligible"
                     }
                   />
                 </div>
@@ -783,15 +878,18 @@ export function Registrations() {
                 </div>
                 <button
                   className={`button ${e.registration_status === "REGISTERED" ? "secondary" : ""}`}
-                  disabled={e.registration_status === "REGISTERED"}
+                  disabled={
+                    e.registration_status === "REGISTERED" ||
+                    e.registration_status === "CANCELLED"
+                  }
                   onClick={() => setRegister(e)}
                 >
                   {e.registration_status === "REGISTERED"
                     ? "Registered"
-                    : "Register for examination"}
-                  {e.registration_status !== "REGISTERED" && (
-                    <ArrowRight size={16} />
-                  )}
+                    : e.registration_status === "CANCELLED"
+                      ? "Contact examination office"
+                      : "Register for examination"}
+                  {!e.registration_status && <ArrowRight size={16} />}
                 </button>
               </article>
             ))}
@@ -867,7 +965,9 @@ export function Registrations() {
                       >
                         View receipt
                       </button>
-                      {r.status === "REGISTERED" &&
+                      {!student &&
+                        r.status === "REGISTERED" &&
+                        r.exam_status === "PUBLISHED" &&
                         new Date(
                           `${r.date}T${r.start_time}:00+05:30`,
                         ).getTime() > Date.now() && (
@@ -905,10 +1005,11 @@ export function Registrations() {
       {cancel && (
         <Confirm
           title="Cancel registration"
-          message={`Cancel the registration for ${cancel.code} ${cancel.exam_type}? You can register again before the examination starts.`}
+          message={`Cancel ${cancel.name}'s registration for ${cancel.code} ${cancel.exam_type}? The reason and your identity will be recorded. Only the examination office can restore it.`}
+          reasonRequired
           onClose={() => setCancel(null)}
-          onConfirm={async () => {
-            await api(`/registrations/${cancel.id}`, "DELETE");
+          onConfirm={async (reason) => {
+            await api(`/registrations/${cancel.id}`, "DELETE", { reason });
             refresh();
             notify("Registration cancelled.");
           }}
@@ -970,10 +1071,12 @@ export function Registrations() {
                 name: "studentId",
                 label: "Student",
                 type: "select",
-                options: students?.map((s) => ({
-                  value: s.id,
-                  label: `${s.roll_no} · ${s.name}`,
-                })),
+                options: students
+                  ?.filter((s) => s.active && s.account_role === "STUDENT")
+                  .map((s) => ({
+                    value: s.id,
+                    label: `${s.roll_no} · ${s.name}`,
+                  })),
               },
               {
                 name: "examScheduleId",
@@ -1135,7 +1238,11 @@ export function Reports() {
   const [department, setDepartment] = useState(""),
     [examId, setExamId] = useState(""),
     [studentId, setStudentId] = useState("");
-  const { data: studentRows, error: studentError } = useData<ResultRow[]>(
+  const {
+    data: studentRows,
+    error: studentError,
+    loading: studentLoading,
+  } = useData<ResultRow[]>(
     studentId ? `/reports/student/${studentId}` : "",
     version,
   );
@@ -1355,7 +1462,12 @@ export function Reports() {
             </select>
           </div>
           <ErrorMessage message={studentError} />
-          {studentId && <ResultTable rows={studentRows || []} />}
+          {studentId &&
+            (studentLoading ? (
+              <Loading />
+            ) : (
+              !studentError && <ResultTable rows={studentRows || []} />
+            ))}
         </Panel>
       )}
     </>

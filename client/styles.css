@@ -12,6 +12,58 @@
   --line: #e5ebe9;
   --surface: #fff;
 }
+.password-input {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.password-input > input {
+  width: 100%;
+  padding-right: 48px !important;
+}
+.password-toggle {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--green);
+}
+.password-toggle:hover {
+  background: #edf5f1;
+}
+.reason-field {
+  margin-top: 18px;
+}
+.reason-field textarea {
+  resize: vertical;
+  min-height: 95px;
+  width: 100%;
+  border: 1px solid #dce4e1;
+  border-radius: 7px;
+  padding: 10px 12px;
+  color: inherit;
+}
+.table-empty {
+  text-align: center;
+  padding: 30px !important;
+  color: var(--muted);
+}
+.login-story > .brand,
+.login-footer {
+  position: relative;
+  z-index: 1;
+}
+.login-footer {
+  flex-wrap: wrap;
+  row-gap: 6px;
+}
 * {
   box-sizing: border-box;
 }

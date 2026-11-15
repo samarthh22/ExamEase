@@ -48,12 +48,18 @@ export function Records() {
       label: "Linked user account",
       type: "select",
       disabled: !!edit,
-      options: accounts.data
-        ?.filter(
-          (u) =>
-            u.role === (tab === "students" ? "STUDENT" : "FACULTY") && u.active,
-        )
-        .map((u) => ({ value: u.id, label: `${u.name} · ${u.email}` })),
+      options: edit
+        ? [{ value: edit.user_id, label: `${edit.name} · ${edit.email}` }]
+        : accounts.data
+            ?.filter(
+              (u) =>
+                u.role === (tab === "students" ? "STUDENT" : "FACULTY") &&
+                u.active &&
+                !(tab === "students" ? students.data : faculty.data)?.some(
+                  (profile) => profile.user_id === u.id,
+                ),
+            )
+            .map((u) => ({ value: u.id, label: `${u.name} · ${u.email}` })),
       hint: "Accounts are created by the system administrator.",
     },
     ...(tab === "students"
@@ -233,10 +239,12 @@ export function Records() {
                 name: "student_id",
                 label: "Student",
                 type: "select",
-                options: students.data?.map((s) => ({
-                  value: s.id,
-                  label: `${s.roll_no} · ${s.name}`,
-                })),
+                options: students.data
+                  ?.filter((s) => s.active && s.account_role === "STUDENT")
+                  .map((s) => ({
+                    value: s.id,
+                    label: `${s.roll_no} · ${s.name}`,
+                  })),
               },
               {
                 name: "course_id",
@@ -263,7 +271,7 @@ export function Records() {
   );
 }
 export function Accounts() {
-  const { version, refresh, notify } = useApp(),
+  const { user, version, refresh, notify } = useApp(),
     { data, error, loading } = useData<User[]>("/users", version),
     [search, setSearch] = useState(""),
     [edit, setEdit] = useState<User | null | undefined>();
@@ -274,6 +282,7 @@ export function Accounts() {
       name: "role",
       label: "Assigned role",
       type: "select",
+      disabled: edit?.id === user.id,
       options: Object.entries(roleLabels).map(([value, label]) => ({
         value,
         label,
@@ -287,7 +296,12 @@ export function Accounts() {
       required: !edit,
       hint: "At least 10 characters. Existing sessions are revoked on account updates.",
     },
-    { name: "active", label: "Account is active", type: "checkbox" },
+    {
+      name: "active",
+      label: "Account is active",
+      type: "checkbox",
+      disabled: edit?.id === user.id,
+    },
   ];
   return (
     <>
@@ -378,6 +392,19 @@ export function Accounts() {
             onSave={async (v) => {
               const payload = { ...v };
               if (!payload.password) delete payload.password;
+              if (
+                edit &&
+                (v.role !== edit.role ||
+                  !!v.active !== !!edit.active ||
+                  payload.password)
+              ) {
+                if (
+                  !window.confirm(
+                    "Apply this account access change? Existing sessions for this account will be revoked.",
+                  )
+                )
+                  throw new Error("Account changes were not saved.");
+              }
               await api(
                 `/users${edit ? `/${edit.id}` : ""}`,
                 edit ? "PUT" : "POST",

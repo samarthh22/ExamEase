@@ -10,6 +10,7 @@ import type {
   Registration,
 } from "../../shared/types.js";
 import { assert } from "../errors.js";
+import { requirePermission } from "./authorization.js";
 const text = z.string().trim().min(1).max(120);
 const studentSchema = z
   .object({
@@ -71,6 +72,7 @@ export function academicService(repo: Repository) {
       );
   }
   function courses(user: User): Course[] {
+    requirePermission(user, "viewAcademic");
     let where = "",
       params: string[] = [];
     if (user.role === "STUDENT") {
@@ -133,15 +135,19 @@ export function academicService(repo: Repository) {
     kind: "students" | "faculty",
     body: unknown,
     id: string | null,
+    actor: User,
   ) {
+    requirePermission(actor, "manageRecords");
     const input =
       kind === "students"
         ? studentSchema.parse(body)
         : facultySchema.parse(body);
     const user = repo.get<User>("users", input.user_id);
     assert(
-      user?.active &&
-        user.role === (kind === "students" ? "STUDENT" : "FACULTY"),
+      user &&
+        (id ||
+          (user.active &&
+            user.role === (kind === "students" ? "STUDENT" : "FACULTY"))),
       422,
       "Select an active account with the matching role.",
     );
@@ -154,13 +160,45 @@ export function academicService(repo: Repository) {
         "A profile cannot be moved to a different account.",
       );
     }
-    return id
-      ? repo.update(kind, id, input)
-      : repo.insert(kind, { id: randomUUID(), ...input });
+    return repo.transaction(() => {
+      const record = id
+        ? repo.update(kind, id, input)
+        : repo.insert(kind, { id: randomUUID(), ...input });
+      repo.audit(actor.id, "PROFILE_SAVED", record.id, { kind });
+      return record;
+    });
   }
-  function saveCourse(body: unknown, id: string | null) {
+  function saveCourse(body: unknown, id: string | null, actor: User) {
+    requirePermission(actor, "manageCourses");
     const input = courseSchema.parse(body);
-    if (id) assert(repo.get("courses", id), 404, "Course not found.");
+    const old = id ? repo.get<Course>("courses", id) : undefined;
+    if (id) assert(old, 404, "Course not found.");
+    if (old) {
+      const used = repo.one(
+        "SELECT id FROM exams WHERE course_id=? UNION ALL SELECT id FROM enrollments WHERE course_id=? LIMIT 1",
+        id!,
+        id!,
+      );
+      assert(
+        !used ||
+          (old.code === input.code.toUpperCase() &&
+            old.department === input.department &&
+            old.semester === input.semester),
+        409,
+        "Course code, department and semester are locked after enrollment or scheduling. Create a separate course record for a new offering.",
+      );
+      const upcoming = repo
+        .all<Exam>(
+          "SELECT * FROM exams WHERE course_id=? AND status='PUBLISHED'",
+          id!,
+        )
+        .some((e) => examEnd(e) > Date.now());
+      assert(
+        input.active || !upcoming,
+        409,
+        "Cancel upcoming published examinations before deactivating this course.",
+      );
+    }
     if (input.faculty_id) {
       const f = repo.one(
         "SELECT f.id FROM faculty f JOIN users u ON u.id=f.user_id WHERE f.id=? AND u.active=1 AND u.role=?",
@@ -168,28 +206,83 @@ export function academicService(repo: Repository) {
         "FACULTY",
       );
       assert(f, 422, "Select an active faculty member.");
+      if (id && old?.faculty_id !== input.faculty_id) {
+        const scheduled = repo
+          .all<Exam>(
+            "SELECT * FROM exams WHERE course_id=? AND status='PUBLISHED'",
+            id,
+          )
+          .filter((e) => examEnd(e) > Date.now());
+        for (const exam of scheduled) {
+          const conflict = repo.one(
+            "SELECT e.id FROM exams e JOIN courses c ON c.id=e.course_id WHERE c.faculty_id=? AND e.course_id!=? AND e.status='PUBLISHED' AND e.date=? AND e.start_time<? AND e.end_time>? LIMIT 1",
+            input.faculty_id,
+            id,
+            exam.date,
+            exam.end_time,
+            exam.start_time,
+          );
+          assert(
+            !conflict,
+            409,
+            "Faculty assignment would conflict with another published examination.",
+          );
+        }
+      }
     }
     const value = {
       ...input,
       code: input.code.toUpperCase(),
       active: Number(input.active),
     };
-    return id
-      ? repo.update("courses", id, value)
-      : repo.insert("courses", { id: randomUUID(), ...value });
+    return repo.transaction(() => {
+      const course = id
+        ? repo.update("courses", id, value)
+        : repo.insert("courses", { id: randomUUID(), ...value });
+      repo.audit(actor.id, "COURSE_SAVED", course.id, {
+        faculty_id: input.faculty_id,
+        active: input.active,
+      });
+      return course;
+    });
   }
   function saveExam(body: unknown, id: string | null, actor: User) {
+    requirePermission(actor, "manageSchedules");
     const input = examSchema.parse(body),
       course = repo.get<Course>("courses", input.course_id),
       old = id ? repo.get<Exam>("exams", id) : undefined;
-    assert(course?.active, 422, "Choose an active course.");
+    assert(
+      course &&
+        (course.active ||
+          (old?.course_id === input.course_id && input.status === "CANCELLED")),
+      422,
+      "Choose an active course.",
+    );
     assert(
       input.start_time < input.end_time,
       422,
       "End time must be after start time.",
     );
     if (id) assert(old, 404, "Examination not found.");
+    const proposed = { ...input, id: id || "", results_published: 0 } as Exam;
+    if (!old) {
+      assert(
+        input.status !== "CANCELLED",
+        422,
+        "Create an examination as draft or published.",
+      );
+      assert(
+        examStart(proposed) > Date.now(),
+        422,
+        "New examinations must start in the future.",
+      );
+    }
     if (old) {
+      assert(
+        old.status !== "CANCELLED",
+        409,
+        "A cancelled examination is closed. Create a new schedule instead of reopening it.",
+      );
       assert(
         !old.results_published,
         409,
@@ -204,6 +297,16 @@ export function academicService(repo: Repository) {
         409,
         "The course cannot change after registrations exist.",
       );
+      assert(
+        !registrations?.count || old.exam_type === input.exam_type,
+        409,
+        "Examination type cannot change after registrations exist.",
+      );
+      assert(
+        !registrations?.count || input.status !== "DRAFT",
+        409,
+        "An examination with registrations cannot be returned to draft.",
+      );
       const evaluated = repo.one(
         "SELECT count(*) count FROM marks WHERE exam_id=?",
         id!,
@@ -216,6 +319,39 @@ export function academicService(repo: Repository) {
             old.end_time === input.end_time),
         409,
         "Marks exist: maximum marks and examination time are locked.",
+      );
+      assert(
+        !evaluated?.count || input.status === "PUBLISHED",
+        409,
+        "An evaluated examination cannot be cancelled or returned to draft.",
+      );
+      const timeChanged =
+        old.date !== input.date ||
+        old.start_time !== input.start_time ||
+        old.end_time !== input.end_time;
+      assert(
+        !timeChanged || examStart(old) > Date.now(),
+        409,
+        "An examination that has started cannot be rescheduled.",
+      );
+      assert(
+        !timeChanged || examStart(proposed) > Date.now(),
+        422,
+        "A rescheduled examination must start in the future.",
+      );
+    }
+    if (input.status === "PUBLISHED") {
+      const faculty =
+        course!.faculty_id &&
+        repo.one(
+          "SELECT f.id FROM faculty f JOIN users u ON u.id=f.user_id WHERE f.id=? AND u.active=1 AND u.role=?",
+          course!.faculty_id,
+          "FACULTY",
+        );
+      assert(
+        faculty,
+        422,
+        "Assign an active faculty member to the course before publishing its examination.",
       );
     }
     if (input.status !== "CANCELLED") {
@@ -233,6 +369,41 @@ export function academicService(repo: Repository) {
         "Schedule conflict: this venue is already booked during that time.",
         "SCHEDULE_CONFLICT",
       );
+      if (input.status === "PUBLISHED") {
+        const overlaps = repo.all<{
+          id: string;
+          course_id: string;
+          faculty_id: string | null;
+        }>(
+          "SELECT e.id,e.course_id,c.faculty_id FROM exams e JOIN courses c ON c.id=e.course_id WHERE e.id!=? AND e.status='PUBLISHED' AND e.date=? AND e.start_time<? AND e.end_time>?",
+          id || "",
+          input.date,
+          input.end_time,
+          input.start_time,
+        );
+        for (const other of overlaps) {
+          assert(
+            other.course_id !== input.course_id,
+            409,
+            "Schedule conflict: this course already has a published examination during that time.",
+          );
+          assert(
+            !course!.faculty_id || other.faculty_id !== course!.faculty_id,
+            409,
+            "Schedule conflict: the assigned faculty member has another examination during that time.",
+          );
+          const shared = repo.one(
+            "SELECT a.student_id FROM enrollments a JOIN enrollments b ON b.student_id=a.student_id WHERE a.course_id=? AND b.course_id=? LIMIT 1",
+            input.course_id,
+            other.course_id,
+          );
+          assert(
+            !shared,
+            409,
+            "Schedule conflict: students enrolled in both courses would have overlapping examinations.",
+          );
+        }
+      }
     }
     return repo.transaction(() => {
       const exam = id
@@ -244,24 +415,71 @@ export function academicService(repo: Repository) {
           });
       if (old && old.max_marks !== input.max_marks)
         repo.run("DELETE FROM boundaries WHERE exam_id=?", id!);
+      if (old && input.status === "CANCELLED") {
+        repo.run(
+          "UPDATE registrations SET status='CANCELLED' WHERE exam_id=? AND status='REGISTERED'",
+          id!,
+        );
+        repo.run(
+          "UPDATE results SET status='NEEDS_RECALCULATION',published_at=NULL WHERE exam_id=?",
+          id!,
+        );
+      }
       repo.audit(actor.id, "SCHEDULE_SAVED", exam.id, { status: input.status });
       return exam;
     });
   }
-  function enroll(body: unknown) {
+  function enroll(body: unknown, actor: User) {
+    requirePermission(actor, "manageEnrollments");
     const input = z
       .object({ student_id: text, course_id: text })
       .strict()
       .parse(body);
-    assert(repo.get("students", input.student_id), 404, "Student not found.");
+    const student = repo.get<Student>("students", input.student_id);
+    assert(student, 404, "Student not found.");
+    const account = repo.get<User>("users", student.user_id);
+    assert(
+      account?.active && account.role === "STUDENT",
+      422,
+      "Choose an active student account.",
+    );
     assert(
       repo.get<Course>("courses", input.course_id)?.active,
       422,
       "Choose an active course.",
     );
-    return repo.insert("enrollments", { id: randomUUID(), ...input });
+    const examsForCourse = repo
+      .all<Exam>(
+        "SELECT * FROM exams WHERE course_id=? AND status='PUBLISHED'",
+        input.course_id,
+      )
+      .filter((e) => examEnd(e) > Date.now());
+    for (const exam of examsForCourse) {
+      const conflict = repo.one(
+        "SELECT e.id FROM exams e JOIN enrollments en ON en.course_id=e.course_id WHERE en.student_id=? AND e.course_id!=? AND e.status='PUBLISHED' AND e.date=? AND e.start_time<? AND e.end_time>? LIMIT 1",
+        input.student_id,
+        input.course_id,
+        exam.date,
+        exam.end_time,
+        exam.start_time,
+      );
+      assert(
+        !conflict,
+        409,
+        "Enrollment would give this student overlapping published examinations. Resolve the schedule first.",
+      );
+    }
+    return repo.transaction(() => {
+      const enrollment = repo.insert("enrollments", {
+        id: randomUUID(),
+        ...input,
+      });
+      repo.audit(actor.id, "ENROLLMENT_CREATED", enrollment.id);
+      return enrollment;
+    });
   }
   function registrations(user: User): Registration[] {
+    requirePermission(user, "viewRegistrations");
     const student = user.role === "STUDENT" ? profile(user)?.id : null;
     return repo.all<Registration>(
       `SELECT r.*,u.name,s.roll_no,c.code,c.title,e.exam_type,e.date,e.start_time,e.end_time,e.venue,e.status exam_status FROM registrations r JOIN students s ON s.id=r.student_id JOIN users u ON u.id=s.user_id JOIN exams e ON e.id=r.exam_id JOIN courses c ON c.id=e.course_id ${user.role === "STUDENT" ? "WHERE r.student_id=?" : ""} ORDER BY e.date`,
@@ -269,6 +487,11 @@ export function academicService(repo: Repository) {
     );
   }
   function eligible(user: User) {
+    assert(
+      user.role === "STUDENT",
+      403,
+      "Only students can view their eligible examinations.",
+    );
     const student = profile(user);
     assert(
       student,
@@ -292,16 +515,24 @@ export function academicService(repo: Repository) {
       });
   }
   function register(user: User, body: unknown) {
+    requirePermission(user, "registerExams");
     const input = z
       .object({ examScheduleId: text, studentId: text.optional() })
       .strict()
       .parse(body);
+    assert(
+      user.role === "EXAM_ADMIN" || !input.studentId,
+      403,
+      "Students cannot choose or override the registration identity.",
+    );
     const studentId =
       user.role === "EXAM_ADMIN" ? input.studentId : profile(user)?.id;
     assert(studentId, 422, "A student profile is required.");
     const student = repo.get<Student>("students", studentId);
     assert(
-      student && repo.get<User>("users", student.user_id)?.active,
+      student &&
+        repo.get<User>("users", student.user_id)?.active &&
+        repo.get<User>("users", student.user_id)?.role === "STUDENT",
       422,
       "Select an active student.",
     );
@@ -337,6 +568,11 @@ export function academicService(repo: Repository) {
         409,
         "Duplicate registration blocked: you are already registered for this examination.",
       );
+      assert(
+        !old || user.role === "EXAM_ADMIN",
+        403,
+        "This registration was cancelled by the examination office. Contact the office to restore it.",
+      );
       const seat =
         old?.seat ||
         (repo.one(
@@ -360,13 +596,24 @@ export function academicService(repo: Repository) {
       return registrations(user).find((r) => r.id === record.id)!;
     });
   }
-  function cancel(user: User, id: string) {
+  function cancel(user: User, id: string, body: unknown) {
+    requirePermission(user, "cancelRegistrations");
+    const { reason } = z
+      .object({
+        reason: z
+          .string()
+          .trim()
+          .min(10, "Provide a reason of at least 10 characters.")
+          .max(500),
+      })
+      .strict()
+      .parse(body);
     const r = repo.get<Registration>("registrations", id);
     assert(r, 404, "Registration not found.");
     assert(
-      user.role === "EXAM_ADMIN" || r.student_id === profile(user)?.id,
-      403,
-      "You can only cancel your own registration.",
+      r.status === "REGISTERED",
+      409,
+      "This registration is already cancelled.",
     );
     const exam = repo.get<Exam>("exams", r.exam_id)!;
     assert(
@@ -379,7 +626,13 @@ export function academicService(repo: Repository) {
       409,
       "Registration cannot be cancelled after the examination starts or marks exist.",
     );
-    return repo.update("registrations", id, { status: "CANCELLED" });
+    return repo.transaction(() => {
+      const registration = repo.update("registrations", id, {
+        status: "CANCELLED",
+      });
+      repo.audit(user.id, "REGISTRATION_CANCELLED", id, { reason });
+      return registration;
+    });
   }
   return {
     profile,

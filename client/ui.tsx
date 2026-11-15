@@ -4,6 +4,9 @@ import {
   useEffect,
   useRef,
   useState,
+  useId,
+  Children,
+  type InputHTMLAttributes,
   type ReactNode,
 } from "react";
 import {
@@ -13,8 +16,40 @@ import {
   ChevronRight,
   Search,
   X,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import type { User } from "../shared/types";
+import { useUnsavedChanges } from "./unsaved";
+export function PasswordInput(
+  props: Omit<InputHTMLAttributes<HTMLInputElement>, "type">,
+) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <span
+      className="password-input"
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null))
+          setVisible(false);
+      }}
+    >
+      <input {...props} type={visible ? "text" : "password"} />
+      <button
+        type="button"
+        aria-label={visible ? "Hide password" : "Show password"}
+        aria-pressed={visible}
+        className="password-toggle"
+        disabled={props.disabled}
+        onClick={() => setVisible((v) => !v)}
+      >
+        {visible ? <EyeOff size={19} /> : <Eye size={19} />}
+      </button>
+    </span>
+  );
+}
+const ModalGuardContext = createContext<
+  (dirty: boolean, busy: boolean) => void
+>(() => {});
 export const AppContext = createContext<{
   user: User;
   version: number;
@@ -172,7 +207,17 @@ export function Table({
             ))}
           </tr>
         </thead>
-        <tbody>{children}</tbody>
+        <tbody>
+          {Children.toArray(children).length ? (
+            children
+          ) : (
+            <tr>
+              <td colSpan={headers.length} className="table-empty">
+                No records match the current selection.
+              </td>
+            </tr>
+          )}
+        </tbody>
       </table>
     </div>
   );
@@ -218,13 +263,26 @@ export function Modal({
   children,
   onClose,
   wide = false,
+  busy = false,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   wide?: boolean;
+  busy?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const guard = useRef({ dirty: false, busy: false }),
+    titleId = useId();
+  const close = () => {
+    if (busy || guard.current.busy) return;
+    if (
+      guard.current.dirty &&
+      !window.confirm("Discard the unsaved changes in this form?")
+    )
+      return;
+    onClose();
+  };
   useEffect(() => {
     ref.current?.showModal();
     const dialog = ref.current;
@@ -234,19 +292,30 @@ export function Modal({
     <dialog
       ref={ref}
       className={wide ? "modal wide" : "modal"}
-      onCancel={onClose}
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault();
+        close();
+      }}
     >
       <div className="modal-head">
-        <h2>{title}</h2>
+        <h2 id={titleId}>{title}</h2>
         <button
           className="icon-button"
           aria-label="Close dialog"
-          onClick={onClose}
+          disabled={busy}
+          onClick={close}
         >
           <X size={20} />
         </button>
       </div>
-      {children}
+      <ModalGuardContext.Provider
+        value={(dirty, saving) => {
+          guard.current = { dirty, busy: saving };
+        }}
+      >
+        {children}
+      </ModalGuardContext.Provider>
     </dialog>
   );
 }
@@ -269,6 +338,8 @@ export type Field = {
   step?: string;
   hint?: string;
   disabled?: boolean;
+  minLength?: number;
+  maxLength?: number;
 };
 export type FormValues = Record<string, string | number | boolean | null>;
 export function RecordForm({
@@ -287,16 +358,32 @@ export function RecordForm({
   const [values, setValues] = useState<FormValues>(initial),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  const dirty = fields.some((field) =>
+    field.type === "checkbox"
+      ? Boolean(values[field.name]) !== Boolean(initial[field.name])
+      : String(values[field.name] ?? "") !== String(initial[field.name] ?? ""),
+  );
+  const modalGuard = useContext(ModalGuardContext);
+  useUnsavedChanges(dirty);
+  useEffect(() => {
+    modalGuard(dirty, busy);
+    return () => modalGuard(false, false);
+  }, [dirty, busy, modalGuard]);
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault();
+        if (busy) return;
         setBusy(true);
         setError("");
         try {
           const result = { ...values };
           fields.forEach((f) => {
-            if (f.type === "number") result[f.name] = Number(values[f.name]);
+            if (f.type === "number")
+              result[f.name] =
+                values[f.name] === "" || values[f.name] === undefined
+                  ? null
+                  : Number(values[f.name]);
             if (f.type === "checkbox") result[f.name] = !!values[f.name];
           });
           await onSave(result);
@@ -318,6 +405,7 @@ export function RecordForm({
               <>
                 <input
                   type="checkbox"
+                  disabled={busy || f.disabled}
                   checked={!!values[f.name]}
                   onChange={(e) =>
                     setValues({ ...values, [f.name]: e.target.checked })
@@ -335,7 +423,7 @@ export function RecordForm({
                   <select
                     aria-label={f.label}
                     required={f.required !== false}
-                    disabled={f.disabled}
+                    disabled={busy || f.disabled}
                     value={String(values[f.name] ?? "")}
                     onChange={(e) =>
                       setValues({ ...values, [f.name]: e.target.value })
@@ -348,18 +436,30 @@ export function RecordForm({
                       </option>
                     ))}
                   </select>
+                ) : f.type === "password" ? (
+                  <PasswordInput
+                    aria-label={f.label}
+                    required={f.required !== false}
+                    disabled={busy || f.disabled}
+                    autoComplete="new-password"
+                    minLength={f.minLength || 10}
+                    maxLength={f.maxLength || 128}
+                    value={String(values[f.name] ?? "")}
+                    onChange={(event) =>
+                      setValues({ ...values, [f.name]: event.target.value })
+                    }
+                  />
                 ) : (
                   <input
                     aria-label={f.label}
                     type={f.type || "text"}
                     required={f.required !== false}
-                    disabled={f.disabled}
+                    disabled={busy || f.disabled}
+                    minLength={f.minLength}
+                    maxLength={f.maxLength || 120}
                     min={f.min}
                     max={f.max}
                     step={f.step}
-                    autoComplete={
-                      f.type === "password" ? "new-password" : undefined
-                    }
                     value={String(values[f.name] ?? "")}
                     onChange={(e) =>
                       setValues({ ...values, [f.name]: e.target.value })
@@ -374,7 +474,18 @@ export function RecordForm({
       </div>
       <ErrorMessage message={error} />
       <div className="modal-actions">
-        <button type="button" className="button secondary" onClick={onClose}>
+        <button
+          type="button"
+          className="button secondary"
+          disabled={busy}
+          onClick={() => {
+            if (
+              !dirty ||
+              window.confirm("Discard the unsaved changes in this form?")
+            )
+              onClose();
+          }}
+        >
           Cancel
         </button>
         <button className="button" disabled={busy}>
@@ -389,29 +500,45 @@ export function Confirm({
   message,
   onConfirm,
   onClose,
+  reasonRequired = false,
 }: {
   title: string;
   message: string;
-  onConfirm: () => Promise<void>;
+  onConfirm: (reason: string) => Promise<void>;
   onClose: () => void;
+  reasonRequired?: boolean;
 }) {
   const [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [reason, setReason] = useState("");
   return (
-    <Modal title={title} onClose={onClose}>
+    <Modal title={title} onClose={onClose} busy={busy}>
       <p className="confirm-message">{message}</p>
+      {reasonRequired && (
+        <label className="field reason-field">
+          <span>Reason for correction</span>
+          <textarea
+            value={reason}
+            minLength={10}
+            maxLength={500}
+            disabled={busy}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Explain why this correction is required (at least 10 characters)."
+          />
+        </label>
+      )}
       <ErrorMessage message={error} />
       <div className="modal-actions">
-        <button className="button secondary" onClick={onClose}>
+        <button className="button secondary" disabled={busy} onClick={onClose}>
           Cancel
         </button>
         <button
           className="button"
-          disabled={busy}
+          disabled={busy || (reasonRequired && reason.trim().length < 10)}
           onClick={async () => {
             setBusy(true);
             try {
-              await onConfirm();
+              await onConfirm(reason.trim());
               onClose();
             } catch (e) {
               setError((e as Error).message);

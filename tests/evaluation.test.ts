@@ -94,7 +94,9 @@ test("FR-018–026 atomic marks, ownership, draft privacy, publication and inval
         }),
       /Withdraw/,
     );
-    e.publish(faculty, "e-past", true);
+    e.publish(r.get<User>("users", "u-admin")!, "e-past", true, {
+      reason: "Verified correction of recorded marks",
+    });
     e.saveMarks(faculty, "e-past", {
       marks: [{ studentId: "s-1", marksObtained: 20 }],
     });

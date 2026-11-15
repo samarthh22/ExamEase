@@ -17,6 +17,8 @@ export interface Student {
   department: string;
   name?: string;
   email?: string;
+  active?: number;
+  account_role?: Role;
 }
 export interface Faculty {
   id: string;
@@ -24,6 +26,8 @@ export interface Faculty {
   department: string;
   name?: string;
   email?: string;
+  active?: number;
+  account_role?: Role;
 }
 export interface Course {
   id: string;

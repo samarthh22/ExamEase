@@ -14,6 +14,8 @@ import {
   useApp,
 } from "../ui";
 import type { Boundary, Exam, RosterRow, Statistics } from "../../shared/types";
+import { can } from "../../shared/permissions";
+import { useUnsavedChanges, confirmDiscard } from "../unsaved";
 type Roster = {
   exam: Exam;
   students: RosterRow[];
@@ -48,7 +50,7 @@ export function Evaluation() {
         }
       />
       <ErrorMessage message={error} />
-      {loading ? (
+      {loading && !exams ? (
         <Loading />
       ) : !available.length ? (
         <Panel>
@@ -62,7 +64,9 @@ export function Evaluation() {
               <select
                 aria-label="Examination"
                 value={exam?.id}
-                onChange={(e) => setSelected(e.target.value)}
+                onChange={(e) => {
+                  if (confirmDiscard()) setSelected(e.target.value);
+                }}
               >
                 {available.map((e) => (
                   <option key={e.id} value={e.id}>
@@ -97,42 +101,51 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
     [dirty, setDirty] = useState(false),
     [boundDirty, setBoundDirty] = useState(false),
     [message, setMessage] = useState(""),
-    [busy, setBusy] = useState(false),
+    [saving, setBusy] = useState(false),
     [confirm, setConfirm] = useState<
       "generate" | "publish" | "withdraw" | null
     >(null);
+  const busy = saving || loading;
+  useUnsavedChanges(dirty || boundDirty);
   useEffect(() => {
     if (!data) return;
-    setMarks(
-      data.students.map((s) => ({
-        studentId: s.student_id,
-        marksObtained:
-          s.marks_obtained === null ? "" : String(s.marks_obtained),
-        absent: !!s.absent,
-        remarks: s.remarks,
-      })),
-    );
-    setBounds(
-      data.boundaries.length
-        ? data.boundaries.map(({ grade_label, lower_bound, upper_bound }) => ({
-            grade_label,
-            lower_bound,
-            upper_bound,
-          }))
-        : ["F", "D", "C", "B", "A", "A+"].map((grade_label, i) => ({
-            grade_label,
-            lower_bound: [0, 0.4, 0.5, 0.6, 0.75, 0.9][i] * data.exam.max_marks,
-            upper_bound: [0.4, 0.5, 0.6, 0.75, 0.9, 1][i] * data.exam.max_marks,
-          })),
-    );
-    setDirty(false);
-    setBoundDirty(!data.boundaries.length);
+    if (!dirty)
+      setMarks(
+        data.students.map((s) => ({
+          studentId: s.student_id,
+          marksObtained:
+            s.marks_obtained === null ? "" : String(s.marks_obtained),
+          absent: !!s.absent,
+          remarks: s.remarks,
+        })),
+      );
+    if (!boundDirty)
+      setBounds(
+        data.boundaries.length
+          ? data.boundaries.map(
+              ({ grade_label, lower_bound, upper_bound }) => ({
+                grade_label,
+                lower_bound,
+                upper_bound,
+              }),
+            )
+          : ["F", "D", "C", "B", "A", "A+"].map((grade_label, i) => ({
+              grade_label,
+              lower_bound:
+                [0, 0.4, 0.5, 0.6, 0.75, 0.9][i] * data.exam.max_marks,
+              upper_bound:
+                [0.4, 0.5, 0.6, 0.75, 0.9, 1][i] * data.exam.max_marks,
+            })),
+      );
+    // Preserve unsaved work in the other editor when one section is saved.
   }, [data]);
   async function action(path: string, body: unknown, success: string) {
     setBusy(true);
     setMessage("");
     try {
       await api(path, "POST", body);
+      if (path.startsWith("/marks/")) setDirty(false);
+      if (path.startsWith("/grading/boundaries/")) setBoundDirty(false);
       refresh();
       notify(success);
     } catch (e) {
@@ -141,7 +154,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
       setBusy(false);
     }
   }
-  if (loading) return <Loading />;
+  if (loading && !data) return <Loading />;
   if (error) return <ErrorMessage message={error} />;
   if (!data) return null;
   const locked = !!data.exam.results_published,
@@ -158,14 +171,16 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
     stale = data.students.some(
       (s) => s.result_status === "NEEDS_RECALCULATION",
     );
-  const markErrors = marks.some(
-    (m) =>
-      !m.absent &&
-      m.marksObtained !== "" &&
-      (!Number.isFinite(Number(m.marksObtained)) ||
-        Number(m.marksObtained) < 0 ||
-        Number(m.marksObtained) > data.exam.max_marks),
-  );
+  const invalidMark = (m: MarkInput, index: number) =>
+    !m.absent &&
+    ((m.marksObtained === "" &&
+      (data.students[index]?.marks_obtained !== null ||
+        m.remarks.trim() !== "")) ||
+      (m.marksObtained !== "" &&
+        (!Number.isFinite(Number(m.marksObtained)) ||
+          Number(m.marksObtained) < 0 ||
+          Number(m.marksObtained) > data.exam.max_marks)));
+  const markErrors = marks.some(invalidMark);
   const setMark = (i: number, patch: Partial<MarkInput>) => {
     setMarks((rows) => rows.map((m, j) => (i === j ? { ...m, ...patch } : m)));
     setDirty(true);
@@ -176,7 +191,8 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
       {locked && (
         <div className="info-strip">
           <CheckCheck size={19} />
-          Results are published. Withdraw publication before making corrections.
+          Results are published and locked. Contact the examination office if a
+          correction is required.
         </div>
       )}
       {!ended && faculty && (
@@ -250,10 +266,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
             {data.students.map((s, i) => {
               const m = marks[i];
               if (!m) return null;
-              const invalid =
-                m.marksObtained !== "" &&
-                (Number(m.marksObtained) < 0 ||
-                  Number(m.marksObtained) > data.exam.max_marks);
+              const invalid = invalidMark(m, i);
               return (
                 <tr key={s.student_id}>
                   <td>
@@ -270,7 +283,8 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                           step="any"
                           min="0"
                           max={data.exam.max_marks}
-                          disabled={!canMark || m.absent}
+                          disabled={!canMark || m.absent || busy}
+                          aria-invalid={invalid}
                           value={m.marksObtained}
                           onChange={(e) =>
                             setMark(i, { marksObtained: e.target.value })
@@ -278,7 +292,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                         />
                         {invalid && (
                           <small className="error-text">
-                            Use 0–{data.exam.max_marks}
+                            Enter 0–{data.exam.max_marks}, or mark absent.
                           </small>
                         )}
                       </>
@@ -293,7 +307,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                           aria-label={`${s.name} absent`}
                           type="checkbox"
                           checked={m.absent}
-                          disabled={!canMark}
+                          disabled={!canMark || busy}
                           onChange={(e) =>
                             setMark(i, {
                               absent: e.target.checked,
@@ -310,7 +324,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                           aria-label={`Remarks for ${s.name}`}
                           value={m.remarks}
                           maxLength={500}
-                          disabled={!canMark}
+                          disabled={!canMark || busy}
                           placeholder="Optional remark"
                           onChange={(e) =>
                             setMark(i, { remarks: e.target.value })
@@ -320,7 +334,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                     </>
                   )}
                   <td>
-                    {s.grade && (
+                    {s.grade && s.result_status !== "NEEDS_RECALCULATION" && (
                       <strong className="grade small">{s.grade}</strong>
                     )}
                     <small>
@@ -339,8 +353,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
         )}
         {dirty && (
           <div className="panel-note">
-            You have unsaved marks. Save before moving to grading. Blank entries
-            leave existing marks unchanged; use Absent to clear a score.
+            You have unsaved marks. Save before generating grades. A saved mark
+            cannot be erased with a blank input; enter a corrected mark or
+            accurately record absence.
           </div>
         )}
       </Panel>
@@ -351,7 +366,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
           action={
             <button
               className="button secondary"
-              disabled={locked || busy}
+              disabled={!canMark || busy}
               onClick={() => {
                 setBounds([
                   ...bounds,
@@ -389,7 +404,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                     aria-label={`Grade label ${i + 1}`}
                     className="grade-input"
                     value={b.grade_label}
-                    disabled={locked || busy}
+                    disabled={!canMark || busy}
                     maxLength={4}
                     onChange={(e) => {
                       setBounds(
@@ -414,7 +429,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                     step="any"
                     min="0"
                     value={Number.isNaN(b.lower_bound) ? "" : b.lower_bound}
-                    disabled={locked || busy}
+                    disabled={!canMark || busy}
                     onChange={(e) => {
                       setBounds(
                         bounds.map((r, j) =>
@@ -440,7 +455,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                     type="number"
                     step="any"
                     value={Number.isNaN(b.upper_bound) ? "" : b.upper_bound}
-                    disabled={locked || busy}
+                    disabled={!canMark || busy}
                     onChange={(e) => {
                       setBounds(
                         bounds.map((r, j) =>
@@ -463,7 +478,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                   <button
                     className="icon-button danger"
                     aria-label={`Remove grade ${i + 1}`}
-                    disabled={locked || busy}
+                    disabled={!canMark || busy}
                     onClick={() => {
                       setBounds(bounds.filter((_, j) => i !== j));
                       setBoundDirty(true);
@@ -477,13 +492,15 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
           </Table>
           <div className="panel-actions">
             <span className="muted">
-              {boundDirty
+              {boundDirty || !data.boundaries.length
                 ? "Save and validate boundaries before generating grades."
                 : "Boundaries saved and validated."}
             </span>
             <button
               className="button secondary"
-              disabled={locked || busy || !boundDirty || dirty}
+              disabled={
+                !canMark || busy || (!boundDirty && data.boundaries.length > 0)
+              }
               onClick={() =>
                 void action(
                   `/grading/boundaries/${examId}`,
@@ -534,26 +551,45 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
             {faculty && !locked && (
               <button
                 className="button secondary"
-                disabled={busy || dirty || boundDirty || !data.statistics.count}
+                disabled={
+                  busy ||
+                  dirty ||
+                  boundDirty ||
+                  !data.boundaries.length ||
+                  !ended ||
+                  data.exam.status !== "PUBLISHED" ||
+                  !data.statistics.count
+                }
                 onClick={() => setConfirm("generate")}
               >
                 Generate grades
               </button>
             )}
-            <button
-              className={`button ${locked ? "secondary" : ""}`}
-              disabled={busy || dirty || (!locked && (!generated || stale))}
-              onClick={() => setConfirm(locked ? "withdraw" : "publish")}
-            >
-              <CheckCheck size={17} />
-              {locked ? "Withdraw publication" : "Publish results"}
-            </button>
+            {(!locked || can(user.role, "withdrawResults")) && (
+              <button
+                className={`button ${locked ? "secondary" : ""}`}
+                disabled={
+                  busy ||
+                  dirty ||
+                  boundDirty ||
+                  (!locked && (!generated || stale))
+                }
+                onClick={() => setConfirm(locked ? "withdraw" : "publish")}
+              >
+                <CheckCheck size={17} />
+                {locked ? "Withdraw publication" : "Publish results"}
+              </button>
+            )}
           </div>
         </div>
         <div className="grade-preview">
           {[
             ...new Set(
-              data.students.filter((s) => s.grade).map((s) => s.grade!),
+              data.students
+                .filter(
+                  (s) => s.grade && s.result_status !== "NEEDS_RECALCULATION",
+                )
+                .map((s) => s.grade!),
             ),
           ]
             .sort()
@@ -584,12 +620,17 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                 ? `Publish ${generated} grades? They will become visible to the relevant students.`
                 : "Students will no longer see these results until they are published again. This enables corrections."
           }
+          reasonRequired={confirm === "withdraw"}
           onClose={() => setConfirm(null)}
-          onConfirm={async () => {
+          onConfirm={async (reason) => {
             await api(
               `/grading/${confirm}/${examId}`,
               "POST",
-              confirm === "generate" ? { confirmMissing: true } : {},
+              confirm === "generate"
+                ? { confirmMissing: true }
+                : confirm === "withdraw"
+                  ? { reason }
+                  : {},
             );
             refresh();
             notify(

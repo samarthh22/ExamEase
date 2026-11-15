@@ -48,7 +48,9 @@ Five additional students use `student2@examease.local` through `student6@exameas
 6. Use the system administrator to create/deactivate accounts or assign roles. Create an account before linking its student/faculty profile through the examination administrator.
 7. Use HOD to review department-scoped aggregate reports. HOD cannot modify records or see individual marks.
 
-Marks entry opens after the examination ends. Registration closes when it starts. Published marks are locked; withdraw publication before corrections, regenerate grades and republish. Missing/absent students are excluded from grading only after confirmation. Grade **F** is treated as failing; all other configured grades pass. Grade ranges include the lower endpoint and exclude the upper endpoint, except the maximum mark, which is included.
+Marks entry opens after the examination ends. Registration closes when it starts. **Students cannot cancel or restore registrations**; the examination office handles corrections and records a cancellation reason. Published marks are locked; an **examination administrator** must withdraw publication with a reason before faculty can correct marks, regenerate grades and republish. Missing/absent students are excluded from grading only after confirmation. Grade **F** is treated as failing; all other configured grades pass. Grade ranges include the lower endpoint and exclude the upper endpoint, except the maximum mark, which is included.
+
+Password fields have a show/hide control and are masked by default. Unsaved form changes require confirmation before navigation or dismissal. Schedule publication/cancellation and account access changes also require confirmation.
 
 ## Implemented scope
 
@@ -56,7 +58,7 @@ Marks entry opens after the examination ends. Registration closes when it starts
 - Login/logout, salted password hashes, expiring revocable sessions, account management.
 - Student/faculty records, unique roll numbers/course codes, course assignment and enrollment.
 - Draft/published/cancelled schedules with venue overlap prevention.
-- Eligibility and duplicate registration checks, cancellation and printable receipts.
+- Eligibility and duplicate registration checks, examination-office cancellation/restoration and printable receipts.
 - Transactional marks entry, absence flags, remarks, mean/median/min/max/population standard deviation.
 - Contiguous course-exam grading boundaries, exact-mark grade assignment, draft preview, publication and invalidation after edits.
 - Private student results, course/student reports, pass/fail counts, department oversight, CSV export and change audit records.
@@ -105,7 +107,7 @@ npm run seed
 npm run dev
 ```
 
-`PORT`, `HOST`, `APP_ORIGIN`, and `DATABASE_PATH` can be configured. The Vite development proxy expects port 3001; update `vite.config.ts` if changing the development API port. Local HTTP is supported. An eventual deployment requires HTTPS, `NODE_ENV=production` for secure cookies, non-demo credentials and operational backup/access policies.
+`PORT`, `HOST`, `APP_ORIGIN`, and `DATABASE_PATH` can be configured. The Vite development proxy uses `PORT` (default 3001) automatically. The launcher checks for occupied ports before starting and cleans up owned child processes on shutdown. Local HTTP is supported. An eventual deployment requires HTTPS, `NODE_ENV=production` for secure cookies, non-demo credentials and operational backup/access policies.
 
 SQLite currently provides transactions, uniqueness and foreign keys. PostgreSQL/MongoDB integration is deferred as requested. Domain services and the API are separate from the browser; migrate the repository/schema and relevant service queries, then rerun the acceptance suite. This does not claim a database switch without implementation work.
 
@@ -116,5 +118,6 @@ SQLite currently provides transactions, uniqueness and foreign keys. PostgreSQL/
 - [SRS traceability and verification limits](docs/traceability.md)
 - [API and domain rules](docs/api.md)
 - [Local verification results](docs/verification.md)
+- [Permissions and workflow review](docs/review.md)
 
 The source report is the requirements authority. The team should review these decisions and understand the implementation before its academic demonstration. This repository does not claim that the report's original authors wrote or reviewed these generated changes.

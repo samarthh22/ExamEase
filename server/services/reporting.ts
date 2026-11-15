@@ -3,13 +3,15 @@ import type { User, ResultRow, CourseReport } from "../../shared/types.js";
 import { assert } from "../errors.js";
 import { academicService } from "./academic.js";
 import { evaluationService } from "./evaluation.js";
+import { requirePermission } from "./authorization.js";
 export function reportingService(repo: Repository) {
   const academic = academicService(repo),
     evaluation = evaluationService(repo);
   function courseReports(user: User): CourseReport[] {
+    requirePermission(user, "viewReports");
     return academic
       .exams(user)
-      .filter((e) => e.status !== "DRAFT")
+      .filter((e) => e.status === "PUBLISHED")
       .map((exam) => {
         const distribution = repo.all<{ grade: string; count: number }>(
             "SELECT grade,count(*) count FROM results WHERE exam_id=? AND status='PUBLISHED' GROUP BY grade ORDER BY grade",
@@ -42,7 +44,13 @@ export function reportingService(repo: Repository) {
       "Individual student reports are not available to your role.",
     );
     const id = user.role === "STUDENT" ? own : studentId;
-    assert(id, 422, "Choose a student.");
+    assert(
+      id,
+      422,
+      user.role === "STUDENT"
+        ? "Your student profile has not been created. Contact the examination office."
+        : "Choose a student.",
+    );
     assert(repo.get("students", id), 404, "Student not found.");
     return repo.all<ResultRow>(
       `SELECT reg.id,reg.student_id,e.id exam_id,c.code,c.title,e.exam_type,e.date,e.max_marks,u.name,s.roll_no,r.marks_obtained,r.grade,r.status,r.published_at FROM registrations reg JOIN exams e ON e.id=reg.exam_id JOIN courses c ON c.id=e.course_id JOIN students s ON s.id=reg.student_id JOIN users u ON u.id=s.user_id LEFT JOIN results r ON r.student_id=reg.student_id AND r.exam_id=e.id AND r.status='PUBLISHED' WHERE reg.student_id=? AND reg.status='REGISTERED' ORDER BY e.date DESC`,
@@ -50,6 +58,7 @@ export function reportingService(repo: Repository) {
     );
   }
   function dashboard(user: User) {
+    requirePermission(user, "viewDashboard");
     const exams = academic.exams(user),
       reports = courseReports(user),
       published = exams.filter((e) => e.results_published).length;

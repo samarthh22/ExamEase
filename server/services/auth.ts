@@ -6,6 +6,7 @@ import {
   createHash,
 } from "node:crypto";
 import { assert } from "../errors.js";
+import { requirePermission } from "./authorization.js";
 import { z } from "zod";
 import type { Repository } from "../db.js";
 import type { User } from "../../shared/types.js";
@@ -53,7 +54,7 @@ export function authService(repo: Repository) {
     login(body: unknown) {
       const input = z
         .object({
-          email: z.string().email().max(200),
+          email: z.string().trim().email().max(200),
           password: z.string().min(1).max(128),
         })
         .parse(body);
@@ -91,6 +92,7 @@ export function authService(repo: Repository) {
         repo.run("DELETE FROM sessions WHERE token_hash=?", tokenHash(token));
     },
     save(body: unknown, id: string | null, actor: User) {
+      requirePermission(actor, "manageUsers");
       const input = userSchema.parse(body),
         existing = id ? repo.get<User>("users", id) : undefined;
       if (id) assert(existing, 404, "User not found.");

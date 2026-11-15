@@ -16,7 +16,14 @@ import {
   X,
 } from "lucide-react";
 import { api } from "./api";
-import { AppContext, ErrorMessage, Loading, roleLabels } from "./ui";
+import {
+  AppContext,
+  ErrorMessage,
+  Loading,
+  roleLabels,
+  PasswordInput,
+} from "./ui";
+import { confirmDiscard } from "./unsaved";
 import type { Role, User } from "../shared/types";
 import {
   Home,
@@ -171,12 +178,14 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
             </label>
             <label className="field">
               <span>Password</span>
-              <input
+              <PasswordInput
                 name="password"
-                type="password"
+                aria-label="Password"
                 autoComplete="current-password"
                 placeholder="Enter your password"
                 required
+                maxLength={128}
+                disabled={busy}
               />
             </label>
             <ErrorMessage message={error} />
@@ -211,7 +220,13 @@ export function App() {
       .then((r) => setUser(r.user))
       .catch(() => {})
       .finally(() => setLoading(false));
+    let previousHash = location.hash;
     const hash = () => {
+      if (!confirmDiscard()) {
+        history.replaceState(null, "", previousHash || "#home");
+        return;
+      }
+      previousHash = location.hash;
       setPage(location.hash.slice(1) || "home");
       setMenu(false);
     };
@@ -307,6 +322,7 @@ export function App() {
             <button
               className="logout"
               onClick={async () => {
+                if (!confirmDiscard()) return;
                 try {
                   await api("/auth/logout", "POST");
                   setUser(null);

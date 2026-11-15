@@ -40,3 +40,5 @@ The source is the supplied Assignments 1–7 report. Functional requirement IDs 
 This is an implemented local application, not a claim of production accreditation or institutional acceptance. External database migration, external integrations and hosting are deferred. Real institutional grading rules, room capacities and semester migration policies require the team's confirmation before real-data use. User acceptance and viva preparation remain team responsibilities.
 
 Measured results and browser verification are recorded in [verification.md](verification.md).
+
+The follow-up [permissions and workflow review](review.md) records corrected role rules and additional regression cases. The user's no-student-cancellation rule supersedes the later design endpoint example.

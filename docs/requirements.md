@@ -31,7 +31,10 @@ The document supplies project requirements, not operational instructions to the 
 - Each exam has its own total mark and boundaries. No undocumented weighted aggregate or GPA is invented.
 - Grade F means fail in pass/fail reports; other configured letter labels pass. The UI explains this convention.
 - Schedules include start/end times to enforce overlap. Dates/times use Asia/Kolkata.
-- Published results are locked. An authorized publisher must withdraw publication before correction. Marks/boundary edits invalidate drafts and require regeneration and republication.
+- Students cannot cancel or restore examination registrations. The examination office controls these corrections; cancellation requires a reason. This user clarification supersedes the report's later Student DELETE example.
+- Published results are locked. The examination administrator must withdraw publication with a reason before faculty corrects marks. Marks/boundary edits invalidate drafts and require regeneration and republication. Faculty remains authorized to generate and publish valid results.
+- New/rescheduled examinations must start in the future. Registered exams cannot revert to draft or change course/type; evaluated exams cannot be cancelled. Cancelled schedules are closed and their registrations are cancelled.
+- Published schedules also reject conflicting assigned faculty or shared enrolled students. Faculty reassignment/enrollment must preserve that consistency.
 - HOD data is department-scoped and aggregate-only to preserve NFR-010. Student/faculty home screens do not expose the administrator dashboard API.
 - Seats are sequential receipt identifiers within each exam, not room-capacity or seating optimization.
 
