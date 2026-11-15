@@ -1,3 +1,4 @@
+import { cn } from "../cn";
 import { useState } from "react";
 import { Plus, ShieldCheck } from "lucide-react";
 import { api, useData } from "../api";
@@ -83,7 +84,9 @@ export function Records() {
         description="Maintain academic profiles and student course enrollments."
         action={
           <button
-            className="button"
+            className={
+              "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+            }
             onClick={() =>
               tab === "enrollments" ? setEnroll(true) : setEdit(null)
             }
@@ -97,12 +100,18 @@ export function Records() {
           </button>
         }
       />
-      <div className="tabs" role="tablist" aria-label="Academic records">
+      <div
+        className={
+          "tabs flex border-b border-solid border-b-line mb-[22px] gap-7 [&_button]:bg-[none] [&_button]:border-0 [&_button]:border-b-[2px] [&_button]:border-solid [&_button]:border-b-transparent [&_button]:text-[#6d7a68] [&_button]:text-[14px] [&_button]:px-0 [&_button]:py-3 [&_button.active]:text-brand [&_button.active]:border-b-brand [&_button.active]:font-semibold max-mobile:gap-[22px] max-mobile:[&_button]:text-[13px]"
+        }
+        role="tablist"
+        aria-label="Academic records"
+      >
         {(["students", "faculty", "enrollments"] as const).map((t) => (
           <button
             role="tab"
             aria-selected={tab === t}
-            className={tab === t ? "active" : ""}
+            className={cn(tab === t ? "active" : "")}
             key={t}
             onClick={() => {
               setTab(t);
@@ -118,7 +127,11 @@ export function Records() {
         ))}
       </div>
       <Panel>
-        <div className="toolbar">
+        <div
+          className={
+            "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
+          }
+        >
           <SearchBox
             value={search}
             onChange={setSearch}
@@ -146,8 +159,18 @@ export function Records() {
                     </td>
                     <td>{r.roll_no}</td>
                     <td>
-                      <span className="course-code">{r.code}</span>
-                      <strong className="cell-title">{r.title}</strong>
+                      <span
+                        className={
+                          "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                        }
+                      >
+                        {r.code}
+                      </span>
+                      <strong
+                        className={"cell-title block mt-[3px] text-[14px]"}
+                      >
+                        {r.title}
+                      </strong>
                     </td>
                   </tr>
                 ))}
@@ -184,7 +207,12 @@ export function Records() {
                   )}
                   <td>{r.department}</td>
                   <td>
-                    <button className="text-button" onClick={() => setEdit(r)}>
+                    <button
+                      className={
+                        "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
+                      }
+                      onClick={() => setEdit(r)}
+                    >
                       Edit record
                     </button>
                   </td>
@@ -310,13 +338,22 @@ export function Accounts() {
         title="User accounts"
         description="Create institutional accounts and control role-based access."
         action={
-          <button className="button" onClick={() => setEdit(null)}>
+          <button
+            className={
+              "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+            }
+            onClick={() => setEdit(null)}
+          >
             <Plus size={17} />
             Create account
           </button>
         }
       />
-      <div className="info-strip">
+      <div
+        className={
+          "info-strip border border-solid border-[#d8e7e2] bg-[#edf6f2] rounded-[8px] flex items-center text-[#426955] mb-[22px] text-[14px] px-[18px] py-[14px] gap-3"
+        }
+      >
         <ShieldCheck size={19} />
         <span>
           Account administration is separate from examination administration.
@@ -324,13 +361,19 @@ export function Accounts() {
         </span>
       </div>
       <Panel>
-        <div className="toolbar">
+        <div
+          className={
+            "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
+          }
+        >
           <SearchBox
             value={search}
             onChange={setSearch}
             placeholder="Search account, role or department…"
           />
-          <span className="muted">{data?.length || 0} accounts</span>
+          <span className={"muted text-muted text-[14px]"}>
+            {data?.length || 0} accounts
+          </span>
         </div>
         <ErrorMessage message={error} />
         {loading ? (
@@ -357,7 +400,12 @@ export function Accounts() {
                     <Badge value={u.active ? "Active" : "Inactive"} />
                   </td>
                   <td>
-                    <button className="text-button" onClick={() => setEdit(u)}>
+                    <button
+                      className={
+                        "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
+                      }
+                      onClick={() => setEdit(u)}
+                    >
                       Manage account
                     </button>
                   </td>

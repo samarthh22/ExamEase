@@ -2,6 +2,8 @@
 
 React presentation → Express API/authentication → domain services → SQLite repository.
 
+The React presentation uses Tailwind CSS through `@tailwindcss/vite`. Component layouts, responsive breakpoints, hover/focus states, reduced-motion behavior and print layouts are utility classes in the TSX files. `client/tailwind.css` contains the Tailwind import, shared theme tokens and document defaults expressed with `@apply`. There are no handwritten component CSS rules. Stable semantic class names remain as browser-test hooks and descendant-variant targets. `client/cn.ts` uses `tailwind-merge` to combine shared styles with screen-specific overrides. Chart widths pass numeric data through a CSS custom property consumed by a Tailwind width utility.
+
 `client/` owns presentation and API state. `server/app.ts` composes HTTP routes, role guards and errors. `server/services/` owns domain rules. `server/db.ts` owns SQL schema and transaction infrastructure. Persistence queries stay in `server/` and never enter the React client.
 
 Persistent entities are users, students, faculty, courses, enrollments, examinations, registrations, marks, grading boundaries, results, statistics, sessions and audit events. Data stays outside Git. Multi-record writes use transactions. Foreign keys, uniqueness and numeric checks protect integrity. Significant marks/boundary changes record actor, action and timestamp in the same transaction.

@@ -1,6 +1,6 @@
 # ExamEase
 
-A local examination management application for SWE Team T021, based on **Lab_Assignment_1_to_7_Final_T021.docx**. React and Node are written in **TypeScript**, with strict type checking and persistent SQLite storage.
+A local examination management application for SWE Team T021, based on **Lab_Assignment_1_to_7_Final_T021.docx**. React and Node are written in **TypeScript**, with **Tailwind CSS** for the frontend, strict type checking and persistent SQLite storage.
 
 ## Run locally
 
@@ -84,6 +84,7 @@ On Windows, if a locked-down command sandbox reports `uv_os_get_passwd` or esbui
 
 ```text
 client/             React pages, shared UI and typed API client
+client/tailwind.css Tailwind import, theme tokens and document defaults
 shared/types.ts     Shared domain and API response types
 server/app.ts       Express composition, authentication, authorization, errors
 server/routes/      HTTP endpoint adapters

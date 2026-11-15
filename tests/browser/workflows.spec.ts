@@ -19,6 +19,11 @@ test("student registration, receipt and responsive navigation", async ({
   await page.getByRole("button", { name: "Confirm", exact: true }).click();
   await expect(page.getByRole("dialog")).toContainText("Registration receipt");
   await expect(page.getByRole("dialog")).toContainText("Seat");
+  await page.emulateMedia({ media: "print" });
+  await expect(page.locator(".receipt")).toBeVisible();
+  await expect(page.locator(".sidebar")).toBeHidden();
+  await expect(page.getByRole("button", { name: "Print slip" })).toBeHidden();
+  await page.emulateMedia({ media: "screen" });
   await page.getByRole("button", { name: "Done", exact: true }).click();
   await expect(
     card.getByRole("button", { name: "Registered", exact: true }),

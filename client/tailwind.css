@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+  --spacing: 4px;
+  --color-brand: #176e59;
+  --color-brand-dark: #145743;
+  --color-muted: #72817e;
+  --color-line: #e5ebe9;
+  --breakpoint-mobile: 700px;
+  --breakpoint-tablet: 950px;
+  --breakpoint-wide: 1200px;
+  --breakpoint-cinema: 1600px;
+}
+
+/* Document defaults only. Component, responsive, state and print styles live in TSX utilities. */
+@layer base {
+  html {
+    @apply font-sans text-[#223b37] bg-[#f6f8f8] [font-synthesis:none] font-normal text-[14px] leading-[1.5];
+  }
+  * {
+    @apply box-border;
+  }
+  body {
+    @apply m-0;
+  }
+  button {
+    @apply [-webkit-tap-highlight-color:transparent] touch-manipulation cursor-pointer;
+  }
+  input {
+    @apply [-webkit-tap-highlight-color:transparent] min-w-0 max-w-full border border-solid border-[#dce4e1] rounded-[7px] bg-white text-[#263e38] outline-none px-3 py-[10px];
+  }
+  select {
+    @apply [-webkit-tap-highlight-color:transparent] min-w-0 max-w-full border border-solid border-[#dce4e1] rounded-[7px] bg-white text-[#263e38] outline-none px-3 py-[10px];
+  }
+  a {
+    @apply [-webkit-tap-highlight-color:transparent] touch-manipulation text-inherit no-underline;
+  }
+  button:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  button:focus-visible {
+    @apply outline-[3px] outline-solid outline-[#6ac4a6] outline-offset-[3px];
+  }
+  a:focus-visible {
+    @apply outline-[3px] outline-solid outline-[#6ac4a6] outline-offset-[3px];
+  }
+  input:focus-visible {
+    @apply outline-[3px] outline-solid outline-[#6ac4a6] outline-offset-[3px];
+  }
+  select:focus-visible {
+    @apply outline-[3px] outline-solid outline-[#6ac4a6] outline-offset-[3px];
+  }
+  h1 {
+    @apply text-[29px] leading-[1.25] font-[650] tracking-[-0.9px] m-0;
+  }
+  h2 {
+    @apply text-[17px] font-[650] tracking-[-0.25px] m-0;
+  }
+  h3 {
+    @apply text-[14px] font-semibold m-0;
+  }
+  p {
+    @apply m-0;
+  }
+  small {
+    @apply text-[14px];
+  }
+  svg {
+    @apply shrink-0;
+  }
+  input:focus {
+    @apply border-[#438c74];
+  }
+  select:focus {
+    @apply border-[#438c74];
+  }
+  input::placeholder {
+    @apply text-[#6e7875];
+  }
+  input:disabled {
+    @apply bg-[#f4f6f5] text-[#6c7974];
+  }
+  select:disabled {
+    @apply bg-[#f4f6f5] text-[#6c7974];
+  }
+  input[type="checkbox"] {
+    @apply w-4 h-4 accent-brand;
+  }
+  code {
+    @apply text-[13px] wrap-anywhere;
+  }
+  table {
+    @apply border-collapse w-full text-[14px] text-left;
+  }
+  thead {
+    @apply bg-[#f8faf8];
+  }
+  th {
+    @apply text-[11px] uppercase tracking-[0.6px] text-[#6d7971] font-semibold whitespace-nowrap border-y border-solid border-y-[#ecf0eb] px-[22px] py-[13px];
+  }
+  td {
+    @apply border-b border-solid border-b-[#edf1ec] text-[#617866] text-[13px] px-[22px] py-[17px];
+  }
+  tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  tbody tr:hover {
+    @apply bg-[#fcfdfb];
+  }
+  td strong {
+    @apply font-semibold text-[#45604a];
+  }
+  td small {
+    @apply block text-[#6f796a] text-[11px] mt-[5px];
+  }
+  * {
+    @apply motion-reduce:animate-none! motion-reduce:transition-none!;
+  }
+  *:before {
+    @apply motion-reduce:animate-none! motion-reduce:transition-none!;
+  }
+  *:after {
+    @apply motion-reduce:animate-none! motion-reduce:transition-none!;
+  }
+}

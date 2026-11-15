@@ -1,3 +1,4 @@
+import { cn } from "../cn";
 import { useEffect, useState } from "react";
 import { CheckCheck, Plus, Save, Trash2 } from "lucide-react";
 import { api, useData } from "../api";
@@ -58,8 +59,16 @@ export function Evaluation() {
         </Panel>
       ) : (
         <>
-          <div className="exam-selector">
-            <label className="field">
+          <div
+            className={
+              "exam-selector bg-white border border-solid border-line rounded-[9px] flex items-center mb-6 px-[23px] py-5 gap-[30px] [&_>_.field]:flex-1 [&_>_.field]:max-w-135 [&_>_div_strong]:block [&_>_div_strong]:text-[22px] [&_>_div_strong]:text-[#677f54] [&_>_.badge]:ml-auto max-tablet:gap-[18px] max-tablet:[&_>_.badge]:hidden max-mobile:p-[17px] max-mobile:[&_>_div:not(.field)]:hidden max-mobile:[&_label]:w-full max-mobile:[&_select]:text-[13px]"
+            }
+          >
+            <label
+              className={
+                "field flex flex-col text-[14px] min-w-0 gap-[7px] [&_>_span]:font-medium [&_>_span]:text-[#60765b] [&_b]:text-[#867555] [&_b]:font-normal [&_small]:text-[#707968] [&_small]:text-[12px] [&_small]:leading-[1.5] [&_input]:text-[14px] [&_input]:w-full [&_select]:text-[14px] [&_select]:w-full"
+              }
+            >
               <span>Examination</span>
               <select
                 aria-label="Examination"
@@ -76,7 +85,9 @@ export function Evaluation() {
               </select>
             </label>
             <div>
-              <span className="muted">Maximum marks</span>
+              <span className={"muted text-muted text-[14px]"}>
+                Maximum marks
+              </span>
               <strong>{exam?.max_marks}</strong>
             </div>
             <Badge
@@ -189,18 +200,30 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
     <>
       <ErrorMessage message={message} />
       {locked && (
-        <div className="info-strip">
+        <div
+          className={
+            "info-strip border border-solid border-[#d8e7e2] bg-[#edf6f2] rounded-[8px] flex items-center text-[#426955] mb-[22px] text-[14px] px-[18px] py-[14px] gap-3"
+          }
+        >
           <CheckCheck size={19} />
           Results are published and locked. Contact the examination office if a
           correction is required.
         </div>
       )}
       {!ended && faculty && (
-        <div className="info-strip">
+        <div
+          className={
+            "info-strip border border-solid border-[#d8e7e2] bg-[#edf6f2] rounded-[8px] flex items-center text-[#426955] mb-[22px] text-[14px] px-[18px] py-[14px] gap-3"
+          }
+        >
           Marks entry opens after the scheduled examination ends.
         </div>
       )}
-      <div className="statistics-strip">
+      <div
+        className={
+          "statistics-strip grid grid-cols-[repeat(6,_1fr)] border border-solid border-[#dfe8d8] bg-[#f0f6e9] rounded-[9px] mb-6 p-5 [&_>_div]:border-r [&_>_div]:border-solid [&_>_div]:border-r-[#dfe8d8] [&_>_div]:px-[18px] [&_>_div]:py-0 [&_>_div:last-child]:border-0 [&_span]:text-[12px] [&_span]:text-[#6f7a61] [&_span]:block [&_strong]:text-[23px] [&_strong]:font-semibold [&_strong]:text-[#677e52] [&_strong]:block [&_strong]:mt-1 max-tablet:grid-cols-[repeat(3,_1fr)] max-tablet:gap-[18px] max-tablet:[&_>_div:nth-child(3)]:border-0 max-mobile:px-2 max-mobile:py-[17px] max-mobile:gap-4 max-mobile:[&_>_div]:px-3 max-mobile:[&_>_div]:py-0 max-mobile:[&_strong]:text-[21px] max-mobile:[&_span]:text-[11px]"
+        }
+      >
         {(
           [
             ["Evaluated", data.statistics.count],
@@ -223,7 +246,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
         action={
           faculty && (
             <button
-              className="button"
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+              }
               disabled={!canMark || busy || !dirty || markErrors}
               onClick={() => {
                 const entries = marks
@@ -277,7 +302,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                     {faculty ? (
                       <>
                         <input
-                          className={`marks-input ${invalid ? "invalid" : ""}`}
+                          className={cn(
+                            `marks-input w-[90px] text-[14px] px-[9px] py-[7px] ${invalid ? "invalid border-[#bf5148]" : ""}`,
+                          )}
                           aria-label={`Marks for ${s.name}`}
                           type="number"
                           step="any"
@@ -291,7 +318,7 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                           }
                         />
                         {invalid && (
-                          <small className="error-text">
+                          <small className={"error-text text-[#b54235]"}>
                             Enter 0–{data.exam.max_marks}, or mark absent.
                           </small>
                         )}
@@ -320,7 +347,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                       </td>
                       <td>
                         <input
-                          className="remarks-input"
+                          className={
+                            "remarks-input w-40 text-[12px] px-[9px] py-[7px]"
+                          }
                           aria-label={`Remarks for ${s.name}`}
                           value={m.remarks}
                           maxLength={500}
@@ -335,7 +364,13 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                   )}
                   <td>
                     {s.grade && s.result_status !== "NEEDS_RECALCULATION" && (
-                      <strong className="grade small">{s.grade}</strong>
+                      <strong
+                        className={
+                          "grade inline-grid place-items-center bg-[#edf5e7] text-[#657f4b] rounded-[7px] min-w-[39px] h-[38px] text-[16px] font-semibold [&.fail]:bg-[#f8eeeb] [&.fail]:text-[#956f64] [&.small]:text-[14px] [&.small]:h-[25px] [&.small]:min-w-[29px] small"
+                        }
+                      >
+                        {s.grade}
+                      </strong>
                     )}
                     <small>
                       {s.result_status?.replaceAll("_", " ") || "Not generated"}
@@ -352,7 +387,11 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
           />
         )}
         {dirty && (
-          <div className="panel-note">
+          <div
+            className={
+              "panel-note text-[13px] bg-[#fbfcf8] text-[#707a62] leading-[1.7] px-[23px] py-[15px]"
+            }
+          >
             You have unsaved marks. Save before generating grades. A saved mark
             cannot be erased with a blank input; enter a corrected mark or
             accurately record absence.
@@ -365,7 +404,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
           subtitle={`Cover 0–${data.exam.max_marks} without gaps or overlaps. F is the failing grade.`}
           action={
             <button
-              className="button secondary"
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden secondary"
+              }
               disabled={!canMark || busy}
               onClick={() => {
                 setBounds([
@@ -384,7 +425,11 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
             </button>
           }
         >
-          <div className="panel-note">
+          <div
+            className={
+              "panel-note text-[13px] bg-[#fbfcf8] text-[#707a62] leading-[1.7] px-[23px] py-[15px]"
+            }
+          >
             Each range includes its lower bound and excludes its upper bound.
             The final range includes {data.exam.max_marks}. Exact saved marks
             are used without rounding.
@@ -402,7 +447,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                 <td>
                   <input
                     aria-label={`Grade label ${i + 1}`}
-                    className="grade-input"
+                    className={
+                      "grade-input w-[90px] font-semibold px-[9px] py-[7px]"
+                    }
                     value={b.grade_label}
                     disabled={!canMark || busy}
                     maxLength={4}
@@ -424,7 +471,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                 <td>
                   <input
                     aria-label={`Lower bound ${i + 1}`}
-                    className="marks-input"
+                    className={
+                      "marks-input w-[90px] text-[14px] px-[9px] py-[7px]"
+                    }
                     type="number"
                     step="any"
                     min="0"
@@ -451,7 +500,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                 <td>
                   <input
                     aria-label={`Upper bound ${i + 1}`}
-                    className="marks-input"
+                    className={
+                      "marks-input w-[90px] text-[14px] px-[9px] py-[7px]"
+                    }
                     type="number"
                     step="any"
                     value={Number.isNaN(b.upper_bound) ? "" : b.upper_bound}
@@ -476,7 +527,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                 </td>
                 <td>
                   <button
-                    className="icon-button danger"
+                    className={
+                      "icon-button border-0 bg-transparent inline-flex items-center justify-center rounded-[5px] p-[7px] [&:hover]:bg-[#eff5f1] danger text-[#b34d4d]"
+                    }
                     aria-label={`Remove grade ${i + 1}`}
                     disabled={!canMark || busy}
                     onClick={() => {
@@ -490,14 +543,20 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
               </tr>
             ))}
           </Table>
-          <div className="panel-actions">
-            <span className="muted">
+          <div
+            className={
+              "panel-actions flex justify-between items-center border-t border-solid border-t-line px-[23px] py-[18px] gap-4 max-mobile:flex-col max-mobile:items-end max-mobile:p-[17px] max-mobile:[&_>_.muted]:self-start"
+            }
+          >
+            <span className={"muted text-muted text-[14px]"}>
               {boundDirty || !data.boundaries.length
                 ? "Save and validate boundaries before generating grades."
                 : "Boundaries saved and validated."}
             </span>
             <button
-              className="button secondary"
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden secondary"
+              }
               disabled={
                 !canMark || busy || (!boundDirty && data.boundaries.length > 0)
               }
@@ -519,7 +578,11 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
         title="Grade preview & publication"
         subtitle="Generated grades remain private until you publish them"
       >
-        <div className="publication-summary">
+        <div
+          className={
+            "publication-summary flex items-center justify-between p-[25px] gap-5 [&_h3]:text-[16px] [&_h3]:mt-3 [&_h3]:mb-[6px] [&_h3]:text-[#5e774c] [&_h3]:mx-0 [&_p]:text-[13px] [&_p]:text-[#717963] max-wide:items-start max-wide:flex-col max-mobile:p-5"
+          }
+        >
           <div>
             <Badge
               value={
@@ -547,10 +610,12 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
                 : "All registered students have evaluated marks."}
             </p>
           </div>
-          <div className="row-actions">
+          <div className={"row-actions flex items-center flex-wrap gap-[14px]"}>
             {faculty && !locked && (
               <button
-                className="button secondary"
+                className={
+                  "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden secondary"
+                }
                 disabled={
                   busy ||
                   dirty ||
@@ -567,7 +632,9 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
             )}
             {(!locked || can(user.role, "withdrawResults")) && (
               <button
-                className={`button ${locked ? "secondary" : ""}`}
+                className={cn(
+                  `button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden ${locked ? "secondary" : ""}`,
+                )}
                 disabled={
                   busy ||
                   dirty ||
@@ -582,7 +649,11 @@ function EvaluationWorkspace({ examId }: { examId: string }) {
             )}
           </div>
         </div>
-        <div className="grade-preview">
+        <div
+          className={
+            "grade-preview flex pt-0 pb-[25px] px-[25px] gap-[15px] [&_>_div]:bg-[#f5f8ef] [&_>_div]:border [&_>_div]:border-solid [&_>_div]:border-[#e7eddd] [&_>_div]:min-w-22 [&_>_div]:rounded-[8px] [&_>_div]:text-center [&_>_div]:px-[18px] [&_>_div]:py-3 [&_span]:text-[14px] [&_span]:text-[#6c7c59] [&_strong]:text-[22px] [&_strong]:text-[#687e4c] [&_strong]:block [&_small]:text-[11px] [&_small]:text-[#727965] max-mobile:flex-wrap max-mobile:pt-0 max-mobile:pb-5 max-mobile:px-[18px] max-mobile:[&_>_div]:min-w-[75px] max-mobile:[&_>_div]:p-[10px]"
+          }
+        >
           {[
             ...new Set(
               data.students

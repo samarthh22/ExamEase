@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { cn } from "../cn";
+import { useState, type CSSProperties } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -85,7 +86,11 @@ export function Home() {
               : "A clear view of schedules, evaluation progress and published results."
         }
         action={
-          <div className="today">
+          <div
+            className={
+              "today flex items-center text-[13px] text-[#6b7a71] bg-[#fff] border border-solid border-line rounded-[7px] whitespace-nowrap px-[13px] py-[10px] gap-2 max-tablet:hidden"
+            }
+          >
             <CalendarDays size={17} />
             {new Date().toLocaleDateString("en-IN", {
               day: "numeric",
@@ -96,9 +101,17 @@ export function Home() {
           </div>
         }
       />
-      <section className="overview-banner">
+      <section
+        className={
+          "overview-banner flex justify-between bg-[#e9f2ed] border border-solid border-[#dfeae2] rounded-[11px] mb-6 overflow-hidden min-h-48 relative px-[29px] py-[26px] gap-[30px] [&_h2]:text-[23px] [&_h2]:tracking-[-0.6px] [&_h2]:text-[#254e3d] [&_h2]:mt-[10px] [&_h2]:mb-[9px] [&_h2]:mx-0 [&_p]:text-[13px] [&_p]:text-[#697b6e] [&_p]:max-w-[490px] [&_p]:leading-[1.7] cinema:min-h-55 cinema:[&_h2]:text-[28px] cinema:[&_p]:text-[14px] cinema:[&_>_div:first-child]:self-center max-wide:[&_h2]:text-[21px] max-tablet:p-[22px] max-mobile:min-h-[210px] max-mobile:px-[22px] max-mobile:py-6 max-mobile:[&_h2]:text-[23px] max-mobile:[&_h2]:max-w-[270px] max-mobile:[&_p]:text-[13px]"
+        }
+      >
         <div>
-          <span className="banner-tag">
+          <span
+            className={
+              "banner-tag inline-flex items-center tracking-[1.2px] text-[10px] font-bold text-[#5b876c] gap-[6px] [&_>_span]:h-[5px] [&_>_span]:w-[5px] [&_>_span]:bg-[#58926a] [&_>_span]:rounded-full"
+            }
+          >
             <span />{" "}
             {student ? "YOUR ACADEMIC WORKSPACE" : "EXAMINATION WORKSPACE"}
           </span>
@@ -113,7 +126,9 @@ export function Home() {
               : "Keep schedules organized and move every examination from registration to results."}
           </p>
           <a
-            className="banner-link"
+            className={
+              "banner-link mt-5 inline-flex items-center text-[#32734e] text-[13px] font-semibold gap-[10px]"
+            }
             href={
               admin
                 ? "#schedule"
@@ -134,29 +149,58 @@ export function Home() {
             <ArrowRight size={17} />
           </a>
         </div>
-        <div className="banner-illustration" aria-hidden="true">
-          <div className="mini-calendar">
-            <div className="calendar-top">
+        <div
+          className={
+            "banner-illustration w-[230px] shrink-0 relative flex items-center justify-center max-wide:w-[170px] max-tablet:hidden"
+          }
+          aria-hidden="true"
+        >
+          <div
+            className={
+              "mini-calendar w-30 h-[135px] bg-[#f9fcf8] border border-solid border-[#d3e3d6] shadow-[0_7px_18px_#75937c14] rounded-[12px] -rotate-[8deg] flex flex-col items-center justify-center text-[#677c68] relative"
+            }
+          >
+            <div
+              className={
+                "calendar-top h-5 border-b border-solid border-b-[#dde7db] absolute top-0 w-full flex justify-around [&_span]:h-[11px] [&_span]:w-1 [&_span]:bg-[#75947a] [&_span]:-mt-1 [&_span]:rounded-[3px]"
+              }
+            >
               <span />
               <span />
             </div>
             <CalendarDays size={46} />
-            <div className="calendar-lines">
+            <div
+              className={
+                "calendar-lines flex mt-[10px] gap-[7px] [&_i]:h-[5px] [&_i]:w-[17px] [&_i]:bg-[#e4ecdf] [&_i]:rounded-[2px]"
+              }
+            >
               <i />
               <i />
               <i />
             </div>
-            <span className="calendar-check">
+            <span
+              className={
+                "calendar-check absolute right-[-14px] bottom-[18px] border-[5px] border-solid border-[#e9f2ed] bg-[#88a97b] text-white w-[43px] h-[43px] rounded-full grid place-items-center"
+              }
+            >
               <CheckCheck size={22} />
             </span>
           </div>
-          <div className="floating-label">
+          <div
+            className={
+              "floating-label absolute right-0 bottom-1 bg-[#f8fbf5] border border-solid border-[#dce6d6] rounded-[6px] flex items-center text-[10px] text-[#6b7b61] rotate-[2deg] px-[10px] py-[7px] gap-[6px]"
+            }
+          >
             <CheckCheck size={16} />
             Organized. Connected. Clear.
           </div>
         </div>
       </section>
-      <div className="stats-grid">
+      <div
+        className={
+          "stats-grid grid grid-cols-[repeat(4,_minmax(0,_1fr))] mb-[25px] gap-[18px] max-wide:gap-3 max-tablet:grid-cols-[repeat(2,_minmax(0,_1fr))] max-mobile:gap-3"
+        }
+      >
         <Stat
           label={student ? "Enrolled courses" : "Courses"}
           value={courses?.length || 0}
@@ -193,17 +237,34 @@ export function Home() {
         />
       </div>
       <ErrorMessage message={ownResultsError} />
-      <div className="dashboard-grid">
+      <div
+        className={
+          "dashboard-grid grid grid-cols-[1.55fr_1fr] gap-[22px] [&_.panel]:min-w-0 max-wide:grid-cols-[1.3fr_1fr] max-wide:gap-4 max-tablet:grid-cols-[1fr]"
+        }
+      >
         <Panel
           title="Upcoming examinations"
           subtitle="Plan ahead with the latest published schedules"
           action={<LinkButton to="schedule">View all</LinkButton>}
         >
           {upcoming.length ? (
-            <div className="exam-list">
+            <div
+              className={
+                "exam-list px-[22px] py-0 max-mobile:px-[18px] max-mobile:py-0"
+              }
+            >
               {upcoming.slice(0, 4).map((e) => (
-                <div className="exam-list-row" key={e.id}>
-                  <div className="date-tile">
+                <div
+                  className={
+                    "exam-list-row flex items-center border-b border-solid border-b-[#edf1ed] px-0 py-[18px] gap-[14px] [&:last-child]:border-0 cinema:px-0 cinema:py-[23px]"
+                  }
+                  key={e.id}
+                >
+                  <div
+                    className={
+                      "date-tile border border-solid border-[#e3e9e0] bg-[#f6f8f2] rounded-[7px] text-center min-w-[43px] h-[49px] flex flex-col justify-center [&_strong]:text-[17px] [&_strong]:leading-[1.1] [&_strong]:text-[#657d59] [&_strong]:font-semibold [&_span]:text-[11px] [&_span]:text-[#6f7968] [&_span]:mt-[3px] [&_span]:uppercase"
+                    }
+                  >
                     <strong>{e.date.slice(-2)}</strong>
                     <span>
                       {new Date(`${e.date}T00:00:00`).toLocaleDateString("en", {
@@ -211,15 +272,29 @@ export function Home() {
                       })}
                     </span>
                   </div>
-                  <div className="exam-list-detail">
-                    <span className="course-code">{e.code}</span>
+                  <div
+                    className={
+                      "exam-list-detail flex-1 [&_h3]:text-[13px] [&_h3]:text-[#3b5645] [&_h3]:mt-[2px] [&_p]:text-[11px] [&_p]:text-[#707873] [&_p]:mt-1 [&_p_span]:mx-1 [&_p_span]:my-0 max-mobile:[&_h3]:text-[13px]"
+                    }
+                  >
+                    <span
+                      className={
+                        "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                      }
+                    >
+                      {e.code}
+                    </span>
                     <h3>{e.title}</h3>
                     <p>
                       {e.exam_type} <span>·</span> {e.start_time}–{e.end_time}{" "}
                       IST
                     </p>
                   </div>
-                  <div className="exam-location">
+                  <div
+                    className={
+                      "exam-location text-[#70796b] text-[11px] flex items-center gap-1 max-wide:hidden"
+                    }
+                  >
                     <MapPin size={14} />
                     {e.venue}
                   </div>
@@ -247,10 +322,18 @@ export function Home() {
           }
         >
           {student ? (
-            <div className="course-mini-list">
+            <div
+              className={
+                "course-mini-list px-[22px] py-[10px] [&_>_div]:flex [&_>_div]:border-b [&_>_div]:border-solid [&_>_div]:border-b-[#edf0ed] [&_>_div]:items-center [&_>_div]:px-0 [&_>_div]:py-[13px] [&_>_div]:gap-[11px] [&_>_div:last-child]:border-0 [&_strong]:text-[13px] [&_p]:text-[12px] [&_p]:text-[#6f796a] [&_p]:mt-[3px]"
+              }
+            >
               {courses?.map((c) => (
                 <div key={c.id}>
-                  <div className="course-icon">
+                  <div
+                    className={
+                      "course-icon bg-[#eff5ee] text-[#6a7c61] rounded-[7px] p-[9px]"
+                    }
+                  >
                     <BookOpen size={19} />
                   </div>
                   <div>
@@ -261,13 +344,21 @@ export function Home() {
               ))}
             </div>
           ) : (
-            <div className="progress-list">
+            <div
+              className={
+                "progress-list p-6 [&_>_div]:mb-6 [&_>_div:last-child]:mb-0"
+              }
+            >
               {reports
                 ?.filter((r) => r.registered > 0)
                 .slice(0, 4)
                 .map((r) => (
                   <div key={r.exam.id}>
-                    <div className="progress-label">
+                    <div
+                      className={
+                        "progress-label flex items-center justify-between text-[13px] text-[#44634d] [&_strong]:font-semibold [&_small]:block [&_small]:text-[11px] [&_small]:text-[#71796b] [&_small]:font-normal [&_small]:mt-1 [&_span]:text-[13px] [&_span]:text-[#667c66]"
+                      }
+                    >
                       <strong>
                         {r.exam.code}
                         <small>{r.exam.exam_type}</small>
@@ -276,14 +367,25 @@ export function Home() {
                         {r.statistics.count}/{r.registered}
                       </span>
                     </div>
-                    <div className="progress-track">
+                    <div
+                      className={
+                        "progress-track h-[7px] bg-[#eff3ed] rounded-[5px] overflow-hidden mt-[10px] [&_i]:h-full [&_i]:bg-[#8fab7c] [&_i]:block [&_i]:rounded-[5px]"
+                      }
+                    >
                       <i
-                        style={{
-                          width: `${r.registered ? (r.statistics.count / r.registered) * 100 : 0}%`,
-                        }}
+                        className="w-[var(--progress)]"
+                        style={
+                          {
+                            "--progress": `${r.registered ? (r.statistics.count / r.registered) * 100 : 0}%`,
+                          } as CSSProperties
+                        }
                       />
                     </div>
-                    <div className="progress-caption">
+                    <div
+                      className={
+                        "progress-caption text-[11px] text-[#71786c] mt-[7px]"
+                      }
+                    >
                       {r.exam.results_published
                         ? "Results published"
                         : r.statistics.count === r.registered
@@ -303,7 +405,11 @@ export function Home() {
         title="Your next steps"
         subtitle="Continue the examination workflow"
       >
-        <div className="quick-actions">
+        <div
+          className={
+            "quick-actions grid grid-cols-[repeat(3,_minmax(0,_1fr))] p-[22px] gap-[18px] max-wide:p-[17px] max-wide:gap-[10px] max-tablet:grid-cols-[1fr]"
+          }
+        >
           {(admin
             ? [
                 [
@@ -390,7 +496,13 @@ export function Home() {
           ).map(([to, title, desc, Icon]) => {
             const I = Icon as typeof BookOpen;
             return (
-              <a href={`#${to}`} className="quick-action" key={String(title)}>
+              <a
+                href={`#${to}`}
+                className={
+                  "quick-action border border-solid border-[#e7ece7] rounded-[8px] flex items-center px-[14px] py-[17px] gap-3 [&:hover]:bg-[#f6faf7] [&:hover]:border-[#c5d8c9] [&_>_span]:bg-[#f0f5ee] [&_>_span]:grid [&_>_span]:place-items-center [&_>_span]:text-[#6a7c5e] [&_>_span]:rounded-[8px] [&_>_span]:p-[9px] [&_>_div]:flex-1 [&_h3]:text-[12px] [&_h3]:text-[#526c52] [&_p]:text-[10px] [&_p]:text-[#707969] [&_p]:mt-[5px] [&_>_svg]:text-[#71796c] cinema:[&_h3]:text-[14px] cinema:[&_p]:text-[12px] max-wide:px-[10px] max-wide:py-[13px] max-wide:gap-2 max-wide:[&_>_span]:hidden max-tablet:[&_>_span]:grid max-tablet:[&_h3]:text-[14px] max-tablet:[&_p]:text-[12px]"
+                }
+                key={String(title)}
+              >
                 <span>
                   <I size={21} />
                 </span>
@@ -454,7 +566,12 @@ export function Courses() {
         }
         action={
           admin && (
-            <button className="button" onClick={() => setEdit(null)}>
+            <button
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+              }
+              onClick={() => setEdit(null)}
+            >
               <Plus size={18} />
               Add course
             </button>
@@ -462,13 +579,19 @@ export function Courses() {
         }
       />
       <Panel>
-        <div className="toolbar">
+        <div
+          className={
+            "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
+          }
+        >
           <SearchBox
             value={search}
             onChange={setSearch}
             placeholder="Search code, title or department…"
           />
-          <span className="muted">{data?.length || 0} courses</span>
+          <span className={"muted text-muted text-[14px]"}>
+            {data?.length || 0} courses
+          </span>
         </div>
         <ErrorMessage message={error} />
         {loading ? (
@@ -489,8 +612,16 @@ export function Courses() {
               .map((c) => (
                 <tr key={c.id}>
                   <td>
-                    <span className="course-code">{c.code}</span>
-                    <strong className="cell-title">{c.title}</strong>
+                    <span
+                      className={
+                        "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                      }
+                    >
+                      {c.code}
+                    </span>
+                    <strong className={"cell-title block mt-[3px] text-[14px]"}>
+                      {c.title}
+                    </strong>
                   </td>
                   <td>
                     {c.department}
@@ -504,7 +635,9 @@ export function Courses() {
                   {admin && (
                     <td>
                       <button
-                        className="text-button"
+                        className={
+                          "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
+                        }
                         onClick={() => setEdit(c)}
                       >
                         Edit
@@ -643,7 +776,12 @@ export function Schedule() {
         description="Examination dates, times and venues. All times are in IST."
         action={
           admin && (
-            <button className="button" onClick={() => setEdit(null)}>
+            <button
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+              }
+              onClick={() => setEdit(null)}
+            >
               <Plus size={18} />
               Create examination
             </button>
@@ -651,7 +789,11 @@ export function Schedule() {
         }
       />
       <Panel>
-        <div className="toolbar">
+        <div
+          className={
+            "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
+          }
+        >
           <SearchBox
             value={search}
             onChange={setSearch}
@@ -694,8 +836,16 @@ export function Schedule() {
               .map((e) => (
                 <tr key={e.id}>
                   <td>
-                    <span className="course-code">{e.code}</span>
-                    <strong className="cell-title">{e.title}</strong>
+                    <span
+                      className={
+                        "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                      }
+                    >
+                      {e.code}
+                    </span>
+                    <strong className={"cell-title block mt-[3px] text-[14px]"}>
+                      {e.title}
+                    </strong>
                     <small>{e.exam_type}</small>
                   </td>
                   <td>
@@ -712,7 +862,9 @@ export function Schedule() {
                   {admin && (
                     <td>
                       <button
-                        className="text-button"
+                        className={
+                          "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
+                        }
                         disabled={
                           e.status === "CANCELLED" || !!e.results_published
                         }
@@ -821,7 +973,12 @@ export function Registrations() {
         }
         action={
           !student && (
-            <button className="button" onClick={() => setAdding(true)}>
+            <button
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+              }
+              onClick={() => setAdding(true)}
+            >
               <Plus size={18} />
               Register student
             </button>
@@ -829,7 +986,11 @@ export function Registrations() {
         }
       />
       {student && (
-        <div className="info-strip">
+        <div
+          className={
+            "info-strip border border-solid border-[#d8e7e2] bg-[#edf6f2] rounded-[8px] flex items-center text-[#426955] mb-[22px] text-[14px] px-[18px] py-[14px] gap-3"
+          }
+        >
           Registrations are official examination records. Contact the
           examination office if a registration needs to be cancelled or
           restored.
@@ -838,16 +999,39 @@ export function Registrations() {
       <ErrorMessage message={eligibleError || studentsError} />
       {student && (
         <>
-          <div className="section-title">
+          <div
+            className={
+              "section-title flex justify-between items-center mt-6 mb-4 mx-0 [&_h2]:text-[16px] [&_span]:text-[13px] [&_span]:text-[#6e7a6a] max-mobile:items-start max-mobile:gap-[10px] max-mobile:[&_span]:text-[11px] max-mobile:[&_h2]:text-[14px]"
+            }
+          >
             <h2>Available examinations</h2>
             <span>For your enrolled courses</span>
           </div>
           {eligibleLoading && <Loading />}
-          <div className="exam-card-grid">
+          <div
+            className={
+              "exam-card-grid grid grid-cols-[repeat(3,_minmax(0,_1fr))] mb-[26px] gap-[18px] max-wide:grid-cols-[repeat(2,_minmax(0,_1fr))] max-mobile:grid-cols-[1fr]"
+            }
+          >
             {eligible?.map((e) => (
-              <article className="exam-card" key={e.id}>
-                <div className="exam-card-top">
-                  <span className="course-code">{e.code}</span>
+              <article
+                className={
+                  "exam-card bg-white border border-solid border-line rounded-[9px] p-[22px] [&_h3]:text-[15px] [&_h3]:leading-[1.5] [&_>_p]:text-[13px] [&_>_p]:text-[#70796b] [&_>_p]:mt-[5px] [&_>_.button]:w-full [&_>_.button]:text-[13px]"
+                }
+                key={e.id}
+              >
+                <div
+                  className={
+                    "exam-card-top flex items-center justify-between mb-[14px]"
+                  }
+                >
+                  <span
+                    className={
+                      "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                    }
+                  >
+                    {e.code}
+                  </span>
                   <Badge
                     value={
                       e.registration_status === "REGISTERED"
@@ -862,7 +1046,11 @@ export function Registrations() {
                 <p>
                   {e.exam_type} · {e.max_marks} marks
                 </p>
-                <div className="exam-meta">
+                <div
+                  className={
+                    "exam-meta flex flex-col text-[#6c7b62] text-[13px] my-5 gap-[10px] [&_span]:flex [&_span]:items-center [&_span]:gap-2"
+                  }
+                >
                   <span>
                     <CalendarDays size={16} />
                     {dateLabel(e.date)}
@@ -877,7 +1065,9 @@ export function Registrations() {
                   </span>
                 </div>
                 <button
-                  className={`button ${e.registration_status === "REGISTERED" ? "secondary" : ""}`}
+                  className={cn(
+                    `button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden ${e.registration_status === "REGISTERED" ? "secondary" : ""}`,
+                  )}
                   disabled={
                     e.registration_status === "REGISTERED" ||
                     e.registration_status === "CANCELLED"
@@ -908,13 +1098,19 @@ export function Registrations() {
         title={student ? "My registrations" : "Registration records"}
         subtitle="Current status and examination receipts"
       >
-        <div className="toolbar">
+        <div
+          className={
+            "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
+          }
+        >
           <SearchBox
             value={search}
             onChange={setSearch}
             placeholder="Search registrations…"
           />
-          <span className="muted">{data?.length || 0} records</span>
+          <span className={"muted text-muted text-[14px]"}>
+            {data?.length || 0} records
+          </span>
         </div>
         <ErrorMessage message={error} />
         {loading ? (
@@ -942,8 +1138,16 @@ export function Registrations() {
                     </td>
                   )}
                   <td>
-                    <span className="course-code">{r.code}</span>
-                    <strong className="cell-title">{r.title}</strong>
+                    <span
+                      className={
+                        "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                      }
+                    >
+                      {r.code}
+                    </span>
+                    <strong className={"cell-title block mt-[3px] text-[14px]"}>
+                      {r.title}
+                    </strong>
                     <small>{r.exam_type}</small>
                   </td>
                   <td>
@@ -958,9 +1162,15 @@ export function Registrations() {
                     <small>Seat {r.seat}</small>
                   </td>
                   <td>
-                    <div className="row-actions">
+                    <div
+                      className={
+                        "row-actions flex items-center flex-wrap gap-[14px]"
+                      }
+                    >
                       <button
-                        className="text-button"
+                        className={
+                          "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
+                        }
                         onClick={() => setReceipt(r)}
                       >
                         View receipt
@@ -972,7 +1182,9 @@ export function Registrations() {
                           `${r.date}T${r.start_time}:00+05:30`,
                         ).getTime() > Date.now() && (
                           <button
-                            className="text-button danger"
+                            className={
+                              "border-0 bg-[none] text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline danger text-[#b34d4d]"
+                            }
                             onClick={() => setCancel(r)}
                           >
                             Cancel
@@ -1017,8 +1229,16 @@ export function Registrations() {
       )}
       {receipt && (
         <Modal title="Registration receipt" onClose={() => setReceipt(null)}>
-          <div className="receipt">
-            <div className="receipt-brand">
+          <div
+            className={
+              "receipt text-center [&_h3]:text-[19px] [&_h3]:mt-[17px] [&_>_p]:text-[#6e7a66] [&_>_p]:text-[14px] [&_>_p]:mt-[5px] [&_dl]:mt-[23px] [&_dl]:mb-0 [&_dl]:text-left [&_dl]:mx-0 [&_dl_>_div]:grid [&_dl_>_div]:grid-cols-[135px_1fr] [&_dl_>_div]:border-b [&_dl_>_div]:border-solid [&_dl_>_div]:border-b-[#edf0e9] [&_dl_>_div]:text-[13px] [&_dl_>_div]:px-0 [&_dl_>_div]:py-[10px] [&_dt]:text-[#707968] [&_dd]:text-[#526c49] [&_dd]:wrap-anywhere [&_dd]:m-0 max-mobile:[&_dl_>_div]:grid-cols-[110px_1fr]"
+            }
+          >
+            <div
+              className={
+                "receipt-brand flex justify-center items-center text-brand text-[23px] mt-[10px] mb-[18px] mx-0 gap-[10px]"
+              }
+            >
               <GraduationCap size={28} />
               <strong>ExamEase</strong>
             </div>
@@ -1052,12 +1272,26 @@ export function Registrations() {
               ))}
             </dl>
           </div>
-          <div className="modal-actions">
-            <button className="button secondary" onClick={() => window.print()}>
+          <div
+            className={
+              "modal-actions flex justify-end mt-[25px] pt-[18px] border-t border-solid border-t-line gap-3 print:[dialog_&]:hidden"
+            }
+          >
+            <button
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden secondary"
+              }
+              onClick={() => window.print()}
+            >
               <Printer size={16} />
               Print slip
             </button>
-            <button className="button" onClick={() => setReceipt(null)}>
+            <button
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+              }
+              onClick={() => setReceipt(null)}
+            >
               Done
             </button>
           </div>
@@ -1114,8 +1348,16 @@ function ResultTable({ rows }: { rows: ResultRow[] }) {
       {rows.map((r) => (
         <tr key={r.id}>
           <td>
-            <span className="course-code">{r.code}</span>
-            <strong className="cell-title">{r.title}</strong>
+            <span
+              className={
+                "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+              }
+            >
+              {r.code}
+            </span>
+            <strong className={"cell-title block mt-[3px] text-[14px]"}>
+              {r.title}
+            </strong>
             <small>
               {r.exam_type} · {dateLabel(r.date)}
             </small>
@@ -1124,7 +1366,10 @@ function ResultTable({ rows }: { rows: ResultRow[] }) {
             {r.status === "PUBLISHED" ? (
               <>
                 <strong>{r.marks_obtained}</strong>
-                <span className="muted"> / {r.max_marks}</span>
+                <span className={"muted text-muted text-[14px]"}>
+                  {" "}
+                  / {r.max_marks}
+                </span>
               </>
             ) : (
               "—"
@@ -1132,7 +1377,11 @@ function ResultTable({ rows }: { rows: ResultRow[] }) {
           </td>
           <td>
             {r.grade ? (
-              <span className={`grade ${r.grade === "F" ? "fail" : ""}`}>
+              <span
+                className={cn(
+                  `grade inline-grid place-items-center bg-[#edf5e7] text-[#657f4b] rounded-[7px] min-w-[39px] h-[38px] text-[16px] font-semibold [&.fail]:bg-[#f8eeeb] [&.fail]:text-[#956f64] [&.small]:text-[14px] [&.small]:h-[25px] [&.small]:min-w-[29px] ${r.grade === "F" ? "fail" : ""}`,
+                )}
+              >
                 {r.grade}
               </span>
             ) : (
@@ -1264,7 +1513,9 @@ export function Reports() {
         }
         action={
           <button
-            className="button secondary"
+            className={
+              "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden secondary"
+            }
             disabled={!rows.length}
             onClick={() => exportReports(rows)}
           >
@@ -1278,7 +1529,11 @@ export function Reports() {
         <Loading />
       ) : (
         <>
-          <div className="toolbar report-filters">
+          <div
+            className={
+              "toolbar flex items-center flex-wrap px-[22px] py-[18px] [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden report-filters bg-white border border-solid border-line rounded-[9px] mb-[22px] justify-start gap-[22px] [&_label]:flex [&_label]:flex-col [&_label]:text-[12px] [&_label]:text-[#6e7a65] [&_label]:min-w-[230px] [&_label]:gap-[6px] [&_select]:text-[14px] max-mobile:[&_label]:w-full max-mobile:[&_label]:min-w-0"
+            }
+          >
             <label>
               Department
               <select
@@ -1310,7 +1565,11 @@ export function Reports() {
           </div>
           {selected ? (
             <>
-              <div className="stats-grid">
+              <div
+                className={
+                  "stats-grid grid grid-cols-[repeat(4,_minmax(0,_1fr))] mb-[25px] gap-[18px] max-wide:gap-3 max-tablet:grid-cols-[repeat(2,_minmax(0,_1fr))] max-mobile:gap-3"
+                }
+              >
                 <Stat
                   label="Class mean"
                   value={selected.statistics.mean ?? "—"}
@@ -1334,21 +1593,42 @@ export function Reports() {
                   detail={`${selected.passed} passed · ${selected.failed} failed`}
                 />
               </div>
-              <div className="dashboard-grid">
+              <div
+                className={
+                  "dashboard-grid grid grid-cols-[1.55fr_1fr] gap-[22px] [&_.panel]:min-w-0 max-wide:grid-cols-[1.3fr_1fr] max-wide:gap-4 max-tablet:grid-cols-[1fr]"
+                }
+              >
                 <Panel
                   title="Grade distribution"
                   subtitle="Based on published results only"
                 >
-                  <div className="distribution">
+                  <div
+                    className={
+                      "distribution p-[26px] [&_>_div]:flex [&_>_div]:items-center [&_>_div]:mb-[18px] [&_>_div]:text-[13px] [&_>_div]:gap-[13px] [&_.progress-track]:flex-1 [&_.progress-track]:h-[17px] [&_.progress-track]:rounded-[3px] [&_.progress-track]:m-0 [&_.progress-track_i]:rounded-[3px] [&_>_div_>_span:last-child]:text-[11px] [&_>_div_>_span:last-child]:text-[#717967]"
+                    }
+                  >
                     {selected.distribution.length ? (
                       selected.distribution.map((d) => (
                         <div key={d.grade}>
-                          <span className="distribution-grade">{d.grade}</span>
-                          <div className="progress-track">
+                          <span
+                            className={
+                              "distribution-grade w-[25px] font-semibold"
+                            }
+                          >
+                            {d.grade}
+                          </span>
+                          <div
+                            className={
+                              "progress-track h-[7px] bg-[#eff3ed] rounded-[5px] overflow-hidden mt-[10px] [&_i]:h-full [&_i]:bg-[#8fab7c] [&_i]:block [&_i]:rounded-[5px]"
+                            }
+                          >
                             <i
-                              style={{
-                                width: `${(d.count / Math.max(...selected.distribution.map((x) => x.count))) * 100}%`,
-                              }}
+                              className="w-[var(--progress)]"
+                              style={
+                                {
+                                  "--progress": `${(d.count / Math.max(...selected.distribution.map((x) => x.count))) * 100}%`,
+                                } as CSSProperties
+                              }
                             />
                           </div>
                           <strong>{d.count}</strong>
@@ -1367,7 +1647,11 @@ export function Reports() {
                   title="Examination summary"
                   subtitle={`${selected.exam.code} · ${selected.exam.exam_type}`}
                 >
-                  <dl className="summary-list">
+                  <dl
+                    className={
+                      "summary-list px-[22px] py-[6px] m-0 [&_>_div]:flex [&_>_div]:justify-between [&_>_div]:border-b [&_>_div]:border-solid [&_>_div]:border-b-[#eef1e9] [&_>_div]:text-[13px] [&_>_div]:px-0 [&_>_div]:py-[13px] [&_>_div:last-child]:border-0 [&_dt]:text-[#707966] [&_dd]:text-[#6b8157] [&_dd]:font-semibold [&_dd]:m-0"
+                    }
+                  >
                     <div>
                       <dt>Registered students</dt>
                       <dd>{selected.registered}</dd>
@@ -1447,7 +1731,11 @@ export function Reports() {
           title="Student-wise report"
           subtitle="Published marks and grades across registered courses"
         >
-          <div className="toolbar">
+          <div
+            className={
+              "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
+            }
+          >
             <select
               aria-label="Select student for report"
               value={studentId}

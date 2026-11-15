@@ -29,3 +29,9 @@ The permission/workflow review adds a 34-operation, five-role API matrix and reg
 The development launcher was checked with occupied user ports: it returned a clear error before spawning duplicate services, leaving the existing application running. Windows shutdown now targets its owned child process trees. Existing demonstration data was retained.
 
 See [review.md](review.md) for the finding-by-finding record and the policy decisions.
+
+## Tailwind styling migration
+
+The handwritten component stylesheet was replaced with Tailwind CSS utility classes in the React components. `client/tailwind.css` contains the framework import, theme tokens and document defaults. The production build and strict type checking pass. All 11 browser scenarios pass in Chromium and Firefox after the migration, including an added print-media check that the registration receipt remains visible while navigation and print controls are hidden. Login, desktop dashboard and mobile results screenshots were inspected against the previous layout. The local development server serves the Tailwind entry successfully, and the dependency audit reports zero vulnerabilities.
+
+This migration changes presentation and frontend build configuration. The backend permission and examination rules from the preceding review are retained.
