@@ -104,15 +104,8 @@ export function authService(repo: Repository) {
         409,
         "You cannot deactivate your own account or revoke your own system administrator role.",
       );
-      const profile =
-        id &&
-        (repo.one("SELECT id FROM students WHERE user_id=?", id) ||
-          repo.one("SELECT id FROM faculty WHERE user_id=?", id));
-      assert(
-        !profile || input.role === existing?.role,
-        409,
-        "An account linked to an academic profile must retain its student or faculty role. Deactivate it to revoke access.",
-      );
+      // Historical academic profiles remain intact when a role changes.
+      // Every request rechecks the current role, and existing sessions are revoked.
       const values: Partial<User> = {
         email: input.email,
         name: input.name,

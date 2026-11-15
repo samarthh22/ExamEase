@@ -158,14 +158,12 @@ export function createApp(repo: Repository) {
       console.error(error);
       message = "The operation could not be saved. Please try again.";
     }
-    res
-      .status(status)
-      .json({
-        status,
-        errorCode,
-        message,
-        timestamp: new Date().toISOString(),
-      });
+    res.status(status).json({
+      status,
+      errorCode,
+      message,
+      timestamp: new Date().toISOString(),
+    });
   };
   app.use(errorHandler);
   return app;

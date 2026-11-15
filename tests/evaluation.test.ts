@@ -106,6 +106,16 @@ test("FR-018–026 atomic marks, ownership, draft privacy, publication and inval
       "F",
     );
     assert.ok(r.list("audit").some((a) => a.action === "MARKS_SAVED"));
+    const performance = report
+      .courseReports(faculty)
+      .find((row) => row.exam.id === "e-past")!;
+    assert.equal(performance.passed, 4);
+    assert.equal(performance.failed, 2);
+    assert.equal(performance.passRate, 66.7);
+    assert.equal(
+      performance.distribution.reduce((sum, row) => sum + row.count, 0),
+      6,
+    );
   } finally {
     r.close();
   }

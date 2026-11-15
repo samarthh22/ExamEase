@@ -60,6 +60,7 @@ export function Evaluation() {
             <label className="field">
               <span>Examination</span>
               <select
+                aria-label="Examination"
                 value={exam?.id}
                 onChange={(e) => setSelected(e.target.value)}
               >

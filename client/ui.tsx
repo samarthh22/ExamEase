@@ -333,6 +333,7 @@ export function RecordForm({
                 </span>
                 {f.type === "select" ? (
                   <select
+                    aria-label={f.label}
                     required={f.required !== false}
                     disabled={f.disabled}
                     value={String(values[f.name] ?? "")}
@@ -349,6 +350,7 @@ export function RecordForm({
                   </select>
                 ) : (
                   <input
+                    aria-label={f.label}
                     type={f.type || "text"}
                     required={f.required !== false}
                     disabled={f.disabled}
