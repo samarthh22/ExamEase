@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { openRepository } from '../server/db.js';
+import { seed } from '../server/seed.js';
+import { computeStatistics,validateBoundaries,determineGrade,evaluationService } from '../server/services/evaluation.js';
+import { reportingService } from '../server/services/reporting.js';
+import type { User } from '../shared/types.js';
+const bounds=[{grade_label:'F',lower_bound:0,upper_bound:40},{grade_label:'B',lower_bound:40,upper_bound:80},{grade_label:'A',lower_bound:80,upper_bound:100}];
+test('FR-022 population statistics handle zero, odd/even counts and empty data',()=>{assert.deepEqual(computeStatistics([0,10,20]),{count:3,mean:10,median:10,lowest:0,highest:20,std_dev:8.16});assert.equal(computeStatistics([1,4]).median,2.5);assert.equal(computeStatistics([]).mean,null);});
+test('FR-023–024 exact boundary edges map once; gaps and overlaps are rejected',()=>{const b=validateBoundaries(bounds,100);assert.equal(determineGrade(39.999,b,100),'F');assert.equal(determineGrade(40,b,100),'B');assert.equal(determineGrade(100,b,100),'A');assert.throws(()=>validateBoundaries([{...bounds[0],upper_bound:41},...bounds.slice(1)],100),/overlap/);assert.throws(()=>validateBoundaries([{...bounds[0],upper_bound:39},...bounds.slice(1)],100),/gap/);});
+test('FR-018–026 atomic marks, ownership, draft privacy, publication and invalidation',()=>{const r=openRepository(':memory:');try{seed(r);const e=evaluationService(r),report=reportingService(r),faculty=r.get<User>('users','u-faculty')!,other=r.get<User>('users','u-faculty-2')!,student=r.get<User>('users','u-student-1')!;
+  assert.throws(()=>e.saveMarks(other,'e-past',{marks:[{studentId:'s-1',marksObtained:25}]}),/assigned/);
+  assert.throws(()=>e.saveMarks(faculty,'e-past',{marks:[{studentId:'s-1',marksObtained:25},{studentId:'s-2',marksObtained:101}]}),/between/);
+  assert.equal(e.roster(faculty,'e-past').students[0].marks_obtained,88);
+  e.boundaries(faculty,'e-past',{boundaries:bounds});e.generate(faculty,'e-past',{});assert.equal(report.studentReport(student).find(x=>x.exam_id==='e-past')?.grade,null);e.publish(faculty,'e-past');assert.equal(report.studentReport(student).find(x=>x.exam_id==='e-past')?.grade,'A');assert.throws(()=>e.saveMarks(faculty,'e-past',{marks:[{studentId:'s-1',marksObtained:20}]}),/Withdraw/);e.publish(faculty,'e-past',true);e.saveMarks(faculty,'e-past',{marks:[{studentId:'s-1',marksObtained:20}]});assert.throws(()=>e.publish(faculty,'e-past'),/Regenerate/);e.generate(faculty,'e-past',{});e.publish(faculty,'e-past');assert.equal(report.studentReport(student).find(x=>x.exam_id==='e-past')?.grade,'F');assert.ok(r.list('audit').some(a=>a.action==='MARKS_SAVED'));
+}finally{r.close();}});
