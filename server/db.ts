@@ -1,14 +1,17 @@
-import { DatabaseSync } from 'node:sqlite';
-import { mkdirSync } from 'node:fs';
-import { dirname,resolve } from 'node:path';
-import { randomUUID } from 'node:crypto';
-import type { SQLInputValue } from 'node:sqlite';
+import { DatabaseSync } from "node:sqlite";
+import { mkdirSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { randomUUID } from "node:crypto";
+import type { SQLInputValue } from "node:sqlite";
 // SQLite's untyped SQL boundary is kept inside this adapter; service DTOs are typed.
-type Row=Record<string,any>;
+type Row = Record<string, any>;
 
-export function openRepository(filename=process.env.DATABASE_PATH || 'data/examease.sqlite') {
-  if(filename!==':memory:') mkdirSync(dirname(resolve(filename)),{recursive:true});
-  const db=new DatabaseSync(filename);
+export function openRepository(
+  filename = process.env.DATABASE_PATH || "data/examease.sqlite",
+) {
+  if (filename !== ":memory:")
+    mkdirSync(dirname(resolve(filename)), { recursive: true });
+  const db = new DatabaseSync(filename);
   db.exec(`PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000;
     CREATE TABLE IF NOT EXISTS schema_version(version INTEGER PRIMARY KEY);
     INSERT OR IGNORE INTO schema_version VALUES(1);
@@ -31,19 +34,85 @@ export function openRepository(filename=process.env.DATABASE_PATH || 'data/exame
     CREATE INDEX IF NOT EXISTS idx_results_exam ON results(exam_id);
     CREATE INDEX IF NOT EXISTS idx_enrollment_course ON enrollments(course_id);
   `);
-  const allowed=new Set(['users','sessions','students','faculty','courses','enrollments','exams','registrations','marks','boundaries','results','statistics','audit']);
-  function table(name:string){if(!allowed.has(name))throw new Error('Unknown repository entity');return name;}
-  const repo={
-    all:<T=Row>(sql:string,...params:SQLInputValue[])=>db.prepare(sql).all(...params) as T[],
-    one:<T=Row>(sql:string,...params:SQLInputValue[])=>db.prepare(sql).get(...params) as T|undefined,
-    run:(sql:string,...params:SQLInputValue[])=>db.prepare(sql).run(...params),
-    list:<T=Row>(name:string)=>db.prepare(`SELECT * FROM ${table(name)}`).all() as T[],
-    get:<T=Row>(name:string,id:string)=>db.prepare(`SELECT * FROM ${table(name)} WHERE id=?`).get(id) as T|undefined,
-    insert<T extends object>(name:string,values:T):T{const keys=Object.keys(values);keys.forEach(k=>{if(!/^[a-z_]+$/.test(k))throw new Error('Invalid column');});db.prepare(`INSERT INTO ${table(name)} (${keys.join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).run(...Object.values(values));return values;},
-    update<T=Row>(name:string,id:string,values:object):T{const keys=Object.keys(values);keys.forEach(k=>{if(!/^[a-z_]+$/.test(k))throw new Error('Invalid column');});db.prepare(`UPDATE ${table(name)} SET ${keys.map(k=>`${k}=?`).join(',')} WHERE id=?`).run(...Object.values(values),id);return db.prepare(`SELECT * FROM ${table(name)} WHERE id=?`).get(id) as T;},
-    transaction<T>(operation:()=>T):T{db.exec('BEGIN IMMEDIATE');try{const value=operation();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},
-    audit(userId:string,action:string,entityId:string,details:object={}){repo.insert('audit',{id:randomUUID(),user_id:userId,action,entity_id:entityId,details:JSON.stringify(details),created_at:new Date().toISOString()});},
-    close:()=>db.close(),
-  };return repo;
+  const allowed = new Set([
+    "users",
+    "sessions",
+    "students",
+    "faculty",
+    "courses",
+    "enrollments",
+    "exams",
+    "registrations",
+    "marks",
+    "boundaries",
+    "results",
+    "statistics",
+    "audit",
+  ]);
+  function table(name: string) {
+    if (!allowed.has(name)) throw new Error("Unknown repository entity");
+    return name;
+  }
+  const repo = {
+    all: <T = Row>(sql: string, ...params: SQLInputValue[]) =>
+      db.prepare(sql).all(...params) as T[],
+    one: <T = Row>(sql: string, ...params: SQLInputValue[]) =>
+      db.prepare(sql).get(...params) as T | undefined,
+    run: (sql: string, ...params: SQLInputValue[]) =>
+      db.prepare(sql).run(...params),
+    list: <T = Row>(name: string) =>
+      db.prepare(`SELECT * FROM ${table(name)}`).all() as T[],
+    get: <T = Row>(name: string, id: string) =>
+      db.prepare(`SELECT * FROM ${table(name)} WHERE id=?`).get(id) as
+        T | undefined,
+    insert<T extends object>(name: string, values: T): T {
+      const keys = Object.keys(values);
+      keys.forEach((k) => {
+        if (!/^[a-z_]+$/.test(k)) throw new Error("Invalid column");
+      });
+      db.prepare(
+        `INSERT INTO ${table(name)} (${keys.join(",")}) VALUES (${keys.map(() => "?").join(",")})`,
+      ).run(...Object.values(values));
+      return values;
+    },
+    update<T = Row>(name: string, id: string, values: object): T {
+      const keys = Object.keys(values);
+      keys.forEach((k) => {
+        if (!/^[a-z_]+$/.test(k)) throw new Error("Invalid column");
+      });
+      db.prepare(
+        `UPDATE ${table(name)} SET ${keys.map((k) => `${k}=?`).join(",")} WHERE id=?`,
+      ).run(...Object.values(values), id);
+      return db.prepare(`SELECT * FROM ${table(name)} WHERE id=?`).get(id) as T;
+    },
+    transaction<T>(operation: () => T): T {
+      db.exec("BEGIN IMMEDIATE");
+      try {
+        const value = operation();
+        db.exec("COMMIT");
+        return value;
+      } catch (error) {
+        db.exec("ROLLBACK");
+        throw error;
+      }
+    },
+    audit(
+      userId: string,
+      action: string,
+      entityId: string,
+      details: object = {},
+    ) {
+      repo.insert("audit", {
+        id: randomUUID(),
+        user_id: userId,
+        action,
+        entity_id: entityId,
+        details: JSON.stringify(details),
+        created_at: new Date().toISOString(),
+      });
+    },
+    close: () => db.close(),
+  };
+  return repo;
 }
-export type Repository=ReturnType<typeof openRepository>;
+export type Repository = ReturnType<typeof openRepository>;
