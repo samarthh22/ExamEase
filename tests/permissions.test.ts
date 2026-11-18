@@ -57,8 +57,12 @@ const routeRules: [string, string, Role[]][] = [
   ["get", "/api/duties/exam/missing/roster", ["EXAM_ADMIN", "FACULTY", "TA"]],
   ["post", "/api/duties", ["EXAM_ADMIN"]],
   ["delete", "/api/duties/missing", ["EXAM_ADMIN"]],
+  ["delete", "/api/courses/missing", ["EXAM_ADMIN"]],
+  ["get", "/api/tas", ["EXAM_ADMIN"]],
+  ["post", "/api/tas", ["EXAM_ADMIN"]],
+  ["put", "/api/tas/missing", ["EXAM_ADMIN"]],
 ];
-test("Entire API permission matrix: 39 protected operations across all six roles", async () => {
+test("Entire API permission matrix: 43 protected operations across all six roles", async () => {
   const repo = openRepository(":memory:");
   try {
     seed(repo);

@@ -17,6 +17,116 @@ function fixture() {
   seed(repo);
   return { repo, app: createApp(repo) };
 }
+test("Exam office deletes unused courses with an audit reason and preserves courses with academic history", async () => {
+  const { repo, app } = fixture();
+  try {
+    const admin = request.agent(app);
+    await admin
+      .post("/api/auth/login")
+      .send({ email: "admin@lnmiit.ac.in", password: DEMO_PASSWORD })
+      .expect(200);
+    const created = await admin
+      .post("/api/courses")
+      .send({
+        code: "CS499",
+        title: "Temporary course",
+        credits: 3,
+        department: "Computer Science",
+        semester: "2026",
+        faculty_id: null,
+        active: true,
+      })
+      .expect(201);
+    await admin.delete(`/api/courses/${created.body.id}`).send({}).expect(422);
+    await admin
+      .delete(`/api/courses/${created.body.id}`)
+      .send({ reason: "Remove an unused duplicate course" })
+      .expect(200);
+    assert.equal(repo.get("courses", created.body.id), undefined);
+    assert.match(
+      repo.one("SELECT details FROM audit WHERE action='COURSE_DELETED'")!
+        .details,
+      /unused duplicate/,
+    );
+    const exams = repo.list("exams"),
+      enrollments = repo.list("enrollments");
+    await admin
+      .delete("/api/courses/c-1")
+      .send({ reason: "Attempt removal of an existing course" })
+      .expect(409);
+    assert.ok(repo.get("courses", "c-1"));
+    assert.deepEqual(repo.list("exams"), exams);
+    assert.deepEqual(repo.list("enrollments"), enrollments);
+  } finally {
+    repo.close();
+  }
+});
+
+test("Exam office manages TA accounts without role escalation; duties and session safeguards apply", async () => {
+  const { repo, app } = fixture();
+  try {
+    const admin = request.agent(app),
+      ta = request.agent(app);
+    await admin
+      .post("/api/auth/login")
+      .send({ email: "admin@lnmiit.ac.in", password: DEMO_PASSWORD })
+      .expect(200);
+    const values = {
+      name: "New Teaching Assistant",
+      email: "new-ta@lnmiit.ac.in",
+      department: "Computer Science",
+      role: "TA",
+      active: true,
+      password: DEMO_PASSWORD,
+    };
+    await admin
+      .post("/api/tas")
+      .send({ ...values, role: "SYS_ADMIN" })
+      .expect(403);
+    await admin.put("/api/tas/u-student-1").send(values).expect(403);
+    const created = await admin.post("/api/tas").send(values).expect(201),
+      id = created.body.id;
+    assert.equal(created.body.password_hash, undefined);
+    const list = await admin.get("/api/tas").expect(200);
+    assert.ok(
+      list.body.every((u: User) => u.role === "TA" && !u.password_hash),
+    );
+    await ta
+      .post("/api/auth/login")
+      .send({ email: values.email, password: DEMO_PASSWORD })
+      .expect(200);
+    await ta.post("/api/tas").send(values).expect(403);
+    await admin
+      .post("/api/duties")
+      .send({ examId: "e-2", userId: id })
+      .expect(201);
+    await admin
+      .put(`/api/tas/${id}`)
+      .send({ ...values, active: false })
+      .expect(409);
+    await admin
+      .put(`/api/tas/${id}`)
+      .send({ ...values, name: "Updated Teaching Assistant" })
+      .expect(200);
+    await ta.get("/api/auth/me").expect(401);
+    const duty = repo.one("SELECT id FROM exam_duties WHERE user_id=?", id)!;
+    await admin
+      .delete(`/api/duties/${duty.id}`)
+      .send({ reason: "Replacement staff arranged by the office" })
+      .expect(200);
+    await admin
+      .put(`/api/tas/${id}`)
+      .send({ ...values, active: false })
+      .expect(200);
+    await ta
+      .post("/api/auth/login")
+      .send({ email: values.email, password: DEMO_PASSWORD })
+      .expect(403);
+    await admin.get("/api/users").expect(403);
+  } finally {
+    repo.close();
+  }
+});
 const login = (agent: ReturnType<typeof request.agent>, email: string) =>
   agent
     .post("/api/auth/login")

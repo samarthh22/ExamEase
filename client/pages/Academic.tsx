@@ -526,7 +526,8 @@ export function Courses() {
   const { data, error, loading } = useData<Course[]>("/courses", version),
     { data: faculty } = useData<Faculty[]>(admin ? "/faculty" : "", version);
   const [search, setSearch] = useState(""),
-    [edit, setEdit] = useState<Course | null | undefined>();
+    [edit, setEdit] = useState<Course | null | undefined>(),
+    [removing, setRemoving] = useState<Course | null>(null);
   const fields: Field[] = [
     { name: "code", label: "Course code" },
     { name: "title", label: "Course title" },
@@ -642,6 +643,12 @@ export function Courses() {
                       >
                         Edit
                       </button>
+                      <button
+                        className="ml-4 text-red-700 font-semibold"
+                        onClick={() => setRemoving(c)}
+                      >
+                        Delete course
+                      </button>
                     </td>
                   )}
                 </tr>
@@ -688,6 +695,19 @@ export function Courses() {
             }}
           />
         </Modal>
+      )}
+      {removing && (
+        <Confirm
+          title="Delete course"
+          message={`Permanently delete ${removing.code}? Only courses without enrollments or examinations can be deleted. For a course with history, use Edit to deactivate it after resolving upcoming examinations.`}
+          reasonRequired
+          onClose={() => setRemoving(null)}
+          onConfirm={async (reason) => {
+            await api(`/courses/${removing.id}`, "DELETE", { reason });
+            refresh();
+            notify("Course deleted.");
+          }}
+        />
       )}
     </>
   );

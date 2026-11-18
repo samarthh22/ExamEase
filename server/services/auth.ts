@@ -96,11 +96,22 @@ export function authService(repo: Repository) {
       if (token)
         repo.run("DELETE FROM sessions WHERE token_hash=?", tokenHash(token));
     },
-    save(body: unknown, id: string | null, actor: User) {
-      requirePermission(actor, "manageUsers");
+    save(
+      body: unknown,
+      id: string | null,
+      actor: User,
+      scope: "ALL" | "TA" = "ALL",
+    ) {
+      requirePermission(actor, scope === "TA" ? "manageTAs" : "manageUsers");
       const input = userSchema.parse(body),
         existing = id ? repo.get<User>("users", id) : undefined;
       if (id) assert(existing, 404, "User not found.");
+      if (scope === "TA")
+        assert(
+          input.role === "TA" && (!existing || existing.role === "TA"),
+          403,
+          "This operation manages teaching assistant accounts only.",
+        );
       assert(
         id || input.password,
         422,

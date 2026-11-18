@@ -60,6 +60,10 @@ Password fields have a show/hide control and are masked by default. Unsaved form
 
 ## Implemented scope
 
+Examination administrators can create and manage TA accounts under **Students & faculty → Teaching assistants**. New TAs can sign in immediately and receive hall duties. Editing details, resetting passwords and deactivation are supported; upcoming/current duties must be removed or reassigned before deactivation. Other account roles remain under system administration.
+
+The **Courses → Delete course** action permanently removes an unused course after confirmation and a recorded reason. Courses with enrollments or examination history are protected. Use **Edit → Course is active** to deactivate those courses after resolving upcoming published examinations; this retains student records and results.
+
 - Six roles with server-side authorization and course/student/duty ownership checks. Invigilation is a duty assigned to faculty, rather than a separate account role.
 - Login/logout, salted password hashes, expiring revocable sessions, account management.
 - Student/faculty records, unique roll numbers/course codes, course assignment and enrollment.

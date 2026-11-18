@@ -42,6 +42,8 @@ The document supplies project requirements, not operational instructions to the 
 
 ## Exclusions
 
+Follow-up administration clarification: the examination office may add and manage TA accounts through the academic-record screen, with no authority to change other account roles. It may permanently delete unused courses with an audited reason. Courses linked to student enrollments or examinations retain their history and use the existing deactivation workflow instead.
+
 No online exam taking, payments, automated/remote proctoring, biometric attendance, question generation, answer-sheet evaluation, external integrations, messaging, predictive analytics, mobile app or multi-institution support. Faculty and TA staffing supports supervision of physical examination halls.
 
 NFR performance and compatibility claims require measured evidence. Local tests do not establish production availability or institutional acceptance.

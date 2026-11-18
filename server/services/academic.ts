@@ -249,6 +249,30 @@ export function academicService(repo: Repository) {
       return course;
     });
   }
+  function deleteCourse(id: string, body: unknown, actor: User) {
+    requirePermission(actor, "manageCourses");
+    const { reason } = z
+      .object({ reason: z.string().trim().min(10).max(500) })
+      .strict()
+      .parse(body);
+    return repo.transaction(() => {
+      const course = repo.get<Course>("courses", id);
+      assert(course, 404, "Course not found.");
+      const used = repo.one(
+        "SELECT id FROM enrollments WHERE course_id=? UNION ALL SELECT id FROM exams WHERE course_id=? LIMIT 1",
+        id,
+        id,
+      );
+      assert(
+        !used,
+        409,
+        "This course has enrollments or examination records and cannot be permanently deleted. Use Edit to deactivate it; resolve upcoming published examinations first. Existing student and examination history must be retained.",
+      );
+      repo.run("DELETE FROM courses WHERE id=?", id);
+      repo.audit(actor.id, "COURSE_DELETED", id, { code: course.code, reason });
+      return { message: "Course deleted." };
+    });
+  }
   function saveExam(body: unknown, id: string | null, actor: User) {
     requirePermission(actor, "manageSchedules");
     const input = examSchema.parse(body),
@@ -675,6 +699,7 @@ export function academicService(repo: Repository) {
     assignedExam,
     saveRecord,
     saveCourse,
+    deleteCourse,
     saveExam,
     enroll,
     registrations,

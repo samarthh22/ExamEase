@@ -31,7 +31,7 @@ type Enrollment = {
 type ProfileAccount = Pick<User, "id" | "name" | "email" | "role" | "active">;
 export function Records() {
   const { user, version, refresh, notify } = useApp(),
-    [tab, setTab] = useState<"students" | "faculty" | "enrollments">(
+    [tab, setTab] = useState<"students" | "faculty" | "enrollments" | "tas">(
       "students",
     ),
     [search, setSearch] = useState(""),
@@ -81,23 +81,25 @@ export function Records() {
     <>
       <Heading
         title="Students & faculty"
-        description="Maintain academic profiles and student course enrollments."
+        description="Maintain student and faculty profiles, teaching assistants and course enrollments."
         action={
-          <button
-            className={
-              "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
-            }
-            onClick={() =>
-              tab === "enrollments" ? setEnroll(true) : setEdit(null)
-            }
-          >
-            <Plus size={17} />
-            {tab === "enrollments"
-              ? "Enroll student"
-              : tab === "students"
-                ? "Add student"
-                : "Add faculty"}
-          </button>
+          tab !== "tas" && (
+            <button
+              className={
+                "button inline-flex items-center justify-center bg-brand border border-solid border-brand rounded-[7px] text-[#fff] text-[14px] font-semibold whitespace-nowrap transition-colors duration-150 ease-[ease] px-4 py-[10px] gap-2 [&:hover:not(:disabled)]:bg-brand-dark [&.secondary]:text-[#35594c] [&.secondary]:bg-white [&.secondary]:border-[#d8e2dd] [&.secondary:hover:not(:disabled)]:bg-[#edf5f1] print:hidden"
+              }
+              onClick={() =>
+                tab === "enrollments" ? setEnroll(true) : setEdit(null)
+              }
+            >
+              <Plus size={17} />
+              {tab === "enrollments"
+                ? "Enroll student"
+                : tab === "students"
+                  ? "Add student"
+                  : "Add faculty"}
+            </button>
+          )
         }
       />
       <div
@@ -107,7 +109,7 @@ export function Records() {
         role="tablist"
         aria-label="Academic records"
       >
-        {(["students", "faculty", "enrollments"] as const).map((t) => (
+        {(["students", "faculty", "tas", "enrollments"] as const).map((t) => (
           <button
             role="tab"
             aria-selected={tab === t}
@@ -122,33 +124,79 @@ export function Records() {
               ? "Students"
               : t === "faculty"
                 ? "Faculty"
-                : "Course enrollments"}
+                : t === "tas"
+                  ? "Teaching assistants"
+                  : "Course enrollments"}
           </button>
         ))}
       </div>
-      <Panel>
-        <div
-          className={
-            "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
-          }
-        >
-          <SearchBox
-            value={search}
-            onChange={setSearch}
-            placeholder="Search name, roll number or department…"
+      {tab === "tas" ? (
+        <TeachingAssistants />
+      ) : (
+        <Panel>
+          <div
+            className={
+              "toolbar flex justify-between items-center flex-wrap px-[22px] py-[18px] gap-4 [&_>_select]:text-[14px] max-mobile:p-4 max-mobile:gap-[10px] max-mobile:[&_>_.muted]:hidden print:hidden"
+            }
+          >
+            <SearchBox
+              value={search}
+              onChange={setSearch}
+              placeholder="Search name, roll number or department…"
+            />
+          </div>
+          <ErrorMessage
+            message={selected.error || enrollments.error || accounts.error}
           />
-        </div>
-        <ErrorMessage
-          message={selected.error || enrollments.error || accounts.error}
-        />
-        {(tab === "enrollments" ? enrollments.loading : selected.loading) ? (
-          <Loading />
-        ) : tab === "enrollments" ? (
-          enrollments.data?.length ? (
-            <Table headers={["Student", "Roll number", "Course"]}>
-              {enrollments.data
+          {(tab === "enrollments" ? enrollments.loading : selected.loading) ? (
+            <Loading />
+          ) : tab === "enrollments" ? (
+            enrollments.data?.length ? (
+              <Table headers={["Student", "Roll number", "Course"]}>
+                {enrollments.data
+                  .filter((r) =>
+                    `${r.name} ${r.roll_no} ${r.code}`
+                      .toLowerCase()
+                      .includes(search.toLowerCase()),
+                  )
+                  .map((r) => (
+                    <tr key={r.id}>
+                      <td>
+                        <strong>{r.name}</strong>
+                      </td>
+                      <td>{r.roll_no}</td>
+                      <td>
+                        <span
+                          className={
+                            "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                          }
+                        >
+                          {r.code}
+                        </span>
+                        <strong
+                          className={"cell-title block mt-[3px] text-[14px]"}
+                        >
+                          {r.title}
+                        </strong>
+                      </td>
+                    </tr>
+                  ))}
+              </Table>
+            ) : (
+              <Empty title="No enrollments yet" />
+            )
+          ) : selected.data?.length ? (
+            <Table
+              headers={[
+                "Name / email",
+                ...(tab === "students" ? ["Roll number / batch"] : []),
+                "Department",
+                "Actions",
+              ]}
+            >
+              {selected.data
                 .filter((r) =>
-                  `${r.name} ${r.roll_no} ${r.code}`
+                  `${r.name} ${r.department} ${"roll_no" in r ? r.roll_no : ""}`
                     .toLowerCase()
                     .includes(search.toLowerCase()),
                 )
@@ -156,73 +204,33 @@ export function Records() {
                   <tr key={r.id}>
                     <td>
                       <strong>{r.name}</strong>
+                      <small>{r.email}</small>
                     </td>
-                    <td>{r.roll_no}</td>
+                    {tab === "students" && (
+                      <td>
+                        {(r as Student).roll_no}
+                        <small>Batch {(r as Student).batch_year}</small>
+                      </td>
+                    )}
+                    <td>{r.department}</td>
                     <td>
-                      <span
+                      <button
                         className={
-                          "course-code text-[11px] text-[#5f7e69] tracking-[0.3px] font-semibold"
+                          "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
                         }
+                        onClick={() => setEdit(r)}
                       >
-                        {r.code}
-                      </span>
-                      <strong
-                        className={"cell-title block mt-[3px] text-[14px]"}
-                      >
-                        {r.title}
-                      </strong>
+                        Edit record
+                      </button>
                     </td>
                   </tr>
                 ))}
             </Table>
           ) : (
-            <Empty title="No enrollments yet" />
-          )
-        ) : selected.data?.length ? (
-          <Table
-            headers={[
-              "Name / email",
-              ...(tab === "students" ? ["Roll number / batch"] : []),
-              "Department",
-              "Actions",
-            ]}
-          >
-            {selected.data
-              .filter((r) =>
-                `${r.name} ${r.department} ${"roll_no" in r ? r.roll_no : ""}`
-                  .toLowerCase()
-                  .includes(search.toLowerCase()),
-              )
-              .map((r) => (
-                <tr key={r.id}>
-                  <td>
-                    <strong>{r.name}</strong>
-                    <small>{r.email}</small>
-                  </td>
-                  {tab === "students" && (
-                    <td>
-                      {(r as Student).roll_no}
-                      <small>Batch {(r as Student).batch_year}</small>
-                    </td>
-                  )}
-                  <td>{r.department}</td>
-                  <td>
-                    <button
-                      className={
-                        "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
-                      }
-                      onClick={() => setEdit(r)}
-                    >
-                      Edit record
-                    </button>
-                  </td>
-                </tr>
-              ))}
-          </Table>
-        ) : (
-          <Empty title={`No ${tab} records yet`} />
-        )}
-      </Panel>
+            <Empty title={`No ${tab} records yet`} />
+          )}
+        </Panel>
+      )}
       {edit !== undefined && (
         <Modal
           title={`${edit ? "Edit" : "Add"} ${tab === "students" ? "student" : "faculty"} record`}
@@ -291,6 +299,127 @@ export function Records() {
               await api("/enrollments", "POST", v);
               refresh();
               notify("Student enrolled in course.");
+            }}
+          />
+        </Modal>
+      )}
+    </>
+  );
+}
+function TeachingAssistants() {
+  const { user, version, refresh, notify } = useApp();
+  const { data, error, loading } = useData<User[]>("/tas", version);
+  const [edit, setEdit] = useState<User | null | undefined>(),
+    [search, setSearch] = useState("");
+  const fields: Field[] = [
+    { name: "name", label: "Full name" },
+    {
+      name: "email",
+      label: "Institutional email",
+      type: "email",
+      hint: "Use an @lnmiit.ac.in address.",
+    },
+    { name: "department", label: "Department" },
+    {
+      name: "password",
+      label: edit ? "New password (optional)" : "Initial password",
+      type: "password",
+      required: !edit,
+      hint: "At least 10 characters. Updates revoke existing sign-in sessions.",
+    },
+    { name: "active", label: "Account is active", type: "checkbox" },
+  ];
+  return (
+    <>
+      <Panel
+        title="Teaching assistants"
+        subtitle="Create TA sign-in accounts and manage their details. Remove upcoming/current hall duties before deactivation."
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3 p-5">
+          <SearchBox
+            value={search}
+            onChange={setSearch}
+            placeholder="Search teaching assistants…"
+          />
+          <button
+            className="button rounded-lg bg-brand text-white px-4 py-2"
+            onClick={() => setEdit(null)}
+          >
+            Add TA
+          </button>
+        </div>
+        <ErrorMessage message={error} />
+        {loading ? (
+          <Loading />
+        ) : data?.length ? (
+          <Table headers={["Name / email", "Department", "Status", "Actions"]}>
+            {data
+              .filter((u) =>
+                `${u.name} ${u.email} ${u.department}`
+                  .toLowerCase()
+                  .includes(search.toLowerCase()),
+              )
+              .map((u) => (
+                <tr key={u.id}>
+                  <td>
+                    <strong>{u.name}</strong>
+                    <small>{u.email}</small>
+                  </td>
+                  <td>{u.department}</td>
+                  <td>
+                    <Badge value={u.active ? "Active" : "Inactive"} />
+                  </td>
+                  <td>
+                    <button
+                      className="text-brand font-semibold"
+                      onClick={() => setEdit(u)}
+                    >
+                      Manage TA
+                    </button>
+                  </td>
+                </tr>
+              ))}
+          </Table>
+        ) : (
+          <Empty title="No teaching assistants yet" />
+        )}
+      </Panel>
+      {edit !== undefined && (
+        <Modal
+          title={edit ? "Manage teaching assistant" : "Add teaching assistant"}
+          onClose={() => setEdit(undefined)}
+        >
+          <RecordForm
+            fields={fields}
+            initial={
+              edit
+                ? {
+                    name: edit.name,
+                    email: edit.email,
+                    department: edit.department,
+                    active: !!edit.active,
+                  }
+                : { department: user.department, active: true }
+            }
+            onClose={() => setEdit(undefined)}
+            onSave={async (values) => {
+              const payload: FormValues = { ...values, role: "TA" };
+              if (!payload.password) delete payload.password;
+              if (
+                edit &&
+                (!!values.active !== !!edit.active || payload.password) &&
+                !window.confirm(
+                  "Change this TA's access? Existing sign-in sessions will be revoked.",
+                )
+              )
+                throw new Error("No changes saved.");
+              await api(
+                `/tas${edit ? `/${edit.id}` : ""}`,
+                edit ? "PUT" : "POST",
+                payload,
+              );
+              refresh();
+              notify("Teaching assistant saved.");
             }}
           />
         </Modal>

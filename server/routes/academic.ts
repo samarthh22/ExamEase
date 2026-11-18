@@ -3,6 +3,7 @@ import type { Repository } from "../db.js";
 import { permissions } from "../../shared/permissions.js";
 import type { Role, User } from "../../shared/types.js";
 import { academicService } from "../services/academic.js";
+import { authService, publicUser } from "../services/auth.js";
 export function academicRoutes(
   app: Express,
   repo: Repository,
@@ -18,6 +19,26 @@ export function academicRoutes(
   );
   app.put("/api/courses/:id", allow(...permissions.manageCourses), (req, res) =>
     res.json(service.saveCourse(req.body, String(req.params.id), req.user)),
+  );
+  app.delete(
+    "/api/courses/:id",
+    allow(...permissions.manageCourses),
+    (req, res) =>
+      res.json(service.deleteCourse(String(req.params.id), req.body, req.user)),
+  );
+  const auth = authService(repo);
+  app.get("/api/tas", allow(...permissions.manageTAs), (_req, res) =>
+    res.json(
+      repo
+        .all<User>("SELECT * FROM users WHERE role='TA' ORDER BY name")
+        .map(publicUser),
+    ),
+  );
+  app.post("/api/tas", allow(...permissions.manageTAs), (req, res) =>
+    res.status(201).json(auth.save(req.body, null, req.user, "TA")),
+  );
+  app.put("/api/tas/:id", allow(...permissions.manageTAs), (req, res) =>
+    res.json(auth.save(req.body, String(req.params.id), req.user, "TA")),
   );
   for (const kind of ["students", "faculty"] as const) {
     app.get(`/api/${kind}`, allow(...permissions.manageRecords), (_req, res) =>

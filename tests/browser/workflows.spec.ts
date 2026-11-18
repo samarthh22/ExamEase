@@ -7,6 +7,67 @@ async function login(page: Page, email: string) {
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
 }
+
+test("exam office adds and manages TAs and safely deletes unused courses", async ({
+  page,
+}) => {
+  await login(page, "admin@lnmiit.ac.in");
+  await page
+    .getByRole("link", { name: "Students & faculty", exact: true })
+    .click();
+  await page
+    .getByRole("tab", { name: "Teaching assistants", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Add TA", exact: true }).click();
+  await page.getByLabel("Full name").fill("Office Created TA");
+  await page.getByLabel("Institutional email").fill("office-ta@lnmiit.ac.in");
+  await page.getByLabel("Initial password").fill(DEMO_PASSWORD);
+  await expect(page.getByLabel("Assigned role")).toHaveCount(0);
+  await page.getByRole("button", { name: "Save changes", exact: true }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  const ta = page.locator("tr").filter({ hasText: "office-ta@lnmiit.ac.in" });
+  await ta.getByRole("button", { name: "Manage TA" }).click();
+  await page.getByLabel("Full name").fill("Updated Office TA");
+  await page.getByLabel("Account is active").uncheck();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Save changes", exact: true }).click();
+  await expect(ta).toContainText("Updated Office TA");
+  await expect(ta).toContainText("Inactive");
+  await page.getByRole("link", { name: "Courses", exact: true }).click();
+  await page.getByRole("button", { name: "Add course", exact: true }).click();
+  await page.getByLabel("Course code").fill("CS498");
+  await page.getByLabel("Course title").fill("Unused Office Course");
+  await page.getByRole("button", { name: "Save changes", exact: true }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  const course = page.locator("tr").filter({ hasText: "CS498" });
+  await course
+    .getByRole("button", { name: "Delete course", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Confirm", exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByLabel("Reason for correction")
+    .fill("Delete unused duplicate catalogue entry");
+  await page.getByRole("button", { name: "Confirm", exact: true }).click();
+  await expect(course).toHaveCount(0);
+  await page
+    .locator("tr")
+    .filter({ hasText: "CS314" })
+    .getByRole("button", { name: "Delete course", exact: true })
+    .click();
+  await page
+    .getByLabel("Reason for correction")
+    .fill("Attempt deletion of course with history");
+  await page.getByRole("button", { name: "Confirm", exact: true }).click();
+  await expect(page.getByRole("dialog").getByRole("alert")).toContainText(
+    "cannot be permanently deleted",
+  );
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Cancel", exact: true })
+    .click();
+});
 test("student registration, receipt and responsive navigation", async ({
   page,
 }) => {

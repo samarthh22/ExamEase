@@ -1,5 +1,7 @@
 # Local verification record
 
+Administration follow-up (18 November 2026): production build/type checking, all **33 server tests**, and all **14 Chromium browser scenarios** pass. The permission matrix covers **43 operations across six roles**. New cases exercise office TA creation/edit/deactivation, session revocation, duty safeguards, role-escalation rejection, reasoned unused-course deletion, and preservation of referenced courses. The browser verifies the complete TA and course-deletion controls. Existing local records are not modified by these tests.
+
 Verified on 15 November 2026 on Windows with Node.js 22.17.0.
 
 | Check                              | Result                                                                                                  |

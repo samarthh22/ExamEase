@@ -37,6 +37,9 @@ All endpoints use JSON under `/api`. Login sets an HttpOnly session cookie. Brow
 
 ## Contracts and invariants
 
+- GET/POST `/tas` and PUT `/tas/:id` are examination-admin-only operations. Writes use account fields including fixed `role: "TA"`; other roles and non-TA targets are rejected. Responses omit password hashes; updates revoke sessions and retain the existing duty-deactivation safeguards.
+- DELETE `/courses/:id` is examination-admin-only and requires `{reason}` (10–500 characters). Only courses without enrollments or examinations may be permanently deleted. Referenced courses return 409 with deactivation guidance. Successful deletion and its reason are audited atomically.
+
 - Account passwords have at least 10 characters; public user DTOs omit password hashes. No public signup or role switching is offered.
 - Account creation and updates require an `@lnmiit.ac.in` email address (case-insensitive, stored lowercase). Other domains and lookalike suffixes return 422. Existing account addresses are converted by schema migration 3 without resetting passwords or changing account IDs.
 - Records and course references are checked server-side. Academic profile identity cannot be moved to another user.
