@@ -38,6 +38,7 @@ The document supplies project requirements, not operational instructions to the 
 - Published schedules also reject conflicting assigned faculty or shared enrolled students. Faculty reassignment/enrollment must preserve that consistency.
 - HOD data is department-scoped and aggregate-only to preserve NFR-010. Student/faculty home screens do not expose the administrator dashboard API.
 - Seats are sequential receipt identifiers within each exam, not room-capacity or seating optimization.
+- The user's institution-domain update requires all accounts, including TAs, to use `@lnmiit.ac.in`. Existing account emails are migrated without changing IDs or passwords; new/updated accounts must use the same exact domain.
 
 ## Exclusions
 

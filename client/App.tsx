@@ -229,7 +229,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
                 name="email"
                 type="email"
                 autoComplete="username"
-                placeholder="you@institution.edu"
+                placeholder="you@lnmiit.ac.in"
                 required
                 autoFocus
               />

@@ -13,7 +13,7 @@ test("office assigns TA and faculty duties; removal needs a reason; TA roster an
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await login(page, "admin@examease.local");
+  await login(page, "admin@lnmiit.ac.in");
   await page.getByRole("link", { name: "Exam hall duties" }).click();
   await expect(
     page.getByRole("heading", {
@@ -38,11 +38,11 @@ test("office assigns TA and faculty duties; removal needs a reason; TA roster an
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await assign("Dr. Rohan Mehta · Faculty invigilator");
   await expect(page.getByRole("dialog")).not.toBeVisible();
-  const taRow = page.locator("tr").filter({ hasText: "ta1@examease.local" });
+  const taRow = page.locator("tr").filter({ hasText: "ta1@lnmiit.ac.in" });
   await expect(taRow).toContainText("Teaching assistant");
   const facultyRow = page
     .locator("tr")
-    .filter({ hasText: "faculty2@examease.local" });
+    .filter({ hasText: "faculty2@lnmiit.ac.in" });
   await expect(facultyRow).toContainText("Faculty invigilator");
   await page.screenshot({
     path: ".work/hall-staffing-desktop.png",
@@ -65,7 +65,7 @@ test("office assigns TA and faculty duties; removal needs a reason; TA roster an
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await page.getByRole("button", { name: "Sign out" }).click();
 
-  await login(page, "ta1@examease.local");
+  await login(page, "ta1@lnmiit.ac.in");
   await expect(
     page.getByRole("heading", {
       name: "My examination hall duties",
@@ -121,7 +121,7 @@ test("a faculty invigilator can monitor a different course without acquiring its
   page,
 }) => {
   // Set up this assignment independently of other browser scenarios.
-  await login(page, "admin@examease.local");
+  await login(page, "admin@lnmiit.ac.in");
   const existing = await page.request.get("/api/duties");
   if (
     !(await existing.json()).some(
@@ -137,7 +137,7 @@ test("a faculty invigilator can monitor a different course without acquiring its
     expect(result.status()).toBe(201);
   }
   await page.getByRole("button", { name: "Sign out" }).click();
-  await login(page, "faculty2@examease.local");
+  await login(page, "faculty2@lnmiit.ac.in");
   await page.getByRole("link", { name: "Exam hall duties" }).click();
   const row = page.locator("tr").filter({ hasText: "CS314" });
   await expect(row).toContainText("Faculty invigilator");

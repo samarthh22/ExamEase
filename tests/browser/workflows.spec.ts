@@ -10,7 +10,7 @@ async function login(page: Page, email: string) {
 test("student registration, receipt and responsive navigation", async ({
   page,
 }) => {
-  await login(page, "student@examease.local");
+  await login(page, "student@lnmiit.ac.in");
   await page.getByRole("link", { name: "Registrations", exact: true }).click();
   const card = page
     .locator(".exam-card")
@@ -52,7 +52,7 @@ test("student registration, receipt and responsive navigation", async ({
 test("faculty saves marks, validates boundaries, generates and publishes private results", async ({
   page,
 }) => {
-  await login(page, "faculty@examease.local");
+  await login(page, "faculty@lnmiit.ac.in");
   await page.getByRole("link", { name: "Marks & grading" }).click();
   await page.getByLabel("Examination", { exact: true }).selectOption("e-past");
   await page.getByLabel("Marks for Aarav Sharma", { exact: true }).fill("89.5");
@@ -81,7 +81,7 @@ test("faculty saves marks, validates boundaries, generates and publishes private
     page.getByLabel("Marks for Aarav Sharma", { exact: true }),
   ).toBeDisabled();
   await page.getByRole("button", { name: "Sign out" }).click();
-  await login(page, "student@examease.local");
+  await login(page, "student@lnmiit.ac.in");
   await page.getByRole("link", { name: "My results", exact: true }).click();
   await expect(
     page.locator("tr").filter({ hasText: "Mid semester" }),
@@ -91,7 +91,7 @@ test("examination administrator creates course and schedule; conflicts are visib
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await login(page, "admin@examease.local");
+  await login(page, "admin@lnmiit.ac.in");
   await expect(page.locator(".loading")).toHaveCount(0);
   await page.screenshot({
     path: ".work/admin-dashboard.png",
@@ -148,18 +148,18 @@ test("examination administrator creates course and schedule; conflicts are visib
 test("system administrator creates and deactivates an account", async ({
   page,
 }) => {
-  await login(page, "system@examease.local");
+  await login(page, "system@lnmiit.ac.in");
   await page.getByRole("button", { name: "Create account" }).click();
   await page.getByLabel("Full name").fill("Browser Test User");
   await page
     .getByLabel("Institutional email")
-    .fill("browser-test@examease.local");
+    .fill("browser-test@lnmiit.ac.in");
   await page.getByLabel("Initial password").fill(DEMO_PASSWORD);
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(page.getByRole("dialog")).not.toBeVisible();
   const row = page
     .locator("tr")
-    .filter({ hasText: "browser-test@examease.local" });
+    .filter({ hasText: "browser-test@lnmiit.ac.in" });
   await row.getByRole("button", { name: "Manage account" }).click();
   await page.getByLabel("Account is active").uncheck();
   page.once("dialog", (dialog) => dialog.accept());
@@ -169,7 +169,7 @@ test("system administrator creates and deactivates an account", async ({
 test("HOD has read-only reports and no administration controls", async ({
   page,
 }) => {
-  await login(page, "hod@examease.local");
+  await login(page, "hod@lnmiit.ac.in");
   await expect(page.getByRole("link", { name: "User accounts" })).toHaveCount(
     0,
   );

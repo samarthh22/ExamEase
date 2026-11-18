@@ -36,7 +36,7 @@ test("Password visibility is accessible, masked by default and never submits the
 test("Office cancellation needs a reason; student sees no cancellation or restoration action", async ({
   page,
 }) => {
-  await login(page, "admin@examease.local");
+  await login(page, "admin@lnmiit.ac.in");
   await page.getByRole("link", { name: "Registrations", exact: true }).click();
   const row = page
     .locator("tr")
@@ -52,7 +52,7 @@ test("Office cancellation needs a reason; student sees no cancellation or restor
   await page.getByRole("button", { name: "Confirm", exact: true }).click();
   await expect(row).toContainText("Cancelled");
   await page.getByRole("button", { name: "Sign out" }).click();
-  await login(page, "student@examease.local");
+  await login(page, "student@lnmiit.ac.in");
   await page.getByRole("link", { name: "Registrations", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Cancel", exact: true }),
@@ -70,7 +70,7 @@ test("Office cancellation needs a reason; student sees no cancellation or restor
   });
   await page.request.post("/api/auth/logout");
   await page.request.post("/api/auth/login", {
-    data: { email: "admin@examease.local", password: DEMO_PASSWORD },
+    data: { email: "admin@lnmiit.ac.in", password: DEMO_PASSWORD },
   });
   await page.request.post("/api/registrations", {
     data: { examScheduleId: "e-2", studentId: "s-1" },
@@ -79,7 +79,7 @@ test("Office cancellation needs a reason; student sees no cancellation or restor
 test("Unsaved marks and boundaries survive independent saves; navigation and blank corrections are guarded", async ({
   page,
 }) => {
-  await login(page, "faculty@examease.local");
+  await login(page, "faculty@lnmiit.ac.in");
   await page.getByRole("link", { name: "Marks & grading" }).click();
   await page.getByLabel("Examination", { exact: true }).selectOption("e-past");
   const mark = page.getByLabel("Marks for Aarav Sharma", { exact: true });
@@ -118,7 +118,7 @@ test("Unsaved marks and boundaries survive independent saves; navigation and bla
 test("A failed report request cannot display the previous student", async ({
   page,
 }) => {
-  await login(page, "admin@examease.local");
+  await login(page, "admin@lnmiit.ac.in");
   await page.getByRole("link", { name: "Reports & analytics" }).click();
   const selector = page.getByLabel("Select student for report");
   await selector.selectOption("s-1");
@@ -142,10 +142,8 @@ test("A failed report request cannot display the previous student", async ({
 test("System administrator password input can be revealed and own role/deactivation controls are locked", async ({
   page,
 }) => {
-  await login(page, "system@examease.local");
-  const ownRow = page
-    .locator("tr")
-    .filter({ hasText: "system@examease.local" });
+  await login(page, "system@lnmiit.ac.in");
+  const ownRow = page.locator("tr").filter({ hasText: "system@lnmiit.ac.in" });
   await ownRow.getByRole("button", { name: "Manage account" }).click();
   await expect(page.getByLabel("Assigned role")).toBeDisabled();
   await expect(page.getByLabel("Account is active")).toBeDisabled();
@@ -164,11 +162,11 @@ test("A new student without an academic profile gets useful guidance", async ({
   page,
 }) => {
   await page.request.post("/api/auth/login", {
-    data: { email: "system@examease.local", password: DEMO_PASSWORD },
+    data: { email: "system@lnmiit.ac.in", password: DEMO_PASSWORD },
   });
   const created = await page.request.post("/api/users", {
     data: {
-      email: "unlinked-student@examease.local",
+      email: "unlinked-student@lnmiit.ac.in",
       name: "Unlinked Student",
       password: DEMO_PASSWORD,
       role: "STUDENT",
@@ -178,7 +176,7 @@ test("A new student without an academic profile gets useful guidance", async ({
   });
   expect(created.status()).toBe(201);
   await page.request.post("/api/auth/logout");
-  await login(page, "unlinked-student@examease.local");
+  await login(page, "unlinked-student@lnmiit.ac.in");
   await page.getByRole("link", { name: "My results", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText(
     "Your student profile has not been created. Contact the examination office.",

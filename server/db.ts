@@ -3,7 +3,7 @@ import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import type { SQLInputValue } from "node:sqlite";
-import { migrateSupervision } from "./migrations.js";
+import { migrateInstitutionEmails, migrateSupervision } from "./migrations.js";
 // SQLite's untyped SQL boundary is kept inside this adapter; service DTOs are typed.
 type Row = Record<string, any>;
 
@@ -35,12 +35,23 @@ export function openRepository(
     CREATE INDEX IF NOT EXISTS idx_results_exam ON results(exam_id);
     CREATE INDEX IF NOT EXISTS idx_enrollment_course ON enrollments(course_id);
   `);
-  migrateSupervision(
-    db,
-    filename === ":memory:"
-      ? undefined
-      : `${resolve(filename)}.before-ta-${Date.now()}.sqlite`,
-  );
+  try {
+    migrateSupervision(
+      db,
+      filename === ":memory:"
+        ? undefined
+        : `${resolve(filename)}.before-ta-${Date.now()}.sqlite`,
+    );
+    migrateInstitutionEmails(
+      db,
+      filename === ":memory:"
+        ? undefined
+        : `${resolve(filename)}.before-email-${Date.now()}.sqlite`,
+    );
+  } catch (error) {
+    db.close();
+    throw error;
+  }
   const allowed = new Set([
     "users",
     "sessions",

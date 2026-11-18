@@ -15,12 +15,10 @@ import { createApp } from "../server/app.js";
 import type { User, Exam } from "../shared/types.js";
 function fixture() {
   const repo = openRepository(":memory:");
-  seed(repo, "examease.local");
+  seed(repo);
   const service = supervisionService(repo),
     admin = repo.get<User>("users", "u-admin")!,
-    ta = repo.one<User>(
-      "SELECT * FROM users WHERE email='ta1@examease.local'",
-    )!,
+    ta = repo.one<User>("SELECT * FROM users WHERE email='ta1@lnmiit.ac.in'")!,
     faculty = repo.get<User>("users", "u-faculty-2")!;
   return { repo, service, admin, ta, faculty };
 }
@@ -28,7 +26,7 @@ test("Six dummy TAs are added idempotently without resetting accounts", () => {
   const { repo, service, admin } = fixture();
   try {
     const ta = repo.one<User>(
-      "SELECT * FROM users WHERE email='ta1@examease.local'",
+      "SELECT * FROM users WHERE email='ta1@lnmiit.ac.in'",
     )!;
     repo.update("users", ta.id, { active: 0, name: "Retained name" });
     assert.equal(seedTeachingAssistants(repo), 0);
@@ -305,9 +303,9 @@ test("TA and invigilator APIs do not grant access to grading, records, accounts 
       .send({ marks: [{ studentId: "s-1", marksObtained: 10 }] })
       .expect(403);
     for (const email of [
-      "student@examease.local",
-      "hod@examease.local",
-      "system@examease.local",
+      "student@lnmiit.ac.in",
+      "hod@lnmiit.ac.in",
+      "system@lnmiit.ac.in",
     ]) {
       const a = request.agent(app);
       await a
@@ -326,10 +324,10 @@ test("Legacy database migration preserves users, marks, sessions and foreign key
     file = join(dir, "legacy.sqlite");
   let repo = openRepository(file);
   try {
-    seed(repo, "examease.local");
+    seed(repo);
     repo.run("DELETE FROM users WHERE role='TA'");
     const session = authService(repo).login({
-      email: "student@examease.local",
+      email: "student@lnmiit.ac.in",
       password: DEMO_PASSWORD,
     });
     const expected = repo.list("marks");
@@ -345,7 +343,7 @@ test("Legacy database migration preserves users, marks, sessions and foreign key
         .replace("'TA',", ""),
     );
     raw.exec(
-      "INSERT INTO users_legacy SELECT * FROM users; DROP TABLE users; ALTER TABLE users_legacy RENAME TO users; DROP TABLE exam_duties; DELETE FROM schema_version WHERE version=2; COMMIT;",
+      "INSERT INTO users_legacy SELECT * FROM users; DROP TABLE users; ALTER TABLE users_legacy RENAME TO users; DROP TABLE exam_duties; DELETE FROM schema_version WHERE version>=2; COMMIT;",
     );
     raw.close();
     repo = openRepository(file);

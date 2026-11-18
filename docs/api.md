@@ -38,6 +38,7 @@ All endpoints use JSON under `/api`. Login sets an HttpOnly session cookie. Brow
 ## Contracts and invariants
 
 - Account passwords have at least 10 characters; public user DTOs omit password hashes. No public signup or role switching is offered.
+- Account creation and updates require an `@lnmiit.ac.in` email address (case-insensitive, stored lowercase). Other domains and lookalike suffixes return 422. Existing account addresses are converted by schema migration 3 without resetting passwords or changing account IDs.
 - Records and course references are checked server-side. Academic profile identity cannot be moved to another user.
 - A schedule reserves its venue unless cancelled. Overlap uses `startA < endB && endA > startB`; adjacent exams are allowed. Date/time is institution-local Asia/Kolkata.
 - Registrations require active enrolled students, active courses and a future published examination. Only the examination office may cancel or reactivate a registration, retaining its original seat and identifier. Cancellation requires `{reason}` (10-500 characters). A student cannot reverse an office cancellation.

@@ -14,7 +14,7 @@ npm run dev
 
 Open **http://127.0.0.1:5173**. The React development server proxies API requests to port **3001**. Keep the terminal running; press Ctrl+C to stop. `npm run seed` is idempotent: it never overwrites an existing database.
 
-For an existing installation, run `npm run seed:tas` once to add the six demonstration teaching assistants. Opening the database automatically applies schema version 2; an existing version 1 database is backed up before the users table is migrated. Existing accounts, registrations, marks and sessions are retained.
+For an existing installation, run `npm run seed:tas` once to add the six demonstration teaching assistants. Opening the database automatically applies schema migrations through version 3. Existing databases are backed up before changing the users role constraint or converting account emails. Account IDs, passwords, registrations, marks, sessions and duties are retained.
 
 For the built application:
 
@@ -29,17 +29,17 @@ Open **http://127.0.0.1:3001**. This serves the React build and Node API togethe
 
 All seeded accounts use **`ExamEase@2026`**. These are fictional demonstration accounts, intended only for local evaluation.
 
-| Role                                         | Email                                             |
-| -------------------------------------------- | ------------------------------------------------- |
-| Examination administrator                    | `admin@lnmiit.ac.in`                              |
-| Faculty                                      | `faculty@lnmiit.ac.in`                            |
-| Student                                      | `student@lnmiit.ac.in`                            |
-| Department coordinator / HOD                 | `hod@lnmiit.ac.in`                                |
-| System administrator                         | `system@lnmiit.ac.in`                             |
-| Second faculty member, for ownership checks  | `faculty2@lnmiit.ac.in`                           |
-| Teaching assistants (six fictional accounts) | `ta1@examease.local` through `ta6@examease.local` |
+| Role                                         | Email                                         |
+| -------------------------------------------- | --------------------------------------------- |
+| Examination administrator                    | `admin@lnmiit.ac.in`                          |
+| Faculty                                      | `faculty@lnmiit.ac.in`                        |
+| Student                                      | `student@lnmiit.ac.in`                        |
+| Department coordinator / HOD                 | `hod@lnmiit.ac.in`                            |
+| System administrator                         | `system@lnmiit.ac.in`                         |
+| Second faculty member, for ownership checks  | `faculty2@lnmiit.ac.in`                       |
+| Teaching assistants (six fictional accounts) | `ta1@lnmiit.ac.in` through `ta6@lnmiit.ac.in` |
 
-Fresh databases use the institutional demo addresses above, preserving the project's updated seed domain. Previously seeded databases retain their existing addresses, including `@examease.local`; seeding does not rename accounts or reset passwords. Browser/API fixtures explicitly use `examease.local` for isolation.
+All accounts use `@lnmiit.ac.in`, including teaching assistants. Existing accounts are migrated automatically on startup: the part before `@` stays the same and passwords are unchanged. Use the new address to sign in. Account creation and updates require this exact institution domain. Browser/API fixtures use the same domain with a separate in-memory database.
 
 Five additional students use `student2@lnmiit.ac.in` through `student6@lnmiit.ac.in`. The seed creates four courses, future examinations relative to the seed date, and one past Software Engineering mid-semester examination with six saved marks, ready for grading. Demo dates persist after seeding. The earlier reference prototype is excluded from Git through `.gitignore`.
 

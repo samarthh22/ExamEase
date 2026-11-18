@@ -5,10 +5,11 @@ import { hashPassword } from "./services/auth.js";
 import type { Role } from "../shared/types.js";
 import { seedTeachingAssistants } from "./seed-supervision.js";
 export const DEMO_PASSWORD = "ExamEase@2026";
-export function seed(repo: Repository, domain = "lnmiit.ac.in") {
+export function seed(repo: Repository) {
   if (repo.list("users").length) return false;
   const created = repo.transaction(() => {
-    const password_hash = hashPassword(DEMO_PASSWORD),
+    const domain = "lnmiit.ac.in",
+      password_hash = hashPassword(DEMO_PASSWORD),
       now = new Date().toISOString(),
       department = "Computer Science";
     const addUser = (

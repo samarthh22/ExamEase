@@ -14,6 +14,8 @@ Examination supervision adds `exam_duties`, linking each exam and staff account 
 
 Duty scheduling uses institution-local Asia/Kolkata times and strict overlap comparisons, so adjacent slots do not conflict. The same checks run when assigning staff, rescheduling/publishing an exam or changing a course's faculty. Cancellation of an exam cancels its active duties and writes their audit events in the schedule transaction. Upcoming/current assignments block account deactivation or role changes until the office resolves the duties.
 
+Schema version 3 applies the user's institution-domain update to all existing accounts. It converts each email to `<existing-local-part>@lnmiit.ac.in` in a transaction, preserving account IDs, credentials and related data. A `*.before-email-<timestamp>.sqlite` backup is created before changing a populated database. Duplicate local names across old domains cause the migration to stop without changing accounts. Account create/update validation and all seed/fixture addresses use the same exact institution domain.
+
 Passwords use salted scrypt. Random session tokens are hashed at rest, expire and are deleted on logout. HttpOnly/SameSite cookies, same-origin mutation checks, request size limits, login throttling, security headers, input schemas and role/ownership checks protect the API. Local HTTP is intentional; production requires HTTPS and secure cookie configuration.
 
 For PostgreSQL, replace the repository implementation and SQL queries, port schema constraints/migrations and rerun the acceptance suite. SQLite is a real database; this iteration does not claim a zero-effort database swap. MongoDB requires explicit transaction and relationship design.

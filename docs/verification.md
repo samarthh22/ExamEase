@@ -45,3 +45,9 @@ The supervision regressions verify active staff eligibility, role-derived duty t
 A file-backed legacy-schema test preserves users, saved marks, session authentication and foreign keys across the version 2 migration; reopening and repeated TA seeding are idempotent. The actual existing local database was also upgraded from version 1 to 2 with a consistent SQLite backup. All rows of every existing data table were compared before and after: existing accounts and academic data were retained exactly, and six fictional TA accounts were added. No duty assignments or schedule changes were inserted into existing demonstration data automatically.
 
 The reference prototype directories are ignored by Git and excluded from the application commits. New change requirements and their scope limits are recorded separately from the original SRS in [requirements.md](requirements.md).
+
+## Institution email domain update — 18 November 2026
+
+The production build and strict type check pass; all **31 server tests** and **13 Chromium browser scenarios** pass using `@lnmiit.ac.in` accounts. New regression checks cover the backed-up version 3 migration, unchanged account IDs/passwords/academic records/sessions/duties, repeat startup without duplicate accounts or backups, and atomic rejection of colliding old account names. Account validation rejects external domains and lookalike suffixes and normalizes uppercase institution addresses.
+
+The existing local database's **17 accounts** were converted to `@lnmiit.ac.in`. Comparison against the pre-migration SQLite backup confirmed that only account email fields changed; passwords and all other saved records were retained. Seeds, TA accounts, test fixtures, account-form guidance, the login placeholder and demonstration instructions now use the same domain.

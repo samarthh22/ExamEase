@@ -42,7 +42,11 @@ const userSchema = z
       .string()
       .email()
       .max(200)
-      .transform((v) => v.toLowerCase()),
+      .transform((v) => v.toLowerCase())
+      .refine(
+        (v) => v.endsWith("@lnmiit.ac.in"),
+        "Use an @lnmiit.ac.in email address.",
+      ),
     name: z.string().trim().min(2).max(100),
     password: z.string().min(10).max(128).optional(),
     role: z.enum(roles),

@@ -7,14 +7,14 @@ import { seed, DEMO_PASSWORD } from "../server/seed.js";
 test("NFR-001/002/009 local 300-student department benchmark", async (t) => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo, "examease.local");
+    seed(repo);
     repo.transaction(() => {
       const template = repo.get("users", "u-student-1")!;
       for (let i = 7; i <= 300; i++) {
         repo.insert("users", {
           ...template,
           id: `u-bench-${i}`,
-          email: `bench${i}@example.test`,
+          email: `bench${i}@lnmiit.ac.in`,
           name: `Student ${i}`,
         });
         repo.insert("students", {
@@ -37,7 +37,7 @@ test("NFR-001/002/009 local 300-student department benchmark", async (t) => {
     const agent = request.agent(createApp(repo));
     await agent
       .post("/api/auth/login")
-      .send({ email: "faculty@examease.local", password: DEMO_PASSWORD })
+      .send({ email: "faculty@lnmiit.ac.in", password: DEMO_PASSWORD })
       .expect(200);
     const marks = repo
       .all<{ student_id: string }>(

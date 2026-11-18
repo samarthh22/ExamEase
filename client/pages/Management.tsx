@@ -305,7 +305,12 @@ export function Accounts() {
     [edit, setEdit] = useState<User | null | undefined>();
   const fields: Field[] = [
     { name: "name", label: "Full name" },
-    { name: "email", label: "Institutional email", type: "email" },
+    {
+      name: "email",
+      label: "Institutional email",
+      type: "email",
+      hint: "Use an @lnmiit.ac.in address.",
+    },
     {
       name: "role",
       label: "Assigned role",

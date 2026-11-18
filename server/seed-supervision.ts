@@ -17,7 +17,7 @@ export function seedTeachingAssistants(repo: Repository) {
   return repo.transaction(() => {
     let added = 0;
     names.forEach((name, index) => {
-      const email = `ta${index + 1}@examease.local`;
+      const email = `ta${index + 1}@lnmiit.ac.in`;
       if (repo.one("SELECT id FROM users WHERE email=?", email)) return;
       repo.insert("users", {
         id: randomUUID(),

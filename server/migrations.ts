@@ -41,3 +41,46 @@ export function migrateSupervision(db: DatabaseSync, backupPath?: string) {
     db.exec("PRAGMA foreign_keys=ON");
   }
 }
+
+/** Preserve account IDs and credentials while moving all accounts to the institution domain. */
+export function migrateInstitutionEmails(
+  db: DatabaseSync,
+  backupPath?: string,
+) {
+  const version = db
+    .prepare("SELECT max(version) version FROM schema_version")
+    .get()?.version as number;
+  if (version >= 3) return;
+  const changed = db
+    .prepare(
+      "SELECT id FROM users WHERE email!=lower(substr(email,1,instr(email,'@')-1))||'@lnmiit.ac.in' LIMIT 1",
+    )
+    .get();
+  if (changed && backupPath) db.prepare("VACUUM INTO ?").run(backupPath);
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    const users = db.prepare("SELECT id,email FROM users").all() as {
+      id: string;
+      email: string;
+    }[];
+    const addresses = new Set<string>();
+    const updates = users.map((user) => {
+      const local = user.email
+        .slice(0, user.email.lastIndexOf("@"))
+        .toLowerCase();
+      const email = `${local}@lnmiit.ac.in`;
+      if (!local || addresses.has(email))
+        throw new Error(
+          `Cannot migrate institutional emails: invalid or duplicate account name '${local}'. No account emails were changed.`,
+        );
+      addresses.add(email);
+      return { ...user, email };
+    });
+    const update = db.prepare("UPDATE users SET email=? WHERE id=?");
+    for (const user of updates) update.run(user.email, user.id);
+    db.exec("INSERT INTO schema_version VALUES(3); COMMIT;");
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
+  }
+}
