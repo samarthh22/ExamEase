@@ -108,7 +108,7 @@ export function Heading({
   return (
     <div
       className={
-        "page-heading flex justify-between items-center mb-[27px] gap-5 [&_p]:text-[#6c7973] [&_p]:text-[14px] [&_p]:mt-2 max-tablet:items-start max-tablet:[&_h1]:text-[25px] max-mobile:flex-wrap max-mobile:mb-[22px] max-mobile:gap-4 max-mobile:[&_h1]:text-[25px] max-mobile:[&_p]:text-[13px] max-mobile:[&_>_.button]:text-[13px]"
+        "page-heading flex flex-wrap min-w-0 [&_>_div:first-child]:min-w-0 [&_>_div:first-child]:flex-1 [&_>_div:first-child]:basis-[240px] [&_button]:shrink-0 [&_h1]:wrap-anywhere justify-between items-center mb-[27px] gap-5 [&_p]:text-[#6c7973] [&_p]:text-[14px] [&_p]:mt-2 max-tablet:items-start max-tablet:[&_h1]:text-[25px] max-mobile:flex-wrap max-mobile:mb-[22px] max-mobile:gap-4 max-mobile:[&_h1]:text-[25px] max-mobile:[&_p]:text-[13px] max-mobile:[&_>_.button]:text-[13px]"
       }
     >
       <div>
@@ -142,13 +142,13 @@ export function Panel({
   return (
     <section
       className={cn(
-        `panel border border-solid border-line bg-[#fff] rounded-[9px] mb-6 overflow-hidden print:break-inside-avoid ${className}`,
+        `panel min-w-0 border border-solid border-line bg-[#fff] rounded-[9px] mb-6 overflow-hidden print:break-inside-avoid ${className}`,
       )}
     >
       {title && (
         <div
           className={
-            "panel-head pt-[21px] pb-[19px] border-b border-solid border-b-[#edf0ed] flex justify-between items-center px-[23px] gap-[18px] [&_h2]:text-[14px] [&_h2]:tracking-0 [&_p]:text-[#6e7972] [&_p]:text-[12px] [&_p]:mt-[5px] max-mobile:p-[18px] max-mobile:[&_h2]:text-[14px] max-mobile:[&_p]:text-[11px] max-mobile:[&_.button]:text-[12px] max-mobile:[&_.button]:px-[10px] max-mobile:[&_.button]:py-2 max-mobile:[&_.text-link]:text-[12px] max-mobile:[&_.text-link]:whitespace-nowrap"
+            "panel-head flex-wrap [&_>_div]:min-w-0 [&_>_div]:flex-1 [&_>_div]:basis-[180px] [&_h2]:wrap-anywhere pt-[21px] pb-[19px] border-b border-solid border-b-[#edf0ed] flex justify-between items-center px-[23px] gap-[18px] [&_h2]:text-[14px] [&_h2]:tracking-0 [&_p]:text-[#6e7972] [&_p]:text-[12px] [&_p]:mt-[5px] max-mobile:p-[18px] max-mobile:[&_h2]:text-[14px] max-mobile:[&_p]:text-[11px] max-mobile:[&_.button]:text-[12px] max-mobile:[&_.button]:px-[10px] max-mobile:[&_.button]:py-2 max-mobile:[&_.text-link]:text-[12px] max-mobile:[&_.text-link]:whitespace-nowrap"
           }
         >
           <div>
@@ -166,7 +166,7 @@ export function ErrorMessage({ message }: { message: string }) {
   return message ? (
     <div
       className={
-        "error bg-[#fff0ed] border border-solid border-[#f1ccc5] rounded-[7px] text-[#9c3d32] flex items-start text-[14px] px-[15px] py-[13px] mx-0 my-[14px] gap-[9px]"
+        "error wrap-anywhere bg-[#fff0ed] border border-solid border-[#f1ccc5] rounded-[7px] text-[#9c3d32] flex items-start text-[14px] px-[15px] py-[13px] mx-0 my-[14px] gap-[9px]"
       }
       role="alert"
     >
@@ -249,31 +249,57 @@ export function Table({
   headers: string[];
   children: ReactNode;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollable, setScrollable] = useState(false);
+  useEffect(() => {
+    const region = scrollRef.current;
+    if (!region) return;
+    const measure = () =>
+      setScrollable(region.scrollWidth > region.clientWidth + 1);
+    const observer = new ResizeObserver(measure);
+    observer.observe(region);
+    if (region.firstElementChild) observer.observe(region.firstElementChild);
+    measure();
+    return () => observer.disconnect();
+  }, []);
   return (
-    <div className={"table-wrap overflow-auto"}>
-      <table>
-        <thead>
-          <tr>
-            {headers.map((h) => (
-              <th key={h}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Children.toArray(children).length ? (
-            children
-          ) : (
+    <div>
+      {scrollable && (
+        <p className="table-scroll-hint px-4 py-2 text-[13px] text-brand bg-[#f4f8f5] print:hidden">
+          Scroll horizontally to see all columns.
+        </p>
+      )}
+      <div
+        ref={scrollRef}
+        className="table-wrap max-w-full min-w-0 overflow-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-brand print:overflow-visible"
+        role="region"
+        aria-label={`${headers.filter(Boolean).join(", ")} table`}
+        tabIndex={scrollable ? 0 : undefined}
+      >
+        <table className="min-w-[640px] print:min-w-0">
+          <thead>
             <tr>
-              <td
-                colSpan={headers.length}
-                className={"table-empty text-center text-muted p-[30px]!"}
-              >
-                No records match the current selection.
-              </td>
+              {headers.map((h) => (
+                <th key={h}>{h}</th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {Children.toArray(children).length ? (
+              children
+            ) : (
+              <tr>
+                <td
+                  colSpan={headers.length}
+                  className={"table-empty text-center text-muted p-[30px]!"}
+                >
+                  No records match the current selection.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -291,12 +317,12 @@ export function Stat({
   return (
     <div
       className={
-        "stat-card bg-white border border-solid border-line rounded-[9px] px-5 py-[19px] [&_>_strong]:text-[31px] [&_>_strong]:block [&_>_strong]:font-semibold [&_>_strong]:tracking-[-1px] [&_>_strong]:mt-[5px] [&_>_strong]:text-[#284739] [&_>_strong]:leading-[1.2] [&_p]:text-[11px] [&_p]:text-[#707871] [&_p]:mt-[11px] max-wide:p-4 max-mobile:[&_>_strong]:text-[29px] max-mobile:[&_p]:text-[11px] max-mobile:p-4"
+        "stat-card min-w-0 wrap-anywhere bg-white border border-solid border-line rounded-[9px] px-5 py-[19px] [&_>_strong]:text-[31px] [&_>_strong]:block [&_>_strong]:font-semibold [&_>_strong]:tracking-[-1px] [&_>_strong]:mt-[5px] [&_>_strong]:text-[#284739] [&_>_strong]:leading-[1.2] [&_p]:text-[11px] [&_p]:text-[#707871] [&_p]:mt-[11px] max-wide:p-4 max-mobile:[&_>_strong]:text-[29px] max-mobile:[&_p]:text-[11px] max-mobile:p-4"
       }
     >
       <div
         className={
-          "stat-top flex justify-between items-center text-[#6c7972] text-[13px] gap-[6px] max-mobile:text-[12px]"
+          "stat-top [&_span]:min-w-0 flex justify-between items-center text-[#6c7972] text-[13px] gap-[6px] max-mobile:text-[12px]"
         }
       >
         <span>{label}</span>
@@ -323,7 +349,7 @@ export function LinkButton({
   return (
     <a
       className={
-        "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center px-0 py-1 gap-1 [&:hover]:underline"
+        "border-0 bg-[none] text-brand text-[14px] font-semibold inline-flex items-center max-tablet:min-h-11 px-0 py-1 gap-1 [&:hover]:underline"
       }
       href={`#${to}`}
     >
@@ -367,8 +393,8 @@ export function Modal({
       ref={ref}
       className={cn(
         wide
-          ? "modal w-[min(580px,_calc(100%_-_32px))] max-h-[90vh] overflow-auto border border-solid border-[#dce6dc] rounded-[12px] text-inherit shadow-[0_25px_100px_#173c3329] p-6 [&.wide]:w-[min(800px,_calc(100%_-_32px))] [&::backdrop]:bg-[#193a3566] [&::backdrop]:backdrop-blur-[3px] max-mobile:p-[21px] print:[&[open]]:absolute print:[&[open]]:inset-0 print:[&[open]]:max-h-none print:[&[open]]:w-full print:[&[open]]:border-0 print:[&[open]]:shadow-none print:[&[open]]:visible print:[&::backdrop]:bg-white wide"
-          : "modal w-[min(580px,_calc(100%_-_32px))] max-h-[90vh] overflow-auto border border-solid border-[#dce6dc] rounded-[12px] text-inherit shadow-[0_25px_100px_#173c3329] p-6 [&.wide]:w-[min(800px,_calc(100%_-_32px))] [&::backdrop]:bg-[#193a3566] [&::backdrop]:backdrop-blur-[3px] max-mobile:p-[21px] print:[&[open]]:absolute print:[&[open]]:inset-0 print:[&[open]]:max-h-none print:[&[open]]:w-full print:[&[open]]:border-0 print:[&[open]]:shadow-none print:[&[open]]:visible print:[&::backdrop]:bg-white",
+          ? "modal w-[min(580px,_calc(100%_-_32px))] max-h-[90dvh] overflow-auto border border-solid border-[#dce6dc] rounded-[12px] text-inherit shadow-[0_25px_100px_#173c3329] p-6 [&.wide]:w-[min(800px,_calc(100%_-_32px))] [&::backdrop]:bg-[#193a3566] [&::backdrop]:backdrop-blur-[3px] max-mobile:p-4 print:[&[open]]:absolute print:[&[open]]:inset-0 print:[&[open]]:max-h-none print:[&[open]]:w-full print:[&[open]]:border-0 print:[&[open]]:shadow-none print:[&[open]]:visible print:[&::backdrop]:bg-white wide"
+          : "modal w-[min(580px,_calc(100%_-_32px))] max-h-[90dvh] overflow-auto border border-solid border-[#dce6dc] rounded-[12px] text-inherit shadow-[0_25px_100px_#173c3329] p-6 [&.wide]:w-[min(800px,_calc(100%_-_32px))] [&::backdrop]:bg-[#193a3566] [&::backdrop]:backdrop-blur-[3px] max-mobile:p-4 print:[&[open]]:absolute print:[&[open]]:inset-0 print:[&[open]]:max-h-none print:[&[open]]:w-full print:[&[open]]:border-0 print:[&[open]]:shadow-none print:[&[open]]:visible print:[&::backdrop]:bg-white",
       )}
       aria-labelledby={titleId}
       onCancel={(event) => {
@@ -378,7 +404,7 @@ export function Modal({
     >
       <div
         className={
-          "modal-head flex justify-between items-center pb-5 border-b border-solid border-b-line mb-[22px] print:[dialog_&]:hidden"
+          "modal-head [&_h2]:min-w-0 [&_h2]:wrap-anywhere flex gap-3 justify-between items-center pb-5 border-b border-solid border-b-line mb-[22px] print:[dialog_&]:hidden"
         }
       >
         <h2 id={titleId}>{title}</h2>
@@ -567,7 +593,7 @@ export function RecordForm({
       <ErrorMessage message={error} />
       <div
         className={
-          "modal-actions flex justify-end mt-[25px] pt-[18px] border-t border-solid border-t-line gap-3 print:[dialog_&]:hidden"
+          "modal-actions flex flex-wrap justify-end mt-[25px] pt-[18px] border-t border-solid border-t-line gap-3 print:[dialog_&]:hidden"
         }
       >
         <button
@@ -639,7 +665,7 @@ export function Confirm({
       <ErrorMessage message={error} />
       <div
         className={
-          "modal-actions flex justify-end mt-[25px] pt-[18px] border-t border-solid border-t-line gap-3 print:[dialog_&]:hidden"
+          "modal-actions flex flex-wrap justify-end mt-[25px] pt-[18px] border-t border-solid border-t-line gap-3 print:[dialog_&]:hidden"
         }
       >
         <button

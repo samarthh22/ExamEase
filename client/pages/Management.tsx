@@ -104,7 +104,7 @@ export function Records() {
       />
       <div
         className={
-          "tabs flex border-b border-solid border-b-line mb-[22px] gap-7 [&_button]:bg-[none] [&_button]:border-0 [&_button]:border-b-[2px] [&_button]:border-solid [&_button]:border-b-transparent [&_button]:text-[#6d7a68] [&_button]:text-[14px] [&_button]:px-0 [&_button]:py-3 [&_button.active]:text-brand [&_button.active]:border-b-brand [&_button.active]:font-semibold max-mobile:gap-[22px] max-mobile:[&_button]:text-[13px]"
+          "tabs flex flex-wrap gap-y-0 border-b border-solid border-b-line mb-[22px] gap-7 [&_button]:bg-[none] [&_button]:border-0 [&_button]:border-b-[2px] [&_button]:border-solid [&_button]:border-b-transparent [&_button]:text-[#6d7a68] [&_button]:text-[14px] [&_button]:px-0 [&_button]:py-3 [&_button.active]:text-brand [&_button.active]:border-b-brand [&_button.active]:font-semibold max-mobile:gap-[22px] max-mobile:[&_button]:text-[13px]"
         }
         role="tablist"
         aria-label="Academic records"

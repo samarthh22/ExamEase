@@ -1,5 +1,5 @@
 import { cn } from "./cn";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -140,18 +140,18 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
   return (
     <div
       className={
-        "login-page min-h-screen grid grid-cols-[1.08fr_1fr] max-mobile:flex max-mobile:flex-col max-mobile:min-h-screen"
+        "login-page min-h-screen grid grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)] max-tablet:flex max-tablet:flex-col max-tablet:min-h-screen"
       }
     >
       <section
         className={
-          'login-story [&_>_.brand]:relative [&_>_.brand]:z-1 bg-[#e9f2eb] flex flex-col min-h-screen relative overflow-hidden px-15 py-[49px] [&:after]:content-[""] [&:after]:absolute [&:after]:w-[470px] [&:after]:h-[470px] [&:after]:border [&:after]:border-solid [&:after]:border-[#d5e4d8] [&:after]:rounded-full [&:after]:right-[-310px] [&:after]:top-[32%] [&:after]:shadow-[0_0_0_45px_#e3eee5,_0_0_0_46px_#d9e7dc] [&:after]:pointer-events-none max-tablet:p-10 max-mobile:min-h-0 max-mobile:p-[25px] max-mobile:[&:after]:w-[250px] max-mobile:[&:after]:h-[250px] max-mobile:[&:after]:right-[-170px]'
+          'login-story min-w-0 [&_>_.brand]:relative [&_>_.brand]:z-1 bg-[#e9f2eb] flex flex-col min-h-screen relative overflow-hidden px-15 py-[49px] [&:after]:content-[""] [&:after]:absolute [&:after]:w-[470px] [&:after]:h-[470px] [&:after]:border [&:after]:border-solid [&:after]:border-[#d5e4d8] [&:after]:rounded-full [&:after]:right-[-310px] [&:after]:top-[32%] [&:after]:shadow-[0_0_0_45px_#e3eee5,_0_0_0_46px_#d9e7dc] [&:after]:pointer-events-none max-tablet:min-h-0 max-tablet:p-[25px] max-tablet:[&:after]:w-[250px] max-tablet:[&:after]:h-[250px] max-tablet:[&:after]:right-[-170px]'
         }
       >
         <Brand />
         <div
           className={
-            "login-copy relative z-1 py-[70px] mx-0 my-auto [&_.eyebrow]:text-[#647d68] [&_.eyebrow]:text-[11px] [&_h1]:text-[44px] [&_h1]:leading-[1.2] [&_h1]:tracking-[-1.6px] [&_h1]:text-[#28553c] [&_h1]:mt-[22px] [&_>_p]:text-[#6a7b68] [&_>_p]:text-[14px] [&_>_p]:leading-[1.9] [&_>_p]:max-w-[370px] [&_>_p]:mt-[23px] max-tablet:[&_h1]:text-[35px] max-tablet:[&_>_p]:text-[14px] max-mobile:pt-[30px] max-mobile:pb-[10px] max-mobile:px-0 max-mobile:[&_h1]:text-[29px] max-mobile:[&_h1]:mt-[15px] max-mobile:[&_>_p]:hidden max-mobile:[&_.eyebrow]:hidden"
+            "login-copy relative z-1 py-[70px] mx-0 my-auto [&_.eyebrow]:text-[#647d68] [&_.eyebrow]:text-[11px] [&_h1]:text-[44px] [&_h1]:leading-[1.2] [&_h1]:tracking-[-1.6px] [&_h1]:text-[#28553c] [&_h1]:mt-[22px] [&_>_p]:text-[#6a7b68] [&_>_p]:text-[14px] [&_>_p]:leading-[1.9] [&_>_p]:max-w-[370px] [&_>_p]:mt-[23px] max-tablet:[&_>_p]:text-[14px] max-tablet:pt-[30px] max-tablet:pb-[10px] max-tablet:px-0 max-tablet:[&_h1]:text-[29px] max-tablet:[&_h1]:mt-[15px] max-tablet:[&_>_p]:hidden max-tablet:[&_.eyebrow]:hidden"
           }
         >
           <div
@@ -172,7 +172,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
           </p>
           <div
             className={
-              "workflow flex items-center mt-[53px] max-w-105 gap-[15px] [&_>_div]:flex [&_>_div]:flex-col [&_>_div]:items-center [&_>_div]:text-[11px] [&_>_div]:text-[#697c61] [&_>_div]:text-center [&_>_div]:gap-[13px] [&_>_div_>_svg]:w-[43px] [&_>_div_>_svg]:h-[43px] [&_>_div_>_svg]:bg-[#f4f8ef] [&_>_div_>_svg]:border [&_>_div_>_svg]:border-solid [&_>_div_>_svg]:border-[#dfe8d5] [&_>_div_>_svg]:rounded-[10px] [&_>_div_>_svg]:text-[#6d7b5d] [&_>_div_>_svg]:p-[10px] [&_>_i]:w-8 [&_>_i]:h-[1px] [&_>_i]:bg-[#c9d9bc] [&_>_i]:mb-[25px] max-tablet:gap-[9px] max-mobile:hidden"
+              "workflow flex items-center mt-[53px] max-w-105 gap-[15px] [&_>_div]:flex [&_>_div]:flex-col [&_>_div]:items-center [&_>_div]:text-[11px] [&_>_div]:text-[#697c61] [&_>_div]:text-center [&_>_div]:gap-[13px] [&_>_div_>_svg]:w-[43px] [&_>_div_>_svg]:h-[43px] [&_>_div_>_svg]:bg-[#f4f8ef] [&_>_div_>_svg]:border [&_>_div_>_svg]:border-solid [&_>_div_>_svg]:border-[#dfe8d5] [&_>_div_>_svg]:rounded-[10px] [&_>_div_>_svg]:text-[#6d7b5d] [&_>_div_>_svg]:p-[10px] [&_>_i]:w-8 [&_>_i]:h-[1px] [&_>_i]:bg-[#c9d9bc] [&_>_i]:mb-[25px] max-tablet:gap-[9px] max-tablet:hidden"
             }
           >
             <div>
@@ -193,7 +193,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
         </div>
         <div
           className={
-            "login-footer relative z-1 flex-wrap flex justify-between text-[12px] text-[#6e7a65] gap-5 [&_span]:text-[11px] [&_span]:text-[#707967] max-tablet:flex-col max-tablet:gap-[5px] max-mobile:hidden"
+            "login-footer relative z-1 flex-wrap flex justify-between text-[12px] text-[#6e7a65] gap-5 [&_span]:text-[11px] [&_span]:text-[#707967] max-tablet:flex-col max-tablet:gap-[5px] max-tablet:hidden"
           }
         >
           ExamEase <span>Software Engineering Project · Team T021</span>
@@ -201,17 +201,17 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
       </section>
       <section
         className={
-          "login-form flex items-center justify-center bg-[#fff] p-[50px] max-tablet:p-[35px] max-mobile:pt-8 max-mobile:pb-10 max-mobile:flex-1 max-mobile:px-[25px]"
+          "login-form min-w-0 flex items-center justify-center bg-[#fff] p-[50px] max-tablet:pt-8 max-tablet:pb-10 max-tablet:flex-1 max-tablet:px-[25px]"
         }
       >
         <div
           className={
-            "login-box max-w-[350px] w-full [&_h2]:text-[29px] [&_h2]:tracking-[-0.8px] [&_h2]:text-[#34583b] [&_>_p]:text-[14px] [&_>_p]:leading-[1.8] [&_>_p]:text-[#70796a] [&_>_p]:mt-[9px] [&_form]:mt-[30px] [&_.field]:mb-[18px] [&_.field_input]:px-[14px] [&_.field_input]:py-[13px] [&_.account-help]:mt-6 [&_.account-help]:text-center [&_.account-help]:text-[12px] [&_.account-help]:leading-[1.8] max-mobile:[&_h2]:text-[25px] max-mobile:max-w-none max-mobile:[&_form]:mt-[23px]"
+            "login-box max-w-[350px] w-full [&_h2]:text-[29px] [&_h2]:tracking-[-0.8px] [&_h2]:text-[#34583b] [&_>_p]:text-[14px] [&_>_p]:leading-[1.8] [&_>_p]:text-[#70796a] [&_>_p]:mt-[9px] [&_form]:mt-[30px] [&_.field]:mb-[18px] [&_.field_input]:px-[14px] [&_.field_input]:py-[13px] [&_.account-help]:mt-6 [&_.account-help]:text-center [&_.account-help]:text-[12px] [&_.account-help]:leading-[1.8] max-tablet:[&_h2]:text-[25px] max-tablet:max-w-[480px] max-tablet:[&_form]:mt-[23px]"
           }
         >
           <div
             className={
-              "login-icon w-[54px] h-[54px] bg-[#eef5e9] grid place-items-center text-[#6a7d55] rounded-[12px] mb-6 max-mobile:hidden"
+              "login-icon w-[54px] h-[54px] bg-[#eef5e9] grid place-items-center text-[#6a7d55] rounded-[12px] mb-6 max-tablet:hidden"
             }
           >
             <ShieldCheck size={28} />
@@ -286,6 +286,51 @@ export function App() {
     [version, setVersion] = useState(0),
     [toast, setToast] = useState(""),
     [menu, setMenu] = useState(false);
+  const sidebarRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!menu || !user) return;
+    const sidebar = sidebarRef.current;
+    const previous = document.activeElement as HTMLElement | null;
+    const hadScrollLock = document.body.classList.contains("overflow-hidden");
+    document.body.classList.add("overflow-hidden");
+    const focusable = () =>
+      Array.from(
+        sidebar?.querySelectorAll<HTMLElement>(
+          "a[href], button:not(:disabled)",
+        ) || [],
+      );
+    focusable()[0]?.focus();
+    const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMenu(false);
+      }
+      if (event.key === "Tab") {
+        const nodes = focusable(),
+          first = nodes[0],
+          last = nodes.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    const desktop = matchMedia("(min-width: 950px)");
+    const resize = () => {
+      if (desktop.matches) setMenu(false);
+    };
+    document.addEventListener("keydown", key);
+    desktop.addEventListener("change", resize);
+    return () => {
+      document.removeEventListener("keydown", key);
+      desktop.removeEventListener("change", resize);
+      if (!hadScrollLock) document.body.classList.remove("overflow-hidden");
+      previous?.focus();
+    };
+  }, [menu, user?.id]);
   useEffect(() => {
     api<{ user: User }>("/auth/me")
       .then((r) => setUser(r.user))
@@ -301,7 +346,10 @@ export function App() {
       setPage(location.hash.slice(1) || "home");
       setMenu(false);
     };
-    const expired = () => setUser(null);
+    const expired = () => {
+      setMenu(false);
+      setUser(null);
+    };
     window.addEventListener("hashchange", hash);
     window.addEventListener("session-expired", expired);
     return () => {
@@ -369,18 +417,37 @@ export function App() {
         {menu && (
           <button
             className={
-              "sidebar-backdrop max-mobile:fixed max-mobile:inset-0 max-mobile:bg-[#163f3455] max-mobile:border-0 max-mobile:z-19"
+              "sidebar-backdrop fixed inset-0 bg-[#163f3455] border-0 z-19 print:hidden"
             }
-            aria-label="Close navigation"
+            aria-hidden="true"
+            tabIndex={-1}
             onClick={() => setMenu(false)}
           />
         )}
         <aside
+          ref={sidebarRef}
+          id="main-navigation"
+          role={menu ? "dialog" : undefined}
+          aria-modal={menu || undefined}
+          aria-label="Navigation"
           className={cn(
-            `sidebar fixed left-0 top-0 bottom-0 w-[246px] bg-white border-r border-solid border-r-line pt-[31px] pb-4 flex flex-col z-20 px-5 [&_nav]:flex [&_nav]:flex-col [&_nav]:gap-[7px] [&_nav_a]:flex [&_nav_a]:items-center [&_nav_a]:text-[#6b7974] [&_nav_a]:text-[14px] [&_nav_a]:font-medium [&_nav_a]:rounded-[7px] [&_nav_a]:relative [&_nav_a]:px-[13px] [&_nav_a]:py-3 [&_nav_a]:gap-3 [&_nav_a:hover]:bg-[#f4f8f5] [&_nav_a:hover]:text-[#286c54] [&_nav_a.active]:bg-[#e9f4ed] [&_nav_a.active]:text-[#176b4f] [&_nav_a.active]:font-[650] [&_nav_a.active_i]:w-[5px] [&_nav_a.active_i]:h-[5px] [&_nav_a.active_i]:rounded-full [&_nav_a.active_i]:bg-[#308064] [&_nav_a.active_i]:ml-auto max-wide:w-55 max-wide:px-[14px] max-tablet:w-50 max-tablet:[&_nav_a]:text-[13px] max-tablet:[&_nav_a]:gap-[9px] max-mobile:-translate-x-full max-mobile:transition-transform max-mobile:duration-200 max-mobile:ease-[ease] max-mobile:w-[250px] max-mobile:[&.open]:translate-x-0 print:hidden ${menu ? "open" : ""}`,
+            `sidebar overflow-y-auto overscroll-contain max-tablet:invisible max-tablet:[&.open]:visible fixed left-0 top-0 bottom-0 w-[246px] bg-white border-r border-solid border-r-line pt-[31px] pb-4 flex flex-col z-20 px-5 [&_nav]:flex [&_nav]:flex-col [&_nav]:gap-[7px] [&_nav_a]:flex [&_nav_a]:items-center [&_nav_a]:text-[#6b7974] [&_nav_a]:text-[14px] [&_nav_a]:font-medium [&_nav_a]:rounded-[7px] [&_nav_a]:relative [&_nav_a]:px-[13px] [&_nav_a]:py-3 [&_nav_a]:gap-3 [&_nav_a:hover]:bg-[#f4f8f5] [&_nav_a:hover]:text-[#286c54] [&_nav_a.active]:bg-[#e9f4ed] [&_nav_a.active]:text-[#176b4f] [&_nav_a.active]:font-[650] [&_nav_a.active_i]:w-[5px] [&_nav_a.active_i]:h-[5px] [&_nav_a.active_i]:rounded-full [&_nav_a.active_i]:bg-[#308064] [&_nav_a.active_i]:ml-auto max-wide:w-55 max-wide:px-[14px] max-tablet:[&_nav_a]:text-[13px] max-tablet:[&_nav_a]:gap-[9px] max-tablet:-translate-x-full max-tablet:transition-transform max-tablet:duration-200 max-tablet:ease-[ease] max-tablet:w-[250px] max-tablet:[&.open]:translate-x-0 print:hidden ${menu ? "open" : ""}`,
           )}
         >
-          <a href={`#${nav[0].id}`} className={"brand-link ml-2 mb-[43px]"}>
+          <button
+            className="absolute top-5 right-3 hidden max-tablet:inline-flex items-center justify-center rounded-lg text-brand"
+            aria-label="Close navigation"
+            onClick={() => setMenu(false)}
+          >
+            <X size={21} />
+          </button>
+          <a
+            href={`#${nav[0].id}`}
+            className={"brand-link ml-2 mb-[43px]"}
+            onClick={() => {
+              if (active.id === nav[0].id) setMenu(false);
+            }}
+          >
             <Brand />
           </a>
           <div
@@ -397,6 +464,9 @@ export function App() {
                 className={cn(active.id === n.id ? "active" : "")}
                 key={n.id}
                 aria-current={active.id === n.id ? "page" : undefined}
+                onClick={() => {
+                  if (active.id === n.id) setMenu(false);
+                }}
               >
                 <n.icon size={19} />
                 <span>{n.label}</span>
@@ -425,6 +495,7 @@ export function App() {
                 if (!confirmDiscard()) return;
                 try {
                   await api("/auth/logout", "POST");
+                  setMenu(false);
                   setUser(null);
                 } catch (e) {
                   setToast((e as Error).message);
@@ -437,8 +508,9 @@ export function App() {
           </div>
         </aside>
         <div
+          inert={menu || undefined}
           className={
-            "main-shell ml-[246px] min-w-0 w-[calc(100%_-_246px)] max-wide:ml-55 max-wide:w-[calc(100%_-_220px)] max-tablet:ml-50 max-tablet:w-[calc(100%_-_200px)] max-mobile:w-full max-mobile:m-0 print:w-full print:m-0"
+            "main-shell ml-[246px] min-w-0 w-[calc(100%_-_246px)] max-wide:ml-55 max-wide:w-[calc(100%_-_220px)] max-tablet:ml-0 max-tablet:w-full print:w-full print:m-0"
           }
         >
           <header
@@ -448,14 +520,16 @@ export function App() {
           >
             <div
               className={
-                "breadcrumb flex items-center text-[13px] text-[#6e7974] gap-[15px] [&_strong]:font-medium [&_strong]:text-[#4c635a] max-mobile:text-[12px] max-mobile:gap-[9px] max-mobile:[&_>_span:first-of-type]:hidden max-mobile:[&_>_span:nth-of-type(2)]:hidden"
+                "breadcrumb min-w-0 [&_strong]:min-w-0 [&_strong]:truncate flex items-center text-[13px] text-[#6e7974] gap-[15px] [&_strong]:font-medium [&_strong]:text-[#4c635a] max-mobile:text-[12px] max-mobile:gap-[9px] max-mobile:[&_>_span:first-of-type]:hidden max-mobile:[&_>_span:nth-of-type(2)]:hidden"
               }
             >
               <button
                 className={
-                  "icon-button border-0 bg-transparent items-center justify-center rounded-[5px] text-[#6b7a73] p-[7px] [&:hover]:bg-[#eff5f1] mobile-menu hidden max-mobile:inline-flex"
+                  "icon-button border-0 bg-transparent items-center justify-center rounded-[5px] text-[#6b7a73] p-[7px] [&:hover]:bg-[#eff5f1] mobile-menu hidden max-tablet:inline-flex"
                 }
                 aria-label="Open navigation"
+                aria-controls="main-navigation"
+                aria-expanded={menu}
                 onClick={() => setMenu(true)}
               >
                 <Menu size={21} />
@@ -464,7 +538,9 @@ export function App() {
               <span>/</span>
               <strong>{active.label}</strong>
             </div>
-            <div className={"topbar-right flex items-center gap-[26px]"}>
+            <div
+              className={"topbar-right shrink-0 flex items-center gap-[26px]"}
+            >
               <span
                 className={
                   "academic-period text-[12px] text-[#6c7972] max-wide:hidden"

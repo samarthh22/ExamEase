@@ -25,7 +25,7 @@
     @apply m-0;
   }
   button {
-    @apply [-webkit-tap-highlight-color:transparent] touch-manipulation cursor-pointer;
+    @apply [-webkit-tap-highlight-color:transparent] touch-manipulation cursor-pointer max-tablet:min-h-11 max-tablet:min-w-11 pointer-coarse:min-h-11 pointer-coarse:min-w-11;
   }
   input {
     @apply [-webkit-tap-highlight-color:transparent] min-w-0 max-w-full border border-solid border-[#dce4e1] rounded-[7px] bg-white text-[#263e38] outline-none px-3 py-[10px];
@@ -86,6 +86,11 @@
   }
   input[type="checkbox"] {
     @apply w-4 h-4 accent-brand;
+  }
+  input:not([type="checkbox"]),
+  select,
+  textarea {
+    @apply max-tablet:text-[16px]! pointer-coarse:text-[16px]! max-tablet:min-h-11 pointer-coarse:min-h-11;
   }
   code {
     @apply text-[13px] wrap-anywhere;

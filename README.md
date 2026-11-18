@@ -78,6 +78,10 @@ Online examinations, payments, automated/remote proctoring, question generation,
 
 ## Quality checks
 
+The interface adapts to phone, tablet, laptop and desktop widths. Below 950px, navigation becomes a keyboard-accessible drawer; short screens can scroll its links and sign-out control. Forms stack on phones, touch controls have larger targets, and dialogs use the available viewport height. Wide academic tables scroll inside a labelled, keyboard-focusable region with a scroll hint instead of widening the page. Marks statistics, grade previews and academic-record tabs reflow with the available space.
+
+`tests/browser/responsive.spec.ts` exercises all six roles at nine viewport sizes from 320px to 1920px, including landscape and a viewport equivalent to 200% desktop zoom. It also checks touch input sizing, short-screen navigation, focus handling, sign-out scroll restoration and keyboard table scrolling. Browser emulation checks layout and interactions; it is not a physical-device certification.
+
 ```sh
 npm run typecheck
 npm test
