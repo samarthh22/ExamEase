@@ -153,7 +153,7 @@ export function Home() {
           className={
             "banner-illustration w-[230px] shrink-0 relative flex items-center justify-center max-wide:w-[170px] max-tablet:hidden"
           }
-          aria-hidden="true"
+          aria-hidden='true'
         >
           <div
             className={
@@ -210,13 +210,13 @@ export function Home() {
           icon={<BookOpen size={19} />}
         />
         <Stat
-          label="Upcoming examinations"
+          label='Upcoming examinations'
           value={upcoming.length}
-          detail="Published schedules"
+          detail='Published schedules'
           icon={<CalendarDays size={19} />}
         />
         <Stat
-          label="Published results"
+          label='Published results'
           value={
             student
               ? ownResults?.filter((r) => r.status === "PUBLISHED").length || 0
@@ -230,9 +230,9 @@ export function Home() {
           icon={<CheckCheck size={19} />}
         />
         <Stat
-          label="Awaiting publication"
+          label='Awaiting publication'
           value={pending.length}
-          detail="Across scheduled examinations"
+          detail='Across scheduled examinations'
           icon={<Clock size={19} />}
         />
       </div>
@@ -243,9 +243,9 @@ export function Home() {
         }
       >
         <Panel
-          title="Upcoming examinations"
-          subtitle="Plan ahead with the latest published schedules"
-          action={<LinkButton to="schedule">View all</LinkButton>}
+          title='Upcoming examinations'
+          subtitle='Plan ahead with the latest published schedules'
+          action={<LinkButton to='schedule'>View all</LinkButton>}
         >
           {upcoming.length ? (
             <div
@@ -303,8 +303,8 @@ export function Home() {
             </div>
           ) : (
             <Empty
-              title="No upcoming examinations"
-              description="Published examinations will appear here."
+              title='No upcoming examinations'
+              description='Published examinations will appear here.'
             />
           )}
         </Panel>
@@ -373,7 +373,7 @@ export function Home() {
                       }
                     >
                       <i
-                        className="w-[var(--progress)]"
+                        className='w-[var(--progress)]'
                         style={
                           {
                             "--progress": `${r.registered ? (r.statistics.count / r.registered) * 100 : 0}%`,
@@ -395,15 +395,15 @@ export function Home() {
                   </div>
                 ))}
               {!reports?.some((r) => r.registered > 0) && (
-                <Empty title="Evaluation has not started" />
+                <Empty title='Evaluation has not started' />
               )}
             </div>
           )}
         </Panel>
       </div>
       <Panel
-        title="Your next steps"
-        subtitle="Continue the examination workflow"
+        title='Your next steps'
+        subtitle='Continue the examination workflow'
       >
         <div
           className={
@@ -559,7 +559,7 @@ export function Courses() {
   return (
     <>
       <Heading
-        title="Courses"
+        title='Courses'
         description={
           admin
             ? "Maintain your course catalogue and faculty assignments."
@@ -588,7 +588,7 @@ export function Courses() {
           <SearchBox
             value={search}
             onChange={setSearch}
-            placeholder="Search code, title or department…"
+            placeholder='Search code, title or department…'
           />
           <span className={"muted text-muted text-[14px]"}>
             {data?.length || 0} courses
@@ -655,7 +655,7 @@ export function Courses() {
               ))}
           </Table>
         ) : (
-          <Empty title="No courses yet" />
+          <Empty title='No courses yet' />
         )}
       </Panel>
       {edit !== undefined && (
@@ -792,8 +792,8 @@ export function Schedule() {
   return (
     <>
       <Heading
-        title="Exam schedules"
-        description="Examination dates, times and venues. All times are in IST."
+        title='Exam schedules'
+        description='Examination dates, times and venues. All times are in IST.'
         action={
           admin && (
             <button
@@ -817,14 +817,14 @@ export function Schedule() {
           <SearchBox
             value={search}
             onChange={setSearch}
-            placeholder="Search course or venue…"
+            placeholder='Search course or venue…'
           />
           <select
-            aria-label="Filter schedule status"
+            aria-label='Filter schedule status'
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
-            <option value="">All statuses</option>
+            <option value=''>All statuses</option>
             {(user.role === "STUDENT"
               ? ["PUBLISHED", "CANCELLED"]
               : ["DRAFT", "PUBLISHED", "CANCELLED"]
@@ -906,8 +906,8 @@ export function Schedule() {
           </Table>
         ) : (
           <Empty
-            title="No examination schedules"
-            description="Published schedules for your courses will appear here."
+            title='No examination schedules'
+            description='Published schedules for your courses will appear here.'
           />
         )}
       </Panel>
@@ -985,7 +985,7 @@ export function Registrations() {
   return (
     <>
       <Heading
-        title="Examination registrations"
+        title='Examination registrations'
         description={
           student
             ? "Register for eligible examinations and keep your receipts in one place."
@@ -1107,8 +1107,8 @@ export function Registrations() {
           {eligible?.length === 0 && (
             <Panel>
               <Empty
-                title="No examinations available for registration"
-                description="Upcoming published examinations for your enrolled courses will appear here."
+                title='No examinations available for registration'
+                description='Upcoming published examinations for your enrolled courses will appear here.'
               />
             </Panel>
           )}
@@ -1116,7 +1116,7 @@ export function Registrations() {
       )}
       <Panel
         title={student ? "My registrations" : "Registration records"}
-        subtitle="Current status and examination receipts"
+        subtitle='Current status and examination receipts'
       >
         <div
           className={
@@ -1126,7 +1126,7 @@ export function Registrations() {
           <SearchBox
             value={search}
             onChange={setSearch}
-            placeholder="Search registrations…"
+            placeholder='Search registrations…'
           />
           <span className={"muted text-muted text-[14px]"}>
             {data?.length || 0} records
@@ -1174,7 +1174,7 @@ export function Registrations() {
                     {dateLabel(r.date)}
                     <small>{r.venue}</small>
                     {r.exam_status === "CANCELLED" && (
-                      <Badge value="CANCELLED" />
+                      <Badge value='CANCELLED' />
                     )}
                   </td>
                   <td>
@@ -1216,12 +1216,12 @@ export function Registrations() {
               ))}
           </Table>
         ) : (
-          <Empty title="No registrations yet" />
+          <Empty title='No registrations yet' />
         )}
       </Panel>
       {register && (
         <Confirm
-          title="Confirm examination registration"
+          title='Confirm examination registration'
           message={`Register for ${register.code} ${register.exam_type} on ${dateLabel(register.date)} at ${register.venue}?`}
           onClose={() => setRegister(null)}
           onConfirm={async () => {
@@ -1236,7 +1236,7 @@ export function Registrations() {
       )}
       {cancel && (
         <Confirm
-          title="Cancel registration"
+          title='Cancel registration'
           message={`Cancel ${cancel.name}'s registration for ${cancel.code} ${cancel.exam_type}? The reason and your identity will be recorded. Only the examination office can restore it.`}
           reasonRequired
           onClose={() => setCancel(null)}
@@ -1248,7 +1248,7 @@ export function Registrations() {
         />
       )}
       {receipt && (
-        <Modal title="Registration receipt" onClose={() => setReceipt(null)}>
+        <Modal title='Registration receipt' onClose={() => setReceipt(null)}>
           <div
             className={
               "receipt text-center [&_h3]:text-[19px] [&_h3]:mt-[17px] [&_>_p]:text-[#6e7a66] [&_>_p]:text-[14px] [&_>_p]:mt-[5px] [&_dl]:mt-[23px] [&_dl]:mb-0 [&_dl]:text-left [&_dl]:mx-0 [&_dl_>_div]:grid [&_dl_>_div]:grid-cols-[135px_1fr] [&_dl_>_div]:border-b [&_dl_>_div]:border-solid [&_dl_>_div]:border-b-[#edf0e9] [&_dl_>_div]:text-[13px] [&_dl_>_div]:px-0 [&_dl_>_div]:py-[10px] [&_dt]:text-[#707968] [&_dd]:text-[#526c49] [&_dd]:wrap-anywhere [&_dd]:m-0 max-mobile:[&_dl_>_div]:grid-cols-[110px_1fr]"
@@ -1318,7 +1318,7 @@ export function Registrations() {
         </Modal>
       )}
       {adding && (
-        <Modal title="Register student" onClose={() => setAdding(false)}>
+        <Modal title='Register student' onClose={() => setAdding(false)}>
           <RecordForm
             fields={[
               {
@@ -1421,8 +1421,8 @@ function ResultTable({ rows }: { rows: ResultRow[] }) {
     </Table>
   ) : (
     <Empty
-      title="No result records"
-      description="Results appear here after examination registration."
+      title='No result records'
+      description='Results appear here after examination registration.'
     />
   );
 }
@@ -1432,12 +1432,12 @@ export function Results() {
   return (
     <>
       <Heading
-        title="My results"
-        description="Your marks and grades become visible after official publication."
+        title='My results'
+        description='Your marks and grades become visible after official publication.'
       />
       <Panel
-        title="Examination results"
-        subtitle="Only your own published marks and grades are shown"
+        title='Examination results'
+        subtitle='Only your own published marks and grades are shown'
       >
         <ErrorMessage message={error} />
         {loading ? <Loading /> : <ResultTable rows={data || []} />}
@@ -1525,7 +1525,7 @@ export function Reports() {
   return (
     <>
       <Heading
-        title="Reports & analytics"
+        title='Reports & analytics'
         description={
           user.role === "HOD"
             ? `Read-only examination performance for ${user.department}.`
@@ -1563,7 +1563,7 @@ export function Reports() {
                   setExamId("");
                 }}
               >
-                <option value="">All accessible departments</option>
+                <option value=''>All accessible departments</option>
                 {[...new Set(data?.map((r) => r.exam.department))].map((d) => (
                   <option key={d}>{d}</option>
                 ))}
@@ -1591,22 +1591,22 @@ export function Reports() {
                 }
               >
                 <Stat
-                  label="Class mean"
+                  label='Class mean'
                   value={selected.statistics.mean ?? "—"}
                   detail={`Out of ${selected.exam.max_marks} marks`}
                 />
                 <Stat
-                  label="Median"
+                  label='Median'
                   value={selected.statistics.median ?? "—"}
                   detail={`${selected.statistics.count} evaluated students`}
                 />
                 <Stat
-                  label="Standard deviation"
+                  label='Standard deviation'
                   value={selected.statistics.std_dev ?? "—"}
-                  detail="Population standard deviation"
+                  detail='Population standard deviation'
                 />
                 <Stat
-                  label="Published pass rate"
+                  label='Published pass rate'
                   value={
                     selected.passRate === null ? "—" : `${selected.passRate}%`
                   }
@@ -1619,8 +1619,8 @@ export function Reports() {
                 }
               >
                 <Panel
-                  title="Grade distribution"
-                  subtitle="Based on published results only"
+                  title='Grade distribution'
+                  subtitle='Based on published results only'
                 >
                   <div
                     className={
@@ -1643,7 +1643,7 @@ export function Reports() {
                             }
                           >
                             <i
-                              className="w-[var(--progress)]"
+                              className='w-[var(--progress)]'
                               style={
                                 {
                                   "--progress": `${(d.count / Math.max(...selected.distribution.map((x) => x.count))) * 100}%`,
@@ -1657,14 +1657,14 @@ export function Reports() {
                       ))
                     ) : (
                       <Empty
-                        title="Results are not published yet"
-                        description="The distribution appears after official publication."
+                        title='Results are not published yet'
+                        description='The distribution appears after official publication.'
                       />
                     )}
                   </div>
                 </Panel>
                 <Panel
-                  title="Examination summary"
+                  title='Examination summary'
                   subtitle={`${selected.exam.code} · ${selected.exam.exam_type}`}
                 >
                   <dl
@@ -1706,12 +1706,12 @@ export function Reports() {
             </>
           ) : (
             <Panel>
-              <Empty title="No examination reports yet" />
+              <Empty title='No examination reports yet' />
             </Panel>
           )}
           <Panel
-            title="Course performance"
-            subtitle="F is the failing grade; other configured grades count as passing"
+            title='Course performance'
+            subtitle='F is the failing grade; other configured grades count as passing'
           >
             <Table
               headers={[
@@ -1748,8 +1748,8 @@ export function Reports() {
       )}
       {user.role === "EXAM_ADMIN" && (
         <Panel
-          title="Student-wise report"
-          subtitle="Published marks and grades across registered courses"
+          title='Student-wise report'
+          subtitle='Published marks and grades across registered courses'
         >
           <div
             className={
@@ -1757,11 +1757,11 @@ export function Reports() {
             }
           >
             <select
-              aria-label="Select student for report"
+              aria-label='Select student for report'
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
             >
-              <option value="">Choose a student…</option>
+              <option value=''>Choose a student…</option>
               {students?.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.roll_no} · {s.name}
