@@ -6,3 +6,7 @@ data/
 test-results/
 playwright-report/
 *.log
+
+# Earlier prototype: local reference only, never part of this application.
+/ExamEase/
+/prototype/

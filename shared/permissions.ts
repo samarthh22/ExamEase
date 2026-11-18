@@ -20,6 +20,8 @@ export const permissions = {
   viewDashboard: ["EXAM_ADMIN", "HOD"],
   manageUsers: ["SYS_ADMIN"],
   viewAudit: ["SYS_ADMIN"],
+  viewDuties: ["FACULTY", "TA", "EXAM_ADMIN"],
+  manageDuties: ["EXAM_ADMIN"],
 } as const satisfies Record<string, readonly Role[]>;
 export type Permission = keyof typeof permissions;
 export function can(role: Role, permission: Permission): boolean {

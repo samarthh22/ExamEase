@@ -4,7 +4,7 @@ The source is the supplied Assignments 1–7 report. Functional requirement IDs 
 
 | SRS requirement                                     | Implementation / screen                       | Verification                                                               |
 | --------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------- |
-| FR-001–003 Login, logout, role access               | `auth.ts`, `app.ts`, login and role menus     | API auth/cookie/logout/role test; five-role browser flows                  |
+| FR-001–003 Login, logout, role access               | `auth.ts`, `app.ts`, login and role menus     | API auth/cookie/logout/role test; six-role browser flows                   |
 | FR-004–005 Accounts and roles                       | `auth.ts`, User accounts                      | API creation/update/revocation test; system admin browser flow             |
 | FR-006–007 Student/faculty records                  | `academic.ts`, Students & faculty             | API maintenance/uniqueness test; form validation                           |
 | FR-008–010 Courses, assignment, search              | Courses, records search/filter, `academic.ts` | API assignment/uniqueness test; course creation browser flow               |
@@ -19,6 +19,18 @@ The source is the supplied Assignments 1–7 report. Functional requirement IDs 
 | FR-028 Course-wise report                           | Reports & analytics                           | Report data from saved marks and published distributions; HOD browser flow |
 | FR-029 Pass/fail counts                             | Reports, CSV export                           | Grade-F convention; generated report tests                                 |
 | FR-030 Dashboard                                    | Overview and `/dashboard`                     | Role restrictions, live queries and department-scope tests                 |
+
+## Stakeholder change requests
+
+The 18 November stakeholder clarification is tracked separately from the original SRS IDs:
+
+| Change request                                  | Implementation                                                                             | Verification                                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| CR-SUP-001–002 Roles, six TAs, office authority | Shared role/capability map, account management, `seed-supervision.ts`, duty routes/service | Six-role API matrix; idempotent seed; invalid staff/duplicate/self-assignment tests |
+| CR-SUP-003 Scheduling consistency               | Staff availability checks in supervision and academic services                             | Duty/course conflicts, adjacency, faculty reassignment and rescheduling tests       |
+| CR-SUP-004 Private duties and rosters           | Role navigation, scoped duty queries, explicit roster DTO                                  | TA and faculty ownership API tests; browser role isolation and print checks         |
+| CR-SUP-005 Lifecycle/audit                      | Duty and schedule transactions, account guards                                             | Started/ cancelled exam guards, reason validation, audit and account-change tests   |
+| CR-SUP-006 Coverage/persistence                 | Office coverage board, version 2 migration                                                 | Browser staffing view; legacy users/marks/sessions/FK preservation and reopen test  |
 
 ## Non-functional requirements
 

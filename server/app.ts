@@ -21,6 +21,7 @@ import { assert } from "./errors.js";
 import { academicRoutes } from "./routes/academic.js";
 import { permissions } from "../shared/permissions.js";
 import { evaluationRoutes } from "./routes/evaluation.js";
+import { supervisionRoutes } from "./routes/supervision.js";
 
 export function createApp(repo: Repository) {
   const app = express(),
@@ -119,6 +120,7 @@ export function createApp(repo: Repository) {
   );
   academicRoutes(app, repo, allow);
   evaluationRoutes(app, repo, allow);
+  supervisionRoutes(app, repo, allow);
   app.use("/api", (_req, res) =>
     res.status(404).json({ message: "API endpoint not found." }),
   );

@@ -65,6 +65,7 @@ export const useApp = () => useContext(AppContext);
 export const roleLabels = {
   STUDENT: "Student",
   FACULTY: "Faculty member",
+  TA: "Teaching assistant",
   EXAM_ADMIN: "Examination administrator",
   HOD: "Department coordinator",
   SYS_ADMIN: "System administrator",

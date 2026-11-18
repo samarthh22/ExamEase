@@ -13,6 +13,7 @@ import type { User } from "../../shared/types.js";
 export const roles = [
   "STUDENT",
   "FACULTY",
+  "TA",
   "EXAM_ADMIN",
   "HOD",
   "SYS_ADMIN",
@@ -107,6 +108,18 @@ export function authService(repo: Repository) {
         "You cannot deactivate your own account or revoke your own system administrator role.",
       );
       // Historical academic profiles remain intact when a role changes.
+      if (id && (!input.active || input.role !== existing?.role)) {
+        const duty = repo.one(
+          "SELECT d.id FROM exam_duties d JOIN exams e ON e.id=d.exam_id WHERE d.user_id=? AND d.status='ASSIGNED' AND e.status!='CANCELLED' AND (e.date||'T'||e.end_time)>?",
+          id,
+          new Date(Date.now() + 330 * 60000).toISOString().slice(0, 16),
+        );
+        assert(
+          !duty,
+          409,
+          "Remove or reassign upcoming/current examination duties before deactivating this account or changing its role.",
+        );
+      }
       // Every request rechecks the current role, and existing sessions are revoked.
       const values: Partial<User> = {
         email: input.email,

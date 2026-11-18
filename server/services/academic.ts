@@ -11,6 +11,7 @@ import type {
 } from "../../shared/types.js";
 import { assert } from "../errors.js";
 import { requirePermission } from "./authorization.js";
+import { checkExamDuties, ensureStaffAvailable } from "./supervision.js";
 const text = z.string().trim().min(1).max(120);
 const studentSchema = z
   .object({
@@ -214,6 +215,8 @@ export function academicService(repo: Repository) {
           )
           .filter((e) => examEnd(e) > Date.now());
         for (const exam of scheduled) {
+          const person = repo.get<Faculty>("faculty", input.faculty_id)!;
+          ensureStaffAvailable(repo, person.user_id, exam, false);
           const conflict = repo.one(
             "SELECT e.id FROM exams e JOIN courses c ON c.id=e.course_id WHERE c.faculty_id=? AND e.course_id!=? AND e.status='PUBLISHED' AND e.date=? AND e.start_time<? AND e.end_time>? LIMIT 1",
             input.faculty_id,
@@ -339,6 +342,20 @@ export function academicService(repo: Repository) {
         422,
         "A rescheduled examination must start in the future.",
       );
+      const staffed = repo.one(
+        "SELECT id FROM exam_duties WHERE exam_id=? LIMIT 1",
+        id!,
+      );
+      assert(
+        !staffed ||
+          examStart(old) > Date.now() ||
+          (old.course_id === input.course_id &&
+            old.exam_type === input.exam_type &&
+            old.venue === input.venue &&
+            input.status !== "DRAFT"),
+        409,
+        "An examination with duty records that has started cannot change its course, type or hall, or return to draft.",
+      );
     }
     if (input.status === "PUBLISHED") {
       const faculty =
@@ -355,6 +372,11 @@ export function academicService(repo: Repository) {
       );
     }
     if (input.status !== "CANCELLED") {
+      checkExamDuties(repo, proposed);
+      if (input.status === "PUBLISHED" && course!.faculty_id) {
+        const faculty = repo.get<Faculty>("faculty", course!.faculty_id)!;
+        ensureStaffAvailable(repo, faculty.user_id, proposed);
+      }
       const clash = repo.one(
         "SELECT id FROM exams WHERE id!=? AND status!='CANCELLED' AND lower(trim(venue))=lower(trim(?)) AND date=? AND start_time<? AND end_time>?",
         id || "",
@@ -416,6 +438,18 @@ export function academicService(repo: Repository) {
       if (old && old.max_marks !== input.max_marks)
         repo.run("DELETE FROM boundaries WHERE exam_id=?", id!);
       if (old && input.status === "CANCELLED") {
+        const duties = repo.all<{ id: string }>(
+          "SELECT id FROM exam_duties WHERE exam_id=? AND status='ASSIGNED'",
+          id!,
+        );
+        repo.run(
+          "UPDATE exam_duties SET status='CANCELLED' WHERE exam_id=? AND status='ASSIGNED'",
+          id!,
+        );
+        for (const duty of duties)
+          repo.audit(actor.id, "DUTY_CANCELLED", duty.id, {
+            reason: "Examination cancelled",
+          });
         repo.run(
           "UPDATE registrations SET status='CANCELLED' WHERE exam_id=? AND status='REGISTERED'",
           id!,

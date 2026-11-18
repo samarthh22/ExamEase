@@ -1,4 +1,5 @@
-export type Role = "STUDENT" | "FACULTY" | "EXAM_ADMIN" | "HOD" | "SYS_ADMIN";
+export type Role =
+  "STUDENT" | "FACULTY" | "TA" | "EXAM_ADMIN" | "HOD" | "SYS_ADMIN";
 export interface User {
   id: string;
   email: string;
@@ -128,4 +129,39 @@ export interface CourseReport {
   passed: number;
   failed: number;
   passRate: number | null;
+}
+export type DutyType = "INVIGILATOR" | "TA";
+export interface DutyStaff {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  department: string;
+}
+export interface ExamDuty {
+  id: string;
+  exam_id: string;
+  user_id: string;
+  duty_type: DutyType;
+  status: "ASSIGNED" | "CANCELLED";
+  assigned_at: string;
+  name: string;
+  email: string;
+  department: string;
+  account_active: number;
+  account_role: Role;
+  code: string;
+  title: string;
+  exam_type: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  venue: string;
+  exam_status: Exam["status"];
+}
+export interface HallStudent {
+  student_id: string;
+  name: string;
+  roll_no: string;
+  seat: number;
 }

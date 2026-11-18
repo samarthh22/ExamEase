@@ -7,7 +7,7 @@ import type { User, Exam } from "../shared/types.js";
 test("FR-012 venue overlap rejects conflicts but allows adjacent examinations", () => {
   const r = openRepository(":memory:");
   try {
-    seed(r);
+    seed(r, "examease.local");
     const s = academicService(r),
       admin = r.get<User>("users", "u-admin")!,
       e = r.get<Exam>("exams", "e-1")!;
@@ -27,7 +27,7 @@ test("FR-012 venue overlap rejects conflicts but allows adjacent examinations", 
 test("FR-015–017 eligible registration is durable, unique and ownership protected", () => {
   const r = openRepository(":memory:");
   try {
-    seed(r);
+    seed(r, "examease.local");
     const s = academicService(r),
       student = r.get<User>("users", "u-student-1")!,
       other = r.get<User>("users", "u-student-2")!,

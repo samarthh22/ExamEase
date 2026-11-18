@@ -52,7 +52,7 @@ test("FR-023–024 exact boundary edges map once; gaps and overlaps are rejected
 test("FR-018–026 atomic marks, ownership, draft privacy, publication and invalidation", () => {
   const r = openRepository(":memory:");
   try {
-    seed(r);
+    seed(r, "examease.local");
     const e = evaluationService(r),
       report = reportingService(r),
       faculty = r.get<User>("users", "u-faculty")!,

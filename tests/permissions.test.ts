@@ -10,6 +10,7 @@ import type { User, Exam, Role } from "../shared/types.js";
 
 const identities: Record<Role, string> = {
   STUDENT: "student@examease.local",
+  TA: "ta1@examease.local",
   FACULTY: "faculty@examease.local",
   EXAM_ADMIN: "admin@examease.local",
   HOD: "hod@examease.local",
@@ -51,11 +52,16 @@ const routeRules: [string, string, Role[]][] = [
   ["get", "/api/reports/courses", ["FACULTY", "EXAM_ADMIN", "HOD"]],
   ["get", "/api/dashboard", ["EXAM_ADMIN", "HOD"]],
   ["get", "/api/audit", ["SYS_ADMIN"]],
+  ["get", "/api/duties", ["EXAM_ADMIN", "FACULTY", "TA"]],
+  ["get", "/api/duties/staff", ["EXAM_ADMIN"]],
+  ["get", "/api/duties/exam/missing/roster", ["EXAM_ADMIN", "FACULTY", "TA"]],
+  ["post", "/api/duties", ["EXAM_ADMIN"]],
+  ["delete", "/api/duties/missing", ["EXAM_ADMIN"]],
 ];
-test("Entire API permission matrix: 34 protected operations across all five roles", async () => {
+test("Entire API permission matrix: 39 protected operations across all six roles", async () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const app = createApp(repo);
     for (const [role, email] of Object.entries(identities)) {
       const agent = request.agent(app);
@@ -99,7 +105,7 @@ test("Entire API permission matrix: 34 protected operations across all five role
 test("Students cannot cancel, override identity or reverse office cancellations; office must supply an audited reason", async () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const app = createApp(repo),
       student = request.agent(app),
       admin = request.agent(app);
@@ -147,7 +153,7 @@ test("Students cannot cancel, override identity or reverse office cancellations;
 test("Schedule lifecycle preserves registrations, closes cancellation and prevents retroactive schedules", () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const s = academicService(repo),
       admin = repo.get<User>("users", "u-admin")!;
     const e = repo.get<Exam>("exams", "e-2")!,
@@ -197,7 +203,7 @@ test("Schedule lifecycle preserves registrations, closes cancellation and preven
 test("Published schedule conflicts cover venue, faculty and shared students", () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const s = academicService(repo),
       admin = repo.get<User>("users", "u-admin")!;
     const e = repo.get<Exam>("exams", "e-1")!,
@@ -227,7 +233,7 @@ test("Published schedule conflicts cover venue, faculty and shared students", ()
 test("Faculty reassignment and student enrollment cannot introduce examination conflicts", () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const s = academicService(repo),
       admin = repo.get<User>("users", "u-admin")!;
     const course = s.saveCourse(
@@ -278,7 +284,7 @@ test("Faculty reassignment and student enrollment cannot introduce examination c
 test("Inactive accounts remain historical records but cannot receive new enrollments or registrations", () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const s = academicService(repo),
       admin = repo.get<User>("users", "u-admin")!;
     repo.update("users", "u-student-1", { active: 0 });
@@ -309,7 +315,7 @@ test("Inactive accounts remain historical records but cannot receive new enrollm
 test("Only examination office can withdraw publication, with a reason; faculty and administrators cannot bypass domain guards", () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const e = evaluationService(repo),
       s = academicService(repo),
       faculty = repo.get<User>("users", "u-faculty")!,
@@ -353,7 +359,7 @@ test("Only examination office can withdraw publication, with a reason; faculty a
 test("Student results never reveal other students, draft marks, or grades via supplied IDs", async () => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const student = request.agent(createApp(repo));
     await student
       .post("/api/auth/login")

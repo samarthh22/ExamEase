@@ -12,6 +12,7 @@
     "build": "npm run typecheck && vite build",
     "start": "node --experimental-sqlite --import tsx server/index.ts",
     "seed": "node --experimental-sqlite --import tsx server/seed.ts",
+    "seed:tas": "node --experimental-sqlite --import tsx server/seed-supervision.ts",
     "test": "node --experimental-sqlite --import tsx --test tests/*.test.ts",
     "test:e2e": "playwright test"
   },

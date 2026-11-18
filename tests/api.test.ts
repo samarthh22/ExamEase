@@ -11,7 +11,7 @@ import { academicService } from "../server/services/academic.js";
 import type { User } from "../shared/types.js";
 function fixture() {
   const repo = openRepository(":memory:");
-  seed(repo);
+  seed(repo, "examease.local");
   return { repo, app: createApp(repo) };
 }
 const login = (agent: ReturnType<typeof request.agent>, email: string) =>
@@ -245,7 +245,7 @@ test("NFR-006 registration and marks survive database reopening", () => {
     file = join(dir, "test.sqlite");
   let repo = openRepository(file);
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     const s = academicService(repo);
     s.register(repo.get<User>("users", "u-student-1")!, {
       examScheduleId: "e-1",

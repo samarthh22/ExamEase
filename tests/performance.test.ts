@@ -7,7 +7,7 @@ import { seed, DEMO_PASSWORD } from "../server/seed.js";
 test("NFR-001/002/009 local 300-student department benchmark", async (t) => {
   const repo = openRepository(":memory:");
   try {
-    seed(repo);
+    seed(repo, "examease.local");
     repo.transaction(() => {
       const template = repo.get("users", "u-student-1")!;
       for (let i = 7; i <= 300; i++) {

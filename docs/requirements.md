@@ -14,13 +14,14 @@ The document supplies project requirements, not operational instructions to the 
 
 ## Roles
 
-| Role                         | Responsibilities                                                                                    |
-| ---------------------------- | --------------------------------------------------------------------------------------------------- |
-| Student                      | Own courses, schedules, registrations and published results                                         |
-| Faculty                      | Assigned courses, rosters, marks, statistics, grading and publication                               |
-| Examination administrator    | Academic records, enrollment, courses, schedules, registrations, publication, reports and dashboard |
-| Department coordinator / HOD | Read-only department schedules, performance and aggregate reports                                   |
-| System administrator         | Accounts, role assignment and deactivation                                                          |
+| Role                         | Responsibilities                                                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| Student                      | Own courses, schedules, registrations and published results                                    |
+| Faculty                      | Assigned course grading/publication; own assigned invigilation duties and hall rosters         |
+| Teaching assistant (TA)      | Own published hall duties and assigned hall rosters; no academic administration or grading     |
+| Examination administrator    | Academic operations plus faculty/TA duty assignment, coverage review and reasoned duty removal |
+| Department coordinator / HOD | Read-only department schedules, performance and aggregate reports                              |
+| System administrator         | Accounts, role assignment and deactivation                                                     |
 
 ## Decisions resolving document inconsistencies
 
@@ -40,6 +41,21 @@ The document supplies project requirements, not operational instructions to the 
 
 ## Exclusions
 
-No online exam taking, payments, proctoring, biometric attendance, question generation, answer-sheet evaluation, external integrations, messaging, predictive analytics, mobile app or multi-institution support.
+No online exam taking, payments, automated/remote proctoring, biometric attendance, question generation, answer-sheet evaluation, external integrations, messaging, predictive analytics, mobile app or multi-institution support. Faculty and TA staffing supports supervision of physical examination halls.
 
 NFR performance and compatibility claims require measured evidence. Local tests do not establish production availability or institutional acceptance.
+
+## Stakeholder change: examination hall supervision (18 November 2026)
+
+The user clarified that teaching assistants and faculty invigilators are examination stakeholders. These are additional change-request requirements, rather than new claims about FR-001–030 in the original report. The earlier prototype is reference material and is not included in the Git repository.
+
+| Change requirement                         | Acceptance rule                                                                                                                                                                                                                                                                                |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CR-SUP-001 Stakeholder identity            | Add TA as a least-privilege account role and six fictional accounts. Faculty remain faculty when assigned an invigilator duty. System administrators manage accounts.                                                                                                                          |
+| CR-SUP-002 Assignment authority            | Only the examination office assigns/removes staff. Staff type is derived server-side from an active TA account or an active faculty account with its existing faculty profile. No self-assignment or self-removal.                                                                             |
+| CR-SUP-003 Scheduling consistency          | Reject duplicate and overlapping duties, including faculty course-exam responsibilities. Recheck on rescheduling, publication and faculty reassignment. Adjacent slots are allowed. Duty assignments/removals close when the exam starts.                                                      |
+| CR-SUP-004 Access and privacy              | Staff see only their published assigned duties and cancelled history. Only office/assigned staff can view a published exam's names, roll numbers and seats. Duties grant no marks-entry, grading, publication or account permissions. Draft duties remain office-only.                         |
+| CR-SUP-005 Lifecycle and accountability    | Record actor/time for assignments and reasoned removals. Exam cancellation closes duties atomically. Upcoming/current duties must be reassigned or removed before staff deactivation/role changes. Started exams with duty records cannot change hall, course or exam type or return to draft. |
+| CR-SUP-006 Staffing review and persistence | Office coverage board flags exams lacking a faculty invigilator. Preserve existing records through a backed-up, verified schema migration and idempotent TA seeding.                                                                                                                           |
+
+No institutional staff-to-student ratio was supplied. The coverage board highlights missing faculty staffing; publication does not enforce an invented staffing ratio. Teaching assistants have no attendance recording, misconduct adjudication or grading authority in this change.

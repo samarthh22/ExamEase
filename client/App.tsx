@@ -36,6 +36,7 @@ import {
 } from "./pages/Academic";
 import { Records, Accounts, Audit } from "./pages/Management";
 import { Evaluation } from "./pages/Evaluation";
+import { Supervision } from "./pages/Supervision";
 const navigation = [
   {
     id: "home",
@@ -66,6 +67,12 @@ const navigation = [
     label: "Students & faculty",
     icon: Users,
     roles: ["EXAM_ADMIN"],
+  },
+  {
+    id: "duties",
+    label: "Exam hall duties",
+    icon: ClipboardList,
+    roles: ["EXAM_ADMIN", "FACULTY", "TA"],
   },
   { id: "marks", label: "Marks & grading", icon: PenLine, roles: ["FACULTY"] },
   {
@@ -313,7 +320,12 @@ export function App() {
       <Login
         onLogin={(u) => {
           setUser(u);
-          location.hash = u.role === "SYS_ADMIN" ? "accounts" : "home";
+          location.hash =
+            u.role === "SYS_ADMIN"
+              ? "accounts"
+              : u.role === "TA"
+                ? "duties"
+                : "home";
         }}
       />
     );
@@ -322,6 +334,8 @@ export function App() {
   const refresh = () => setVersion((v) => v + 1);
   const content = () => {
     switch (active.id) {
+      case "duties":
+        return <Supervision />;
       case "courses":
         return <Courses />;
       case "schedule":

@@ -3,10 +3,11 @@ import { pathToFileURL } from "node:url";
 import { openRepository, type Repository } from "./db.js";
 import { hashPassword } from "./services/auth.js";
 import type { Role } from "../shared/types.js";
+import { seedTeachingAssistants } from "./seed-supervision.js";
 export const DEMO_PASSWORD = "ExamEase@2026";
-export function seed(repo: Repository) {
+export function seed(repo: Repository, domain = "lnmiit.ac.in") {
   if (repo.list("users").length) return false;
-  return repo.transaction(() => {
+  const created = repo.transaction(() => {
     const password_hash = hashPassword(DEMO_PASSWORD),
       now = new Date().toISOString(),
       department = "Computer Science";
@@ -27,31 +28,16 @@ export function seed(repo: Repository) {
         active: 1,
         created_at: now,
       });
-    addUser(
-      "u-admin",
-      "admin@examease.local",
-      "Examination Office",
-      "EXAM_ADMIN",
-    );
+    addUser("u-admin", `admin@${domain}`, "Examination Office", "EXAM_ADMIN");
     addUser(
       "u-system",
-      "system@examease.local",
+      `system@${domain}`,
       "System Administrator",
       "SYS_ADMIN",
     );
-    addUser("u-hod", "hod@examease.local", "Dr. Kavita Rao", "HOD");
-    addUser(
-      "u-faculty",
-      "faculty@examease.local",
-      "Dr. Ananya Sharma",
-      "FACULTY",
-    );
-    addUser(
-      "u-faculty-2",
-      "faculty2@examease.local",
-      "Dr. Rohan Mehta",
-      "FACULTY",
-    );
+    addUser("u-hod", `hod@${domain}`, "Dr. Kavita Rao", "HOD");
+    addUser("u-faculty", `faculty@${domain}`, "Dr. Ananya Sharma", "FACULTY");
+    addUser("u-faculty-2", `faculty2@${domain}`, "Dr. Rohan Mehta", "FACULTY");
     repo.insert("faculty", { id: "f-1", user_id: "u-faculty", department });
     repo.insert("faculty", { id: "f-2", user_id: "u-faculty-2", department });
     const names = [
@@ -65,7 +51,7 @@ export function seed(repo: Repository) {
     names.forEach((name, i) => {
       addUser(
         `u-student-${i + 1}`,
-        i === 0 ? "student@examease.local" : `student${i + 1}@examease.local`,
+        i === 0 ? `student@${domain}` : `student${i + 1}@${domain}`,
         name,
         "STUDENT",
       );
@@ -160,6 +146,8 @@ export function seed(repo: Repository) {
     });
     return true;
   });
+  seedTeachingAssistants(repo);
+  return created;
 }
 if (
   process.argv[1] &&

@@ -3,6 +3,7 @@ import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import type { SQLInputValue } from "node:sqlite";
+import { migrateSupervision } from "./migrations.js";
 // SQLite's untyped SQL boundary is kept inside this adapter; service DTOs are typed.
 type Row = Record<string, any>;
 
@@ -15,7 +16,7 @@ export function openRepository(
   db.exec(`PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000;
     CREATE TABLE IF NOT EXISTS schema_version(version INTEGER PRIMARY KEY);
     INSERT OR IGNORE INTO schema_version VALUES(1);
-    CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY, email TEXT UNIQUE COLLATE NOCASE NOT NULL, name TEXT NOT NULL, password_hash TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('STUDENT','FACULTY','EXAM_ADMIN','HOD','SYS_ADMIN')), department TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0,1)), created_at TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY, email TEXT UNIQUE COLLATE NOCASE NOT NULL, name TEXT NOT NULL, password_hash TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('STUDENT','FACULTY','TA','EXAM_ADMIN','HOD','SYS_ADMIN')), department TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0,1)), created_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), expires_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS students(id TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE REFERENCES users(id), roll_no TEXT NOT NULL UNIQUE COLLATE NOCASE, batch_year INTEGER NOT NULL, department TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS faculty(id TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE REFERENCES users(id), department TEXT NOT NULL);
@@ -34,6 +35,12 @@ export function openRepository(
     CREATE INDEX IF NOT EXISTS idx_results_exam ON results(exam_id);
     CREATE INDEX IF NOT EXISTS idx_enrollment_course ON enrollments(course_id);
   `);
+  migrateSupervision(
+    db,
+    filename === ":memory:"
+      ? undefined
+      : `${resolve(filename)}.before-ta-${Date.now()}.sqlite`,
+  );
   const allowed = new Set([
     "users",
     "sessions",
@@ -48,6 +55,7 @@ export function openRepository(
     "results",
     "statistics",
     "audit",
+    "exam_duties",
   ]);
   function table(name: string) {
     if (!allowed.has(name)) throw new Error("Unknown repository entity");

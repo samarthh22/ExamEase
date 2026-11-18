@@ -14,6 +14,8 @@ npm run dev
 
 Open **http://127.0.0.1:5173**. The React development server proxies API requests to port **3001**. Keep the terminal running; press Ctrl+C to stop. `npm run seed` is idempotent: it never overwrites an existing database.
 
+For an existing installation, run `npm run seed:tas` once to add the six demonstration teaching assistants. Opening the database automatically applies schema version 2; an existing version 1 database is backed up before the users table is migrated. Existing accounts, registrations, marks and sessions are retained.
+
 For the built application:
 
 ```sh
@@ -27,16 +29,19 @@ Open **http://127.0.0.1:3001**. This serves the React build and Node API togethe
 
 All seeded accounts use **`ExamEase@2026`**. These are fictional demonstration accounts, intended only for local evaluation.
 
-| Role                                        | Email                     |
-| ------------------------------------------- | ------------------------- |
-| Examination administrator                   | `admin@examease.local`    |
-| Faculty                                     | `faculty@examease.local`  |
-| Student                                     | `student@examease.local`  |
-| Department coordinator / HOD                | `hod@examease.local`      |
-| System administrator                        | `system@examease.local`   |
-| Second faculty member, for ownership checks | `faculty2@examease.local` |
+| Role                                         | Email                                             |
+| -------------------------------------------- | ------------------------------------------------- |
+| Examination administrator                    | `admin@lnmiit.ac.in`                              |
+| Faculty                                      | `faculty@lnmiit.ac.in`                            |
+| Student                                      | `student@lnmiit.ac.in`                            |
+| Department coordinator / HOD                 | `hod@lnmiit.ac.in`                                |
+| System administrator                         | `system@lnmiit.ac.in`                             |
+| Second faculty member, for ownership checks  | `faculty2@lnmiit.ac.in`                           |
+| Teaching assistants (six fictional accounts) | `ta1@examease.local` through `ta6@examease.local` |
 
-Five additional students use `student2@examease.local` through `student6@examease.local`. The seed creates four courses, future examinations relative to the seed date, and one past Software Engineering mid-semester examination with six saved marks, ready for grading. Demo dates persist after seeding.
+Fresh databases use the institutional demo addresses above, preserving the project's updated seed domain. Previously seeded databases retain their existing addresses, including `@examease.local`; seeding does not rename accounts or reset passwords. Browser/API fixtures explicitly use `examease.local` for isolation.
+
+Five additional students use `student2@lnmiit.ac.in` through `student6@lnmiit.ac.in`. The seed creates four courses, future examinations relative to the seed date, and one past Software Engineering mid-semester examination with six saved marks, ready for grading. Demo dates persist after seeding. The earlier reference prototype is excluded from Git through `.gitignore`.
 
 ## Demonstrate the required workflows
 
@@ -47,6 +52,7 @@ Five additional students use `student2@examease.local` through `student6@exameas
 5. Use the examination administrator to create courses, assign faculty, maintain student/faculty profiles and enrollment, create schedules and review reports. Reusing an occupied venue at overlapping times returns a conflict.
 6. Use the system administrator to create/deactivate accounts or assign roles. Create an account before linking its student/faculty profile through the examination administrator.
 7. Use HOD to review department-scoped aggregate reports. HOD cannot modify records or see individual marks.
+8. As examination administrator, open **Exam hall duties** and assign an existing faculty member as invigilator and a TA to a future examination. Review coverage and the hall roster. Sign in as that TA to see only their own published duties and printable student names, roll numbers and seats. A faculty invigilation assignment does not change their course grading permissions. Duty removal requires an office-recorded reason before the exam starts.
 
 Marks entry opens after the examination ends. Registration closes when it starts. **Students cannot cancel or restore registrations**; the examination office handles corrections and records a cancellation reason. Published marks are locked; an **examination administrator** must withdraw publication with a reason before faculty can correct marks, regenerate grades and republish. Missing/absent students are excluded from grading only after confirmation. Grade **F** is treated as failing; all other configured grades pass. Grade ranges include the lower endpoint and exclude the upper endpoint, except the maximum mark, which is included.
 
@@ -54,16 +60,17 @@ Password fields have a show/hide control and are masked by default. Unsaved form
 
 ## Implemented scope
 
-- Five roles with server-side authorization and course/student ownership checks.
+- Six roles with server-side authorization and course/student/duty ownership checks. Invigilation is a duty assigned to faculty, rather than a separate account role.
 - Login/logout, salted password hashes, expiring revocable sessions, account management.
 - Student/faculty records, unique roll numbers/course codes, course assignment and enrollment.
 - Draft/published/cancelled schedules with venue overlap prevention.
+- Office-managed faculty invigilation and TA duties, overlapping-duty and faculty-responsibility checks, coverage warnings, private hall rosters and audited removal/cancellation.
 - Eligibility and duplicate registration checks, examination-office cancellation/restoration and printable receipts.
 - Transactional marks entry, absence flags, remarks, mean/median/min/max/population standard deviation.
 - Contiguous course-exam grading boundaries, exact-mark grade assignment, draft preview, publication and invalidation after edits.
 - Private student results, course/student reports, pass/fail counts, department oversight, CSV export and change audit records.
 
-Online examinations, payments, proctoring, question generation, messaging and external integrations are excluded, following the report.
+Online examinations, payments, automated/remote proctoring, question generation, messaging and external integrations are excluded. Hall staffing implements the user's later stakeholder clarification; the original grading and student access rules remain in force.
 
 ## Quality checks
 
@@ -76,7 +83,7 @@ npm run test:e2e
 npm audit
 ```
 
-Browser tests use a separate **in-memory database on port 3002**, so they do not modify local demonstration data. Run `npm run build` before browser tests. They cover student registration, faculty grading/publication, administrator schedules, system account management, HOD restrictions and a mobile viewport. Chromium is the default; set `E2E_BROWSER=firefox` or `E2E_BROWSER=msedge` after installing the matching browser to run the same suite there.
+Browser tests use a separate **in-memory database on port 3002**, so they do not modify local demonstration data. Run `npm run build` before browser tests. They cover student registration, faculty grading/publication, administrator schedules and hall staffing, TA roster privacy and printing, system account management, HOD restrictions and mobile viewports. Chromium is the default; set `E2E_BROWSER=firefox` or `E2E_BROWSER=msedge` after installing the matching browser to run the same suite there.
 
 On Windows, if a locked-down command sandbox reports `uv_os_get_passwd` or esbuild directory access errors, run the command in a normal terminal. This is an execution environment restriction, not an application dependency failure.
 
@@ -90,7 +97,9 @@ server/app.ts       Express composition, authentication, authorization, errors
 server/routes/      HTTP endpoint adapters
 server/services/    Authentication and examination business rules
 server/db.ts        SQLite schema, query adapter and transactions
+server/migrations.ts Existing-database migration for teaching assistants and duties
 server/seed.ts      Idempotent fictional local dataset
+server/seed-supervision.ts Adds six missing demo TAs without resetting accounts
 tests/              Domain, HTTP, persistence and browser acceptance tests
 docs/               Requirements decisions, architecture, traceability and API guide
 data/               Local database (ignored by Git)
