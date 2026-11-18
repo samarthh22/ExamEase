@@ -17,6 +17,161 @@ function fixture() {
   seed(repo);
   return { repo, app: createApp(repo) };
 }
+test("Faculty can read and change marks/results only for taught courses across every grading endpoint", async () => {
+  const { repo, app } = fixture();
+  try {
+    const teacher = request.agent(app),
+      other = request.agent(app);
+    await teacher
+      .post("/api/auth/login")
+      .send({ email: "faculty@lnmiit.ac.in", password: DEMO_PASSWORD })
+      .expect(200);
+    await other
+      .post("/api/auth/login")
+      .send({ email: "faculty2@lnmiit.ac.in", password: DEMO_PASSWORD })
+      .expect(200);
+    const bounds = [
+      { grade_label: "F", lower_bound: 0, upper_bound: 40 },
+      { grade_label: "A", lower_bound: 40, upper_bound: 100 },
+    ];
+    const markBody = { marks: [{ studentId: "s-1", marksObtained: 87 }] };
+    await teacher.get("/api/marks/exam/e-past").expect(200);
+    await teacher.post("/api/marks/exam/e-past").send(markBody).expect(200);
+    await teacher
+      .post("/api/grading/boundaries/e-past")
+      .send({ boundaries: bounds })
+      .expect(200);
+    await teacher.post("/api/grading/generate/e-past").send({}).expect(200);
+    const attempts = async () => {
+      const before = new Map(
+        ["marks", "results", "boundaries", "statistics", "audit", "exams"].map(
+          (t) => [t, repo.list(t)],
+        ),
+      );
+      await other.get("/api/marks/exam/e-past").expect(403);
+      await other.get("/api/grading/boundaries/e-past").expect(403);
+      await other.post("/api/marks/exam/e-past").send(markBody).expect(403);
+      await other
+        .post("/api/grading/boundaries/e-past")
+        .send({ boundaries: bounds })
+        .expect(403);
+      await other.post("/api/grading/generate/e-past").send({}).expect(403);
+      await other.post("/api/grading/publish/e-past").send({}).expect(403);
+      await other
+        .post("/api/grading/withdraw/e-past")
+        .send({ reason: "Attempt to change another subject" })
+        .expect(403);
+      await other.get("/api/reports/student/s-1").expect(403);
+      await other.get("/api/results?studentId=s-1").expect(403);
+      for (const [table, rows] of before)
+        assert.deepEqual(repo.list(table), rows);
+    };
+    await attempts(); // Draft grades are private to the course teacher and office.
+    await teacher.post("/api/grading/publish/e-past").send({}).expect(200);
+    await attempts(); // Publication does not expose marks/results to other faculty.
+    for (const [agent, expectedCourses] of [
+      [teacher, ["c-1", "c-2"]],
+      [other, ["c-3", "c-4"]],
+    ] as const) {
+      const courses = await agent.get("/api/courses?facultyId=f-1").expect(200);
+      assert.deepEqual(
+        courses.body.map((c: { id: string }) => c.id).sort(),
+        [...expectedCourses].sort(),
+      );
+      const exams = await agent.get("/api/exams?courseId=c-1").expect(200);
+      assert.ok(exams.body.length > 0);
+      assert.ok(
+        exams.body.every((e: { course_id: string }) =>
+          (expectedCourses as readonly string[]).includes(e.course_id),
+        ),
+      );
+      const reports = await agent
+        .get("/api/reports/courses?courseId=c-1&facultyId=f-1")
+        .expect(200);
+      assert.ok(reports.body.length > 0);
+      assert.ok(
+        reports.body.every((r: { exam: { course_id: string } }) =>
+          (expectedCourses as readonly string[]).includes(r.exam.course_id),
+        ),
+      );
+    }
+  } finally {
+    repo.close();
+  }
+});
+
+test("Faculty reassignment immediately revokes the former teacher's access without requiring logout", async () => {
+  const { repo, app } = fixture();
+  try {
+    const former = request.agent(app),
+      replacement = request.agent(app),
+      admin = request.agent(app);
+    for (const [agent, email] of [
+      [former, "faculty@lnmiit.ac.in"],
+      [replacement, "faculty2@lnmiit.ac.in"],
+      [admin, "admin@lnmiit.ac.in"],
+    ] as const)
+      await agent
+        .post("/api/auth/login")
+        .send({ email, password: DEMO_PASSWORD })
+        .expect(200);
+    await former.get("/api/marks/exam/e-past").expect(200);
+    await replacement.get("/api/marks/exam/e-past").expect(403);
+    const { id, ...course } = repo.get("courses", "c-1")!;
+    await admin
+      .put(`/api/courses/${id}`)
+      .send({ ...course, faculty_id: "f-2", active: true })
+      .expect(200);
+    await former.get("/api/marks/exam/e-past").expect(403);
+    await former.get("/api/grading/boundaries/e-past").expect(403);
+    for (const path of [
+      "/api/marks/exam/e-past",
+      "/api/grading/boundaries/e-past",
+      "/api/grading/generate/e-past",
+      "/api/grading/publish/e-past",
+    ])
+      await former.post(path).send({}).expect(403);
+    const reports = await former.get("/api/reports/courses").expect(200);
+    assert.ok(
+      reports.body.every(
+        (r: { exam: { course_id: string } }) => r.exam.course_id !== "c-1",
+      ),
+    );
+    await replacement.get("/api/marks/exam/e-past").expect(200);
+    await replacement
+      .post("/api/marks/exam/e-past")
+      .send({ marks: [{ studentId: "s-1", marksObtained: 86 }] })
+      .expect(200);
+    assert.equal(
+      repo.one(
+        "SELECT marks_obtained FROM marks WHERE exam_id='e-past' AND student_id='s-1'",
+      )?.marks_obtained,
+      86,
+    );
+    // Faculty accounts without a matching teaching profile cannot acquire ownership.
+    repo.insert("users", {
+      ...repo.get<User>("users", "u-faculty")!,
+      id: "faculty-no-profile",
+      email: "unassigned-faculty@lnmiit.ac.in",
+    });
+    const unassigned = request.agent(app);
+    await unassigned
+      .post("/api/auth/login")
+      .send({
+        email: "unassigned-faculty@lnmiit.ac.in",
+        password: DEMO_PASSWORD,
+      })
+      .expect(200);
+    assert.deepEqual(
+      (await unassigned.get("/api/courses").expect(200)).body,
+      [],
+    );
+    await unassigned.get("/api/marks/exam/e-past").expect(403);
+    await unassigned.post("/api/marks/exam/e-past").send({}).expect(403);
+  } finally {
+    repo.close();
+  }
+});
 test("Exam office deletes unused courses with an audit reason and preserves courses with academic history", async () => {
   const { repo, app } = fixture();
   try {

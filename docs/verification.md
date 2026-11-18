@@ -1,5 +1,7 @@
 # Local verification record
 
+Faculty subject-ownership review (18 November 2026): the existing server ownership checks pass expanded HTTP regressions for marks/boundary reads and writes, grade generation/publication, draft and published result privacy, query-parameter tampering, scoped reports, and faculty reassignment during active sessions. Rejected requests leave marks, results, boundaries, statistics, exams and audit data unchanged. A faculty account without a teaching profile receives no courses or evaluation access. Existing invigilation regressions confirm that hall duties do not grant grading access. The browser verifies that both seeded faculty accounts see only their taught subjects in course lists and marks selectors. **35 server tests**, **15 Chromium browser scenarios**, strict type checking and the production build pass. No application permission change was needed; these regressions document and protect the existing rule.
+
 Administration follow-up (18 November 2026): production build/type checking, all **33 server tests**, and all **14 Chromium browser scenarios** pass. The permission matrix covers **43 operations across six roles**. New cases exercise office TA creation/edit/deactivation, session revocation, duty safeguards, role-escalation rejection, reasoned unused-course deletion, and preservation of referenced courses. The browser verifies the complete TA and course-deletion controls. Existing local records are not modified by these tests.
 
 Verified on 15 November 2026 on Windows with Node.js 22.17.0.

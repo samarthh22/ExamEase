@@ -8,6 +8,30 @@ async function login(page: Page, email: string) {
   await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
 }
 
+test("faculty course and marks selectors show only subjects taught by that faculty member", async ({
+  page,
+}) => {
+  for (const [email, allowed, forbidden] of [
+    ["faculty@lnmiit.ac.in", ["CS314", "CS301"], ["CS303", "CS305"]],
+    ["faculty2@lnmiit.ac.in", ["CS303", "CS305"], ["CS314", "CS301"]],
+  ] as const) {
+    await login(page, email);
+    await page.getByRole("link", { name: "Courses", exact: true }).click();
+    for (const code of allowed)
+      await expect(page.locator("tbody")).toContainText(code);
+    for (const code of forbidden)
+      await expect(page.locator("tbody")).not.toContainText(code);
+    await page
+      .getByRole("link", { name: "Marks & grading", exact: true })
+      .click();
+    const selector = page.getByLabel("Examination", { exact: true });
+    for (const code of allowed) await expect(selector).toContainText(code);
+    for (const code of forbidden)
+      await expect(selector).not.toContainText(code);
+    await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  }
+});
+
 test("exam office adds and manages TAs and safely deletes unused courses", async ({
   page,
 }) => {
